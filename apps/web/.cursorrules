@@ -1,0 +1,100 @@
+# Next.js Frontend Rules
+
+## Service Layer - MANDATORY
+
+**NEVER** make API calls directly in components, pages, or hooks.
+
+```typescript
+// ❌ WRONG - Direct API call
+const response = await fetch("/api/holidays");
+const data = await apiClient.get("/holidays");
+
+// ✅ CORRECT - Use service
+import { holidaysService } from "@/services";
+const holidays = await holidaysService.getAll();
+```
+
+## Type Imports
+
+**ALWAYS** import types from the shared package:
+
+```typescript
+// ✅ CORRECT
+import type { Holiday, Person, Gift } from "@niftygifty/types";
+
+// ❌ WRONG - Local type definition
+interface Holiday {
+  id: number;
+  name: string;
+}
+```
+
+## Before Creating New Code
+
+1. **Types**: Check `packages/types/src/index.ts`
+2. **Services**: Check `src/services/` for existing service
+3. **Components**: Check `src/components/ui/` for shadcn components
+4. **Hooks**: Check `src/hooks/` for existing hooks
+
+## Component Structure
+
+```typescript
+"use client"; // Only if needed
+
+import { useState } from "react";
+import type { Holiday } from "@niftygifty/types";
+import { holidaysService } from "@/services";
+import { Button } from "@/components/ui/button";
+
+export function HolidayList() {
+  // State
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  
+  // Use services for data fetching
+  const loadHolidays = async () => {
+    const data = await holidaysService.getAll();
+    setHolidays(data);
+  };
+  
+  return (/* JSX */);
+}
+```
+
+## Styling
+
+- Use Tailwind CSS classes
+- Use shadcn/ui components from `@/components/ui/`
+- Dark theme is default (`className="dark"` on html)
+- Color palette: slate backgrounds, violet/fuchsia accents
+
+## File Organization
+
+```
+src/
+├── app/              # Pages (App Router)
+├── components/
+│   └── ui/           # shadcn/ui (DO NOT MODIFY)
+├── contexts/         # React contexts
+├── hooks/            # Custom hooks
+├── lib/
+│   ├── api-client.ts # API client singleton
+│   └── utils.ts      # Utility functions
+└── services/         # API services (one per resource)
+```
+
+## Error Handling
+
+```typescript
+import { ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
+
+try {
+  await someService.create(data);
+  toast.success("Created successfully");
+} catch (err) {
+  if (err instanceof ApiError) {
+    toast.error(err.message);
+  }
+}
+```
+

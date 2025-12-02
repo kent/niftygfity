@@ -1,0 +1,386 @@
+"use client";
+
+import { useState, useCallback, useTransition, useRef, useMemo } from "react";
+import { Plus, Loader2, Crown } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { SortableGiftRow } from "./SortableGiftRow";
+import { UpgradePrompt } from "@/components/upgrade-prompt";
+import { useAuth } from "@/contexts/auth-context";
+import { giftsService } from "@/services";
+import { ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
+import type { Gift, Person, GiftStatus, Holiday, CreateGiftRequest } from "@niftygifty/types";
+
+type GiftUpdatePayload = Partial<CreateGiftRequest["gift"]>;
+type LocalGift = Gift & { _isNew?: boolean; _isSaving?: boolean };
+
+interface GiftGridProps {
+  gifts: Gift[];
+  people: Person[];
+  statuses: GiftStatus[];
+  holidays: Holiday[];
+  defaultHolidayId?: number;
+  defaultStatusId?: number;
+  onGiftsChange: (gifts: Gift[]) => void;
+  onPeopleChange: (people: Person[]) => void;
+}
+
+export function GiftGrid({
+  gifts: externalGifts,
+  people,
+  statuses,
+  holidays,
+  defaultHolidayId,
+  defaultStatusId,
+  onGiftsChange,
+  onPeopleChange,
+}: GiftGridProps) {
+  const [localState, setLocalState] = useState<Record<number, { _isNew?: boolean; _isSaving?: boolean }>>({});
+  const [isPending, startTransition] = useTransition();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const { canCreateGift, giftsRemaining, isPremium, refreshBillingStatus } = useAuth();
+  
+  const onGiftsChangeRef = useRef(onGiftsChange);
+  onGiftsChangeRef.current = onGiftsChange;
+  const externalGiftsRef = useRef(externalGifts);
+  externalGiftsRef.current = externalGifts;
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Sort by position
+  const sortedGifts = useMemo(
+    () => [...externalGifts].sort((a, b) => a.position - b.position),
+    [externalGifts]
+  );
+  
+  const gifts: LocalGift[] = sortedGifts.map((g) => ({
+    ...g,
+    ...localState[g.id],
+  }));
+
+  const giftIds = useMemo(() => gifts.map((g) => g.id), [gifts]);
+
+  const setLocalMeta = (id: number, meta: { _isNew?: boolean; _isSaving?: boolean } | null) => {
+    setLocalState((prev) => {
+      if (meta === null) {
+        const { [id]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [id]: { ...prev[id], ...meta } };
+    });
+  };
+
+  const handlePersonCreated = useCallback((newPerson: Person) => {
+    onPeopleChange([...people, newPerson]);
+  }, [people, onPeopleChange]);
+
+  const updateGift = useCallback(
+    async (id: number, updates: GiftUpdatePayload) => {
+      const currentGift = externalGiftsRef.current.find((g) => g.id === id);
+      if (!currentGift) return;
+
+      const optimisticGift: Gift = { ...currentGift };
+      if (updates.name !== undefined) optimisticGift.name = updates.name;
+      if (updates.gift_status_id !== undefined) {
+        optimisticGift.gift_status_id = updates.gift_status_id;
+        optimisticGift.gift_status = statuses.find((s) => s.id === updates.gift_status_id) || currentGift.gift_status;
+      }
+      if (updates.cost !== undefined) optimisticGift.cost = updates.cost?.toString() ?? null;
+
+      onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
+
+      startTransition(async () => {
+        try {
+          const updated = await giftsService.update(id, updates);
+          setLocalMeta(id, { _isNew: false });
+          onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? updated : g)));
+        } catch {
+          const refreshed = await giftsService.getAll();
+          onGiftsChangeRef.current(refreshed);
+        }
+      });
+    },
+    [statuses]
+  );
+
+  const updateRecipients = useCallback(
+    async (id: number, recipientIds: number[]) => {
+      const currentGift = externalGiftsRef.current.find((g) => g.id === id);
+      if (!currentGift) return;
+
+      const optimisticGift: Gift = {
+        ...currentGift,
+        recipients: people.filter((p) => recipientIds.includes(p.id)),
+      };
+      onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
+
+      startTransition(async () => {
+        try {
+          const updated = await giftsService.update(id, { recipient_ids: recipientIds });
+          setLocalMeta(id, { _isNew: false });
+          onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? updated : g)));
+        } catch {
+          const refreshed = await giftsService.getAll();
+          onGiftsChangeRef.current(refreshed);
+        }
+      });
+    },
+    [people]
+  );
+
+  const updateGivers = useCallback(
+    async (id: number, giverIds: number[]) => {
+      const currentGift = externalGiftsRef.current.find((g) => g.id === id);
+      if (!currentGift) return;
+
+      const optimisticGift: Gift = {
+        ...currentGift,
+        givers: people.filter((p) => giverIds.includes(p.id)),
+      };
+      onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
+
+      startTransition(async () => {
+        try {
+          const updated = await giftsService.update(id, { giver_ids: giverIds });
+          setLocalMeta(id, { _isNew: false });
+          onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? updated : g)));
+        } catch {
+          const refreshed = await giftsService.getAll();
+          onGiftsChangeRef.current(refreshed);
+        }
+      });
+    },
+    [people]
+  );
+
+  const addGift = useCallback(async (atPosition?: number) => {
+    const holidayId = defaultHolidayId || holidays[0]?.id;
+    const statusId = defaultStatusId || statuses[0]?.id;
+    if (!holidayId || !statusId) return;
+
+    startTransition(async () => {
+      try {
+        const created = await giftsService.create({
+          name: "New Gift",
+          holiday_id: holidayId,
+          gift_status_id: statusId,
+          position: atPosition,
+        });
+        setLocalMeta(created.id, { _isNew: true });
+        
+        if (atPosition !== undefined) {
+          const refreshed = await giftsService.getAll();
+          const holidayGifts = refreshed.filter((g) => g.holiday_id === holidayId);
+          onGiftsChangeRef.current(holidayGifts);
+        } else {
+          onGiftsChangeRef.current([...externalGiftsRef.current, created]);
+        }
+        // Refresh billing status after creating gift
+        await refreshBillingStatus();
+      } catch (err) {
+        if (err instanceof ApiError && err.isGiftLimitReached) {
+          toast.error("Gift limit reached", {
+            description: "Upgrade to Premium for unlimited gift tracking.",
+            action: {
+              label: "Upgrade",
+              onClick: () => window.location.href = "/billing",
+            },
+          });
+          await refreshBillingStatus();
+        } else {
+          console.error("Failed to create gift:", err);
+          toast.error("Failed to create gift");
+        }
+      }
+    });
+  }, [defaultHolidayId, defaultStatusId, holidays, statuses, refreshBillingStatus]);
+
+  const insertGift = useCallback(async (referenceId: number, position: "above" | "below") => {
+    const sorted = [...externalGiftsRef.current].sort((a, b) => a.position - b.position);
+    const refIndex = sorted.findIndex((g) => g.id === referenceId);
+    if (refIndex === -1) return;
+    
+    const refGift = sorted[refIndex];
+    const insertPosition = position === "above" ? refGift.position : refGift.position + 1;
+    
+    await addGift(insertPosition);
+  }, [addGift]);
+
+  const deleteGift = useCallback(async (id: number) => {
+    setDeletingId(id);
+    onGiftsChangeRef.current(externalGiftsRef.current.filter((g) => g.id !== id));
+
+    startTransition(async () => {
+      try {
+        await giftsService.delete(id);
+        setLocalMeta(id, null);
+        // Refresh billing status after deletion
+        await refreshBillingStatus();
+      } catch {
+        const refreshed = await giftsService.getAll();
+        onGiftsChangeRef.current(refreshed);
+      } finally {
+        setDeletingId(null);
+      }
+    });
+  }, [refreshBillingStatus]);
+
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const sorted = [...externalGiftsRef.current].sort((a, b) => a.position - b.position);
+    const oldIndex = sorted.findIndex((g) => g.id === active.id);
+    const newIndex = sorted.findIndex((g) => g.id === over.id);
+    
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    // Calculate new position based on target
+    const targetGift = sorted[newIndex];
+    const newPosition = targetGift.position;
+
+    // Optimistic reorder
+    const reordered = [...sorted];
+    const [moved] = reordered.splice(oldIndex, 1);
+    reordered.splice(newIndex, 0, moved);
+    
+    // Update positions optimistically
+    const optimisticGifts = reordered.map((g, idx) => ({ ...g, position: idx }));
+    onGiftsChangeRef.current(optimisticGifts);
+
+    startTransition(async () => {
+      try {
+        const holidayId = defaultHolidayId || holidays[0]?.id;
+        const updatedGifts = await giftsService.reorder(Number(active.id), newPosition);
+        onGiftsChangeRef.current(updatedGifts.filter((g) => g.holiday_id === holidayId));
+      } catch {
+        const refreshed = await giftsService.getAll();
+        const holidayId = defaultHolidayId || holidays[0]?.id;
+        onGiftsChangeRef.current(refreshed.filter((g) => g.holiday_id === holidayId));
+      }
+    });
+  }, [defaultHolidayId, holidays]);
+
+  const atLimit = !canCreateGift;
+
+  return (
+    <div className="w-full space-y-4">
+      <UpgradePrompt variant="banner" />
+      
+      <div className="flex items-center gap-2">
+        {atLimit ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.location.href = "/billing"}
+            className="gap-2 border-violet-500/50 text-violet-400 hover:bg-violet-500/10"
+          >
+            <Crown className="h-4 w-4" />
+            Upgrade to Add More
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => addGift()}
+            disabled={isPending}
+            className="gap-2"
+          >
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4" />
+            )}
+            Add Gift
+          </Button>
+        )}
+        {isPending && (
+          <span className="text-xs text-muted-foreground">Saving...</span>
+        )}
+        {!isPremium && giftsRemaining !== null && giftsRemaining > 0 && (
+          <span className="text-xs text-muted-foreground">
+            {giftsRemaining} free gift{giftsRemaining !== 1 ? "s" : ""} remaining
+          </span>
+        )}
+      </div>
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead className="w-[40px]"></TableHead>
+                <TableHead className="w-[180px] font-semibold">To</TableHead>
+                <TableHead className="w-[180px] font-semibold">From</TableHead>
+                <TableHead className="min-w-[250px] font-semibold">Item</TableHead>
+                <TableHead className="w-[140px] font-semibold">Status</TableHead>
+                <TableHead className="w-[100px] text-right font-semibold">Cost</TableHead>
+                <TableHead className="w-[50px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <SortableContext items={giftIds} strategy={verticalListSortingStrategy}>
+                {gifts.map((gift) => (
+                  <SortableGiftRow
+                    key={gift.id}
+                    gift={gift}
+                    people={people}
+                    statuses={statuses}
+                    deletingId={deletingId}
+                    onUpdateGift={updateGift}
+                    onUpdateRecipients={updateRecipients}
+                    onUpdateGivers={updateGivers}
+                    onInsertGift={insertGift}
+                    onDeleteGift={deleteGift}
+                    onPersonCreated={handlePersonCreated}
+                  />
+                ))}
+              </SortableContext>
+              {gifts.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                    No gifts yet. Click the button above to add one.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </DndContext>
+    </div>
+  );
+}
