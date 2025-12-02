@@ -1,0 +1,110 @@
+# Shared Types Package Rules
+
+## Purpose
+
+This package contains ALL shared TypeScript types for the monorepo. Types defined here are used by:
+- `apps/web` - Next.js frontend
+- Future mobile apps
+
+## Before Adding Types
+
+1. **Search first**: Check if the type already exists
+2. **Check Rails**: Ensure it matches the API blueprint
+3. **Use base types**: Extend `BaseEntity` for models with id/timestamps
+
+## Type Structure
+
+```typescript
+// Base types
+export interface Timestamps {
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BaseEntity extends Timestamps {
+  id: number;
+}
+
+// Model types extend BaseEntity
+export interface Holiday extends BaseEntity {
+  name: string;
+  date: string;
+}
+
+// Request types for mutations
+export interface CreateHolidayRequest {
+  holiday: {
+    name: string;
+    date: string;
+  };
+}
+
+// Update requests use Partial
+export interface UpdateHolidayRequest {
+  holiday: Partial<CreateHolidayRequest["holiday"]>;
+}
+```
+
+## Naming Conventions
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Model | PascalCase | `Holiday`, `Gift`, `Person` |
+| Create Request | `Create{Model}Request` | `CreateHolidayRequest` |
+| Update Request | `Update{Model}Request` | `UpdateHolidayRequest` |
+| List Response | `{Model}sResponse` | `HolidaysResponse` |
+| API Error | `ApiError` | Already defined |
+
+## Synchronization with Rails
+
+Types MUST match Rails blueprints:
+
+**Blueprint**:
+```ruby
+class HolidayBlueprint < ApplicationBlueprint
+  fields :name, :date, :created_at, :updated_at
+end
+```
+
+**Type**:
+```typescript
+export interface Holiday extends BaseEntity {
+  name: string;
+  date: string;  // ISO date string
+}
+```
+
+## Field Type Mappings
+
+| Rails | TypeScript |
+|-------|------------|
+| `string` | `string` |
+| `text` | `string` |
+| `integer` | `number` |
+| `decimal` | `string` (precision preserved) |
+| `boolean` | `boolean` |
+| `date` | `string` (ISO format) |
+| `datetime` | `string` (ISO format) |
+| `references` | `number` (foreign key id) |
+
+## Nullable Fields
+
+Use `| null` for optional database fields:
+
+```typescript
+export interface Person extends BaseEntity {
+  name: string;
+  relationship: string | null;  // Optional in DB
+  age: number | null;
+}
+```
+
+## Building
+
+After changes, rebuild:
+```bash
+npm run build
+```
+
+This generates `dist/` with compiled JS and `.d.ts` files.
+
