@@ -1,0 +1,123 @@
+# Rails API Rules
+
+## API-Only Mode
+
+This is a JSON API. No views, no HTML responses.
+
+## Controller Pattern
+
+```ruby
+class HolidaysController < ApplicationController
+  before_action :set_holiday, only: %i[show update destroy]
+
+  def index
+    holidays = current_user.holidays
+    render json: HolidayBlueprint.render(holidays)
+  end
+
+  def show
+    render json: HolidayBlueprint.render(@holiday)
+  end
+
+  def create
+    holiday = Holiday.new(holiday_params)
+    if holiday.save
+      render json: HolidayBlueprint.render(holiday), status: :created
+    else
+      render json: { errors: holiday.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @holiday.update(holiday_params)
+      render json: HolidayBlueprint.render(@holiday)
+    else
+      render json: { errors: @holiday.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @holiday.destroy!
+    head :no_content
+  end
+
+  private
+
+  def set_holiday
+    @holiday = current_user.holidays.find(params[:id])
+  end
+
+  def holiday_params
+    params.require(:holiday).permit(:name, :date)
+  end
+end
+```
+
+## Blueprinter Serialization
+
+All JSON responses use Blueprinter:
+
+```ruby
+class HolidayBlueprint < ApplicationBlueprint
+  fields :name, :date, :created_at, :updated_at
+
+  # Associations
+  association :gifts, blueprint: GiftBlueprint
+
+  # Views for different contexts
+  view :with_gifts do
+    association :gifts, blueprint: GiftBlueprint
+  end
+end
+```
+
+## Type Synchronization
+
+**IMPORTANT**: When modifying blueprints, update `packages/types/src/index.ts` to match.
+
+Blueprint fields → TypeScript interface properties
+
+## Authentication
+
+- Uses Devise + JWT
+- `current_user` available in controllers
+- `before_action :authenticate_user!` in ApplicationController
+- JWT token in `Authorization` header
+
+## CORS
+
+Configured in `config/initializers/cors.rb`:
+- Allows requests from `CORS_ORIGINS` env var
+- Defaults to `http://localhost:3000`
+- Exposes `Authorization` header for JWT
+
+## Error Responses
+
+```ruby
+# Validation errors
+render json: { errors: model.errors.full_messages }, status: :unprocessable_entity
+
+# Not found (handled by find)
+# Returns 404 automatically
+
+# Generic error
+render json: { error: "Message" }, status: :bad_request
+```
+
+## Testing
+
+```ruby
+class HolidaysApiTest < ActionDispatch::IntegrationTest
+  setup do
+    @user = create_test_user
+    post user_session_path, params: { user: { email: @user.email, password: "password123" } }, as: :json
+    @token = response.headers["Authorization"]
+  end
+
+  test "index returns holidays" do
+    get holidays_path, headers: { "Authorization" => @token }, as: :json
+    assert_response :success
+  end
+end
+```
+

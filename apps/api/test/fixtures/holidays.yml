@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+christmas:
+  name: Christmas 2025
+  date: 2025-12-25
+
+birthday:
+  name: Mom's Birthday
+  date: 2025-06-15

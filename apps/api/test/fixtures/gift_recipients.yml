@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+sweater_to_mom:
+  gift: sweater
+  person: mom
+
+sweater_to_dad:
+  gift: sweater
+  person: dad
+
+book_to_mom:
+  gift: book
+  person: mom

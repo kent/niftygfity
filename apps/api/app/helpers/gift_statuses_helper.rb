@@ -1,0 +1,2 @@
+module GiftStatusesHelper
+end

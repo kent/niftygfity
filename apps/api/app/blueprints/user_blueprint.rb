@@ -1,0 +1,19 @@
+class UserBlueprint < ApplicationBlueprint
+  fields :email, :created_at, :subscription_plan, :subscription_expires_at
+
+  field :gift_count do |user|
+    user.gift_count
+  end
+
+  field :gifts_remaining do |user|
+    user.gifts_remaining
+  end
+
+  field :can_create_gift do |user|
+    user.can_create_gift?
+  end
+
+  field :subscription_status do |user|
+    user.subscription_status
+  end
+end

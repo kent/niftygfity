@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+sweater:
+  name: Wool Sweater
+  description: A cozy wool sweater in blue
+  link: https://example.com/sweater
+  cost: 49.99
+  holiday: christmas
+  gift_status: idea
+
+book:
+  name: Cooking Book
+  description: Italian cuisine recipes
+  link: https://example.com/book
+  cost: 29.99
+  holiday: birthday
+  gift_status: purchased

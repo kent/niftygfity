@@ -1,0 +1,10 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "bin/rails server -p 3001",
+    "test": "bin/rails test"
+  }
+}
+

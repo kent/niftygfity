@@ -1,0 +1,22 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+mom:
+  name: Mom
+  relationship: Mother
+  age: 55
+  gender: Female
+  user: one
+
+dad:
+  name: Dad
+  relationship: Father
+  age: 58
+  gender: Male
+  user: one
+
+sister:
+  name: Sister
+  relationship: Sister
+  age: 28
+  gender: Female
+  user: two

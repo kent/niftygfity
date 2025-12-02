@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+idea:
+  name: Idea
+  position: 1
+
+purchased:
+  name: Purchased
+  position: 2
+
+in_transit:
+  name: In Transit
+  position: 3
+
+delivered:
+  name: Delivered
+  position: 4
+
+done:
+  name: Done
+  position: 5
