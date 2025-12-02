@@ -1,0 +1,68 @@
+# NiftyGifty Monorepo Rules
+
+## Project Structure
+This is a Turborepo monorepo with:
+- `apps/api` - Rails 8 API (JSON only, no views)
+- `apps/web` - Next.js 16 frontend with shadcn/ui
+- `packages/types` - Shared TypeScript types
+
+## Critical Rules
+
+### 1. DRY Principles
+- **ALWAYS** search for existing types in `packages/types/src/index.ts` before creating new ones
+- **NEVER** duplicate type definitions across packages
+- Reuse existing components, services, and utilities
+- Extract repeated code into shared modules
+
+### 2. Type Safety
+- All API responses must have corresponding types in `packages/types`
+- Frontend services must use types from `@niftygifty/types`
+- Rails blueprints must match TypeScript interfaces
+
+### 3. Service Layer (Frontend)
+- Components **NEVER** make direct API calls
+- All API interactions go through services in `apps/web/src/services/`
+- Services use `apiClient` from `@/lib/api-client`
+- Pattern: `Component → Service → ApiClient → API`
+
+### 4. API Client Usage
+```typescript
+// ✅ Correct - use services
+import { authService, holidaysService } from "@/services";
+await authService.signIn(email, password);
+
+// ❌ Wrong - direct API calls in components
+import { apiClient } from "@/lib/api-client";
+await apiClient.post("/endpoint", data);
+```
+
+### 5. Rails API Conventions
+- Controllers return JSON via Blueprinter
+- All routes under `/api/v1/` namespace (future)
+- Devise + JWT for authentication
+- rack-cors configured for frontend origins
+
+### 6. File Organization
+```
+apps/web/src/
+├── app/           # Next.js App Router pages
+├── components/    # Reusable UI components
+│   └── ui/        # shadcn/ui components
+├── contexts/      # React contexts
+├── hooks/         # Custom React hooks
+├── lib/           # Utilities (api-client, utils)
+└── services/      # API service layer
+```
+
+### 7. Styling
+- Use Tailwind CSS
+- Use shadcn/ui components
+- Dark theme by default
+- Consistent color palette (violet/fuchsia gradients)
+
+### 8. Before Creating Anything New
+1. Check `packages/types` for existing types
+2. Check `apps/web/src/services` for existing services
+3. Check `apps/web/src/components` for existing components
+4. Check `apps/api/app/blueprints` for serializers
+
