@@ -1,0 +1,36 @@
+class Rack::Attack
+  # Disable throttling in development/test
+  Rack::Attack.enabled = Rails.env.production?
+  # Throttle all requests by IP (60 requests per minute)
+  throttle("req/ip", limit: 60, period: 1.minute) do |req|
+    req.ip unless req.path.start_with?("/assets")
+  end
+
+  # Throttle billing endpoints (10 per minute per IP)
+  throttle("billing/ip", limit: 10, period: 1.minute) do |req|
+    req.ip if req.path.start_with?("/billing") && req.post?
+  end
+
+  # Throttle gift suggestion generation (5 per minute per IP - AI calls are expensive)
+  throttle("gift_suggestions/ip", limit: 5, period: 1.minute) do |req|
+    req.ip if req.path.include?("/gift_suggestions") && req.post?
+  end
+
+  # Block suspicious requests - ban after repeated failures
+  blocklist("block bad IPs") do |req|
+    Rack::Attack::Allow2Ban.filter(req.ip, maxretry: 20, findtime: 1.minute, bantime: 1.hour) do
+      # Track 4xx responses (handled via Rack::Attack.track)
+      false
+    end
+  end
+
+  # Custom response for throttled requests
+  self.throttled_responder = lambda do |env|
+    retry_after = (env["rack.attack.match_data"] || {})[:period]
+    [
+      429,
+      { "Content-Type" => "application/json", "Retry-After" => retry_after.to_s },
+      [ { error: "Rate limit exceeded. Retry later." }.to_json ]
+    ]
+  end
+end
