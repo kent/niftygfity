@@ -1,9 +1,10 @@
 one:
   email: alice@example.com
-  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
-  jti: <%= SecureRandom.uuid %>
+  clerk_user_id: user_alice_123
+  subscription_plan: free
 
 two:
   email: bob@example.com
-  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
-  jti: <%= SecureRandom.uuid %>
+  clerk_user_id: user_bob_456
+  subscription_plan: premium
+  subscription_expires_at: <%= 1.year.from_now %>

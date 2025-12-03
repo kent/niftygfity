@@ -4,12 +4,12 @@ one:
   name: MyString
   description: MyText
   approximate_price: MyString
-  person: one
-  holiday: one
+  person: mom
+  holiday: christmas
 
 two:
   name: MyString
   description: MyText
   approximate_price: MyString
-  person: two
-  holiday: two
+  person: sister
+  holiday: birthday

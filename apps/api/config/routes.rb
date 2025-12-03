@@ -1,9 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: {
-    sessions: "users/sessions",
-    registrations: "users/registrations"
-  }
-
   resources :gifts do
     member do
       patch :reorder
@@ -31,6 +26,7 @@ Rails.application.routes.draw do
 
   # Billing
   get "billing/status" => "billing#status"
+  get "billing/charity_stats" => "billing#charity_stats"
   post "billing/create_checkout_session" => "billing#create_checkout_session"
   post "billing/redeem_coupon" => "billing#redeem_coupon"
   post "billing/webhook" => "billing#webhook"

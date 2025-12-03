@@ -120,7 +120,7 @@ class GiftSuggestionService
           { role: "user", content: prompt }
         ],
         temperature: 0.8,
-        max_tokens: 1500
+        max_completion_tokens: 1500
       }
     )
 
@@ -131,6 +131,7 @@ class GiftSuggestionService
     raise "Failed to generate suggestions. Please try again."
   rescue Faraday::Error => e
     Rails.logger.error("OpenAI API error: #{e.message}")
+    Rails.logger.error("Response body: #{e.response_body}") if e.respond_to?(:response_body)
     raise "Failed to connect to AI service. Please try again."
   end
 end

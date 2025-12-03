@@ -20,7 +20,7 @@ module Niftygifty
     # API-only mode
     config.api_only = true
 
-    # Middleware for JWT auth (cookies needed for Devise)
+    # Middleware for Clerk session handling
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
   end

@@ -2,20 +2,23 @@ class User < ApplicationRecord
   FREE_GIFT_LIMIT = 10
   SUBSCRIPTION_PLANS = %w[free premium].freeze
 
-  devise :database_authenticatable, :registerable,
-         :recoverable, :validatable,
-         :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
-
-  has_many :sessions, dependent: :destroy
   has_many :people, dependent: :destroy
   has_many :holiday_users, dependent: :destroy
   has_many :holidays, through: :holiday_users
 
   validates :subscription_plan, inclusion: { in: SUBSCRIPTION_PLANS }
+  validates :clerk_user_id, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true
 
-  def jwt_payload
-    { "sub" => id, "email" => email }
+  before_save :normalize_email
+
+  private
+
+  def normalize_email
+    self.email = email.strip.downcase if email.present?
   end
+
+  public
 
   # Gift counting - counts all gifts across user's holidays
   def gift_count

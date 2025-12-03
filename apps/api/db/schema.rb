@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_02_050327) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_02_200000) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "gift_givers", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "gift_id", null: false
@@ -73,18 +76,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_050327) do
   end
 
   create_table "holidays", force: :cascade do |t|
+    t.boolean "completed", default: false, null: false
     t.datetime "created_at", null: false
     t.date "date"
     t.string "icon"
     t.boolean "is_template", default: false, null: false
     t.string "name"
     t.datetime "updated_at", null: false
-  end
-
-  create_table "jwt_denylist", force: :cascade do |t|
-    t.datetime "exp", null: false
-    t.string "jti", null: false
-    t.index ["jti"], name: "index_jwt_denylist_on_jti"
   end
 
   create_table "people", force: :cascade do |t|
@@ -98,28 +96,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_050327) do
     t.index ["user_id"], name: "index_people_on_user_id"
   end
 
-  create_table "sessions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "ip_address"
-    t.datetime "updated_at", null: false
-    t.string "user_agent"
-    t.integer "user_id", null: false
-    t.index ["user_id"], name: "index_sessions_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
+    t.string "clerk_user_id", null: false
     t.datetime "created_at", null: false
     t.string "email", null: false
-    t.string "encrypted_password", null: false
-    t.datetime "remember_created_at"
-    t.datetime "reset_password_sent_at"
-    t.string "reset_password_token"
     t.string "stripe_customer_id"
     t.datetime "subscription_expires_at"
     t.string "subscription_plan", default: "free", null: false
     t.datetime "updated_at", null: false
+    t.index ["clerk_user_id"], name: "index_users_on_clerk_user_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
   end
 
@@ -134,5 +120,4 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_050327) do
   add_foreign_key "holiday_users", "holidays"
   add_foreign_key "holiday_users", "users"
   add_foreign_key "people", "users"
-  add_foreign_key "sessions", "users"
 end

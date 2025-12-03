@@ -1,5 +1,5 @@
 class HolidaysController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :templates ]
+  skip_before_action :authenticate_clerk_user!, only: [ :templates ]
   before_action :set_holiday, only: %i[show update destroy]
 
   def index
@@ -47,6 +47,6 @@ class HolidaysController < ApplicationController
   end
 
   def holiday_params
-    params.require(:holiday).permit(:name, :date, :icon)
+    params.require(:holiday).permit(:name, :date, :icon, :completed)
   end
 end

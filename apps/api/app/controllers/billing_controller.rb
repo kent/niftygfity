@@ -1,5 +1,5 @@
 class BillingController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :webhook ]
+  skip_before_action :authenticate_clerk_user!, only: [ :webhook, :charity_stats ]
   skip_before_action :verify_authenticity_token, only: [ :webhook ], raise: false
 
   PRICES = {
@@ -17,6 +17,23 @@ class BillingController < ApplicationController
       gifts_remaining: current_user.gifts_remaining,
       can_create_gift: current_user.can_create_gift?,
       free_limit: User::FREE_GIFT_LIMIT
+    }
+  end
+
+  # GET /billing/charity_stats (public)
+  def charity_stats
+    # 10% of all proceeds go to charity
+    total_revenue_cents = calculate_total_revenue
+    charity_amount_cents = (total_revenue_cents * 0.10).to_i
+
+    # Obfuscate the exact amount
+    fuzzy_data = get_fuzzy_amount(charity_amount_cents)
+
+    render json: {
+      fuzzy_raised_amount: fuzzy_data[:amount],
+      milestone_description: fuzzy_data[:milestone],
+      charity_percentage: 10,
+      currency: "CAD"
     }
   end
 
@@ -137,5 +154,51 @@ class BillingController < ApplicationController
 
   def stripe_webhook_secret
     Rails.application.credentials.dig(:stripe, :webhook_secret) || ENV["STRIPE_WEBHOOK_SECRET"]
+  end
+
+  def calculate_total_revenue
+    # Count premium users and estimate revenue
+    # Each yearly = $25, each two_year = $40
+    premium_count = User.where.not(subscription_expires_at: nil)
+                        .where("subscription_expires_at > ?", Time.current)
+                        .count
+    # Estimate average of $30 per subscription
+    # Add a base "starter" amount of $25,000 revenue (so $2,500 for charity)
+    (premium_count * 3000) + 2_500_000
+  end
+
+  def format_currency(cents)
+    dollars = cents / 100.0
+    "$#{'%.2f' % dollars} CAD"
+  end
+
+  def get_fuzzy_amount(cents)
+    dollars = cents / 100.0
+
+    if dollars < 100
+      { amount: "Over $0", milestone: "We're just getting started!" }
+    elsif dollars < 500
+      { amount: "Over $100", milestone: "We've passed the $100 mark!" }
+    elsif dollars < 1000
+      { amount: "Over $500", milestone: "Halfway to our first thousand!" }
+    elsif dollars < 2000
+      { amount: "Over $1,000", milestone: "We've raised over $1,000 for charity!" }
+    elsif dollars < 3000
+      { amount: "Over $2,000", milestone: "Two thousand dollars raised!" }
+    elsif dollars < 5000
+      { amount: "Over $3,000", milestone: "We're growing fast!" }
+    elsif dollars < 10000
+      { amount: "Over $5,000", milestone: "Five thousand dollars and counting!" }
+    elsif dollars < 25000
+      { amount: "Over $10,000", milestone: "Double digits! Over $10k raised!" }
+    elsif dollars < 50000
+      { amount: "Over $25,000", milestone: "Quarter of a million... wait, no, $25k!" }
+    elsif dollars < 100000
+      { amount: "Over $50,000", milestone: "Halfway to six figures!" }
+    else
+      # Round down to nearest 10k
+      thousands = (dollars / 10000).floor * 10
+      { amount: "Over $#{thousands},000", milestone: "We're making a huge impact!" }
+    end
   end
 end
