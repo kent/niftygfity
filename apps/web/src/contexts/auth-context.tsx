@@ -3,29 +3,28 @@
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
   useCallback,
+  useState,
+  useMemo,
   ReactNode,
 } from "react";
 import type { User, BillingStatus } from "@niftygifty/types";
-import { authService, billingService } from "@/services";
-import { ApiError } from "@/lib/api-client";
 import { FREE_GIFT_LIMIT } from "@niftygifty/types";
+import {
+  useAuth as useClerkAuth,
+  useUser as useClerkUser,
+  useClerk,
+} from "@clerk/nextjs";
+import { billingService, mapClerkUser } from "@/services";
+import { apiClient } from "@/lib/api-client";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  signUp: (
-    email: string,
-    password: string,
-    passwordConfirmation: string
-  ) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  // Auth actions
   signOut: () => Promise<void>;
-  error: string | null;
-  clearError: () => void;
   // Billing
   billingStatus: BillingStatus | null;
   isPremium: boolean;
@@ -37,123 +36,93 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { getToken, isLoaded: isAuthLoaded } = useClerkAuth();
+  const { user: clerkUser, isLoaded: isUserLoaded } = useClerkUser();
+  const clerk = useClerk();
+
   const [billingStatus, setBillingStatus] = useState<BillingStatus | null>(null);
 
+  // Configure apiClient to use Clerk token
+  useEffect(() => {
+    apiClient.setTokenGetter(async () => {
+      return await getToken();
+    });
+  }, [getToken]);
+
+  const isAuthenticated = !!clerkUser;
+  const isLoading = !isAuthLoaded || !isUserLoaded;
+
+  // Memoize user to prevent unnecessary re-renders
+  const user = useMemo(
+    () => mapClerkUser(clerkUser, billingStatus),
+    [clerkUser, billingStatus]
+  );
+
   const refreshBillingStatus = useCallback(async () => {
-    if (authService.isAuthenticated()) {
+    if (isAuthenticated) {
       try {
         const status = await billingService.getStatus();
         setBillingStatus(status);
       } catch {
-        // Silently fail - billing status is nice to have
+        // Silently fail - billing might not be set up yet
       }
     }
-  }, []);
+  }, [isAuthenticated]);
 
+  // Sign out via Clerk
+  const signOut = useCallback(async () => {
+    setBillingStatus(null);
+    await clerk.signOut();
+  }, [clerk]);
+
+  // Fetch billing status when authenticated
+  // This is a valid data fetching pattern - setState in callback is intentional
   useEffect(() => {
-    // Check initial auth state
-    setIsLoading(false);
+    let cancelled = false;
 
-    // Fetch billing status on mount if authenticated
-    if (authService.isAuthenticated()) {
-      refreshBillingStatus();
+    if (isAuthenticated) {
+      billingService.getStatus().then((status) => {
+        if (!cancelled) {
+          setBillingStatus(status);
+        }
+      }).catch(() => {
+        // Silently fail - billing might not be set up yet
+      });
+    } else {
+      // Reset billing when logged out - this is intentional
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBillingStatus(null);
     }
 
-    // Listen for auth changes
-    const unsubscribe = authService.onAuthChange(() => {
-      if (!authService.isAuthenticated()) {
-        setUser(null);
-        setBillingStatus(null);
-      }
-    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
 
-    return unsubscribe;
-  }, [refreshBillingStatus]);
+  // Memoize derived billing values
+  const billingValues = useMemo(() => {
+    const isPremium = billingStatus?.subscription_status === "active";
+    const canCreateGift = billingStatus?.can_create_gift ?? true;
+    const giftsRemaining = billingStatus?.gifts_remaining ?? FREE_GIFT_LIMIT;
+    return { isPremium, canCreateGift, giftsRemaining };
+  }, [billingStatus]);
 
-  const signUp = useCallback(
-    async (email: string, password: string, passwordConfirmation: string) => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await authService.signUp(
-          email,
-          password,
-          passwordConfirmation
-        );
-        setUser(response.user);
-        // Fetch billing status after signup
-        await refreshBillingStatus();
-      } catch (err) {
-        const message =
-          err instanceof ApiError ? err.message : "An unexpected error occurred";
-        setError(message);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [refreshBillingStatus]
+  // Memoize the entire context value
+  const contextValue = useMemo<AuthContextType>(
+    () => ({
+      user,
+      isLoading,
+      isAuthenticated,
+      signOut,
+      billingStatus,
+      ...billingValues,
+      refreshBillingStatus,
+    }),
+    [user, isLoading, isAuthenticated, signOut, billingStatus, billingValues, refreshBillingStatus]
   );
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await authService.signIn(email, password);
-      setUser(response.user);
-      // Fetch billing status after signin
-      await refreshBillingStatus();
-    } catch (err) {
-      const message =
-        err instanceof ApiError ? err.message : "An unexpected error occurred";
-      setError(message);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [refreshBillingStatus]);
-
-  const signOut = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      await authService.signOut();
-    } catch {
-      // Even if API call fails, clear local state
-    } finally {
-      setUser(null);
-      setIsLoading(false);
-    }
-  }, []);
-
-  const clearError = useCallback(() => setError(null), []);
-
-  // Derived billing values
-  const isPremium = billingStatus?.subscription_status === "active";
-  const canCreateGift = billingStatus?.can_create_gift ?? true;
-  const giftsRemaining = billingStatus?.gifts_remaining ?? FREE_GIFT_LIMIT;
-
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        isAuthenticated: !!user || authService.isAuthenticated(),
-        signUp,
-        signIn,
-        signOut,
-        error,
-        clearError,
-        // Billing
-        billingStatus,
-        isPremium,
-        canCreateGift,
-        giftsRemaining,
-        refreshBillingStatus,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
@@ -165,4 +134,26 @@ export function useAuth() {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
+}
+
+/**
+ * Noop auth provider for build-time rendering when Clerk is not available.
+ * Provides safe defaults that prevent errors during static generation.
+ */
+export function NoopAuthProvider({ children }: { children: ReactNode }) {
+  const noopValue: AuthContextType = {
+    user: null,
+    isLoading: true,
+    isAuthenticated: false,
+    signOut: async () => {},
+    billingStatus: null,
+    isPremium: false,
+    canCreateGift: false,
+    giftsRemaining: null,
+    refreshBillingStatus: async () => {},
+  };
+
+  return (
+    <AuthContext.Provider value={noopValue}>{children}</AuthContext.Provider>
+  );
 }

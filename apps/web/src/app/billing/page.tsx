@@ -448,10 +448,10 @@ export default function BillingPage() {
               <p>
                 Questions? Contact us at{" "}
                 <a
-                  href="mailto:support@niftygifty.app"
+                  href="mailto:support@faregalo.com"
                   className="text-violet-400 hover:underline"
                 >
-                  support@niftygifty.app
+                  support@faregalo.com
                 </a>
               </p>
               <p className="mt-2">

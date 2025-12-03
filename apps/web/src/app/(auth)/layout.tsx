@@ -1,3 +1,15 @@
+import { Metadata } from "next";
+
+// Force dynamic rendering for auth pages to avoid Clerk SSG issues
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
 export default function AuthLayout({
   children,
 }: {
@@ -11,4 +23,3 @@ export default function AuthLayout({
     </div>
   );
 }
-

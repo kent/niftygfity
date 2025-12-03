@@ -1,23 +1,53 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/contexts/auth-context";
+import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
+import { AUTH_ROUTES } from "@/services";
+import { getCharityStats, DEFAULT_CHARITY_STATS } from "@/data/public";
+import { AuthRedirect } from "@/components/auth-redirect";
+import { JsonLd } from "@/components/json-ld";
 
-export default function HomePage() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const router = useRouter();
+export const metadata: Metadata = {
+  title: "NiftyGifty - The Ultimate Gift Planner & Tracker",
+  description:
+    "Stop stressing about gifts. NiftyGifty is the free gift planner that helps you track ideas, set budgets, and remember every special occasion.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.push("/dashboard");
-    }
-  }, [isLoading, isAuthenticated, router]);
+export default async function HomePage() {
+  const charityStats = (await getCharityStats()) ?? DEFAULT_CHARITY_STATS;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://faregalo.com";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "NiftyGifty",
+          applicationCategory: "ProductivityApplication",
+          operatingSystem: "Any",
+          url: baseUrl,
+          description:
+            "Track gift ideas, manage budgets, and never forget a special occasion.",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+          },
+          featureList: [
+            "Gift Idea Tracking",
+            "Budget Management",
+            "Occasion Reminders",
+            "Gift Status Tracking",
+          ],
+          screenshot: `${baseUrl}/og-image.png`,
+        }}
+      />
+      {/* Client-side auth redirect */}
+      <AuthRedirect />
+
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/20 via-transparent to-transparent" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJ2LTRoMnY0em0wLTZ2LTJoMnYyaC0yem0tNCAyaDJ2Mmgt MnYtMnptMC02aDJ2Mmgt MnYtMnptLTQgOGgydjJoLTJ2LTJ6bTAtNmgydjJoLTJ2LTJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />
 
@@ -49,13 +79,13 @@ export default function HomePage() {
               asChild
               className="text-slate-300 hover:text-white hover:bg-slate-800"
             >
-              <Link href="/login">Sign in</Link>
+              <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
             </Button>
             <Button
               asChild
               className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white"
             >
-              <Link href="/signup">Get started</Link>
+              <Link href={AUTH_ROUTES.signUp}>Get started</Link>
             </Button>
           </div>
         </nav>
@@ -80,7 +110,7 @@ export default function HomePage() {
               size="lg"
               className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-lg px-8"
             >
-              <Link href="/signup">Start planning for free</Link>
+              <Link href={AUTH_ROUTES.signUp}>Start planning for free</Link>
             </Button>
             <Button
               variant="outline"
@@ -88,13 +118,77 @@ export default function HomePage() {
               asChild
               className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white text-lg px-8"
             >
-              <Link href="/login">Sign in</Link>
+              <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
             </Button>
           </div>
         </div>
       </main>
 
-      <footer className="relative z-10 container mx-auto px-4 py-8 text-center">
+      {/* Charity Tracker */}
+      <section className="relative z-10 container mx-auto px-4 py-12">
+        <div className="max-w-2xl mx-auto">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-950/50 to-teal-950/50 border border-emerald-500/20 p-8">
+            {/* Animated glow effect */}
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
+            
+            <div className="relative flex flex-col sm:flex-row items-center gap-6">
+              {/* Heart icon */}
+              <div className="flex-shrink-0">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-8 h-8 text-white"
+                  >
+                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 text-center sm:text-left">
+                <p className="text-emerald-400 text-sm font-medium uppercase tracking-wider mb-1">
+                  10% of all proceeds go to charity
+                </p>
+                <div className="flex items-baseline gap-2 justify-center sm:justify-start">
+                  <span className="text-4xl font-bold text-white tabular-nums">
+                    {charityStats.fuzzy_raised_amount}
+                  </span>
+                  <span className="text-emerald-400/70 text-sm">raised</span>
+                </div>
+                <p className="text-slate-400 text-sm mt-2 mb-3">
+                  {charityStats.milestone_description}
+                </p>
+                <Link 
+                  href="/giving-pledge" 
+                  className="inline-flex items-center text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  Learn about our pledge
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1">
+                    <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+                  </svg>
+                </Link>
+              </div>
+
+              {/* Decorative ribbon */}
+              <div className="hidden lg:block absolute -right-1 top-4">
+                <div className="w-24 h-6 bg-gradient-to-r from-emerald-500 to-teal-500 transform rotate-45 translate-x-6 flex items-center justify-center">
+                  <span className="text-white text-xs font-bold tracking-wide">GIVING</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="relative z-10 container mx-auto px-4 py-8 text-center space-y-4">
+        <div className="flex justify-center gap-6 text-sm text-slate-400">
+          <Link href="/giving-pledge" className="hover:text-emerald-400 transition-colors">
+            Giving Pledge
+          </Link>
+        </div>
         <p className="text-slate-500 text-sm">
           © {new Date().getFullYear()} NiftyGifty. Made with 💜
         </p>

@@ -1,22 +1,111 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/auth-context";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@/components/analytics";
+import { Providers } from "@/components/providers";
+import { JsonLd } from "@/components/json-ld";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://faregalo.com";
+
 export const metadata: Metadata = {
-  title: "NiftyGifty - Gift Planning Made Simple",
-  description: "Plan and track gifts for your loved ones",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "NiftyGifty - Gift Planning Made Simple",
+    template: "%s | NiftyGifty",
+  },
+  description:
+    "Track gift ideas, manage budgets, and never forget a special occasion. NiftyGifty helps you organize thoughtful gifts for everyone you love.",
+  applicationName: "NiftyGifty",
+  authors: [{ name: "NiftyGifty Team" }],
+  generator: "Next.js",
+  keywords: [
+    "gift planning",
+    "gift tracker",
+    "gift ideas",
+    "holiday gifts",
+    "birthday gifts",
+    "gift organizer",
+    "gift list",
+    "gift budgeting",
+    "family gift planning",
+    "christmas gift list",
+  ],
+  referrer: "origin-when-cross-origin",
+  creator: "NiftyGifty",
+  publisher: "NiftyGifty",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+  },
+  category: "productivity",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: baseUrl,
+    siteName: "NiftyGifty",
+    title: "NiftyGifty - Gift Planning Made Simple",
+    description:
+      "Track gift ideas, manage budgets, and never forget a special occasion.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "NiftyGifty - Gift Planning Made Simple",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NiftyGifty - Gift Planning Made Simple",
+    description:
+      "Track gift ideas, manage budgets, and never forget a special occasion.",
+    images: ["/og-image.png"],
+    creator: "@niftygifty", // Placeholder, update if real handle exists
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#8b5cf6" },
+    { media: "(prefers-color-scheme: dark)", color: "#020617" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -29,10 +118,26 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <AuthProvider>
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "NiftyGifty",
+            url: baseUrl,
+            logo: `${baseUrl}/icon-512.png`,
+            sameAs: [
+              "https://twitter.com/niftygifty", // Placeholder
+              "https://github.com/niftygifty", // Placeholder
+            ],
+            description:
+              "NiftyGifty helps you organize thoughtful gifts for everyone you love.",
+          }}
+        />
+        <Providers>
           {children}
           <Toaster />
-        </AuthProvider>
+        </Providers>
+        <Analytics />
       </body>
     </html>
   );

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { peopleService } from "@/services";
+import { peopleService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import {
   PeopleNav,
@@ -30,7 +30,7 @@ export default function PeoplePage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push(AUTH_ROUTES.signIn);
     }
   }, [authLoading, isAuthenticated, router]);
 
@@ -51,10 +51,10 @@ export default function PeoplePage() {
     loadData();
   }, [isAuthenticated]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
-    router.push("/login");
-  };
+    router.push(AUTH_ROUTES.signIn);
+  }, [signOut, router]);
 
   const handleAddPerson = useCallback(async (name: string, relationship?: string) => {
     const person = await peopleService.create({ name, relationship });

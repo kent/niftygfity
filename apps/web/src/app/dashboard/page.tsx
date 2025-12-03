@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { holidaysService, peopleService } from "@/services";
+import { holidaysService, peopleService, AUTH_ROUTES } from "@/services";
 import {
   StatsCards,
   HolidayTemplatesSection,
@@ -42,7 +42,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push(AUTH_ROUTES.signIn);
     }
   }, [isLoading, isAuthenticated, router]);
 
@@ -52,13 +52,13 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, loadData]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
     toast.success("Signed out", {
       description: "You've been signed out successfully.",
     });
-    router.push("/login");
-  };
+    router.push(AUTH_ROUTES.signIn);
+  }, [signOut, router]);
 
   const handleStartPlanning = async (template: Holiday) => {
     setCreatingHolidayId(template.id);

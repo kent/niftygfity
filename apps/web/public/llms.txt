@@ -1,0 +1,37 @@
+# NiftyGifty
+
+> Gift planning made simple. Track gift ideas, manage budgets, and never forget a special occasion.
+
+NiftyGifty is a web application that helps users organize thoughtful gifts for everyone they love. The app provides tools for tracking gift ideas, managing budgets, and remembering special occasions like birthdays, holidays, and anniversaries.
+
+## Key Features
+
+- **Gift Tracking**: Keep track of gift ideas for all the people in your life
+- **Budget Management**: Set and track budgets for different occasions and recipients
+- **Occasion Reminders**: Never miss a birthday, holiday, or special event
+- **Gift Status Tracking**: Track whether gifts are ideas, purchased, wrapped, or given
+- **AI Gift Suggestions**: Get personalized gift recommendations based on recipient interests
+
+## The Giving Pledge
+
+NiftyGifty pledges to donate 10% of all gross revenue to charitable causes, forever. We believe that success is meaningless unless it's shared. Every subscription helps someone in need, extending the chain of generosity far beyond our user base.
+
+- Transparent giving with quarterly donation receipts
+- Sustainable impact through recurring monthly donations
+- Community-driven cause selection with annual subscriber votes
+
+## Getting Started
+
+Visit [faregalo.com](https://faregalo.com) to create a free account and start planning gifts today.
+
+## Links
+
+- Homepage: https://faregalo.com
+- Sign Up: https://faregalo.com/signup
+- Sign In: https://faregalo.com/login
+- Giving Pledge: https://faregalo.com/giving-pledge
+
+## Contact
+
+For support or inquiries, visit our website at https://faregalo.com
+

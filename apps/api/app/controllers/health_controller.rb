@@ -2,35 +2,21 @@ class HealthController < ApplicationController
   skip_before_action :authenticate_clerk_user!
 
   def show
-    db = database_status
-
-    if db[:connected]
-      render json: {
-        status: "healthy",
-        timestamp: Time.current.iso8601,
-        version: "1.0.0",
-        environment: Rails.env,
-        database: db,
-        ruby: RUBY_VERSION,
-        rails: Rails.version
-      }
+    if database_connected?
+      render json: { status: "ok" }
     else
-      render json: {
-        status: "unhealthy",
-        timestamp: Time.current.iso8601,
-        database: db
-      }, status: :service_unavailable
+      render json: { status: "error" }, status: :service_unavailable
     end
-  rescue StandardError => e
-    render json: { status: "unhealthy", error: e.message }, status: :service_unavailable
+  rescue StandardError
+    render json: { status: "error" }, status: :service_unavailable
   end
 
   private
 
-  def database_status
+  def database_connected?
     ActiveRecord::Base.connection.execute("SELECT 1")
-    { connected: true, adapter: ActiveRecord::Base.connection.adapter_name }
-  rescue StandardError => e
-    { connected: false, error: e.message }
+    true
+  rescue StandardError
+    false
   end
 end

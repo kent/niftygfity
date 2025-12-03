@@ -1,4 +1,4 @@
-export { authService } from "./auth.service";
+export { authService, AUTH_ROUTES, PUBLIC_ROUTES, clerkAppearance, mapClerkUser } from "./auth.service";
 export { peopleService } from "./people.service";
 export { holidaysService } from "./holidays.service";
 export { giftsService } from "./gifts.service";

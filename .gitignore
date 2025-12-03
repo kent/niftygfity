@@ -30,3 +30,6 @@ Thumbs.db
 
 # Plan files
 *.plan.md
+
+# Eames design sessions
+.eames/

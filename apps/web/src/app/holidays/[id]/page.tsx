@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { useGiftFilters } from "@/hooks";
-import { holidaysService, giftsService, peopleService, giftStatusesService } from "@/services";
+import { holidaysService, giftsService, peopleService, giftStatusesService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import { GiftFilters } from "@/components/filters";
 import { GiftGrid, HolidayReports } from "@/components/gifts";
@@ -54,7 +54,7 @@ export default function HolidayDetailPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push(AUTH_ROUTES.signIn);
     }
   }, [authLoading, isAuthenticated, router]);
 
@@ -85,10 +85,10 @@ export default function HolidayDetailPage() {
     loadData();
   }, [isAuthenticated, holidayId]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
-    router.push("/login");
-  };
+    router.push(AUTH_ROUTES.signIn);
+  }, [signOut, router]);
 
   if (authLoading || dataLoading) {
     return (
@@ -112,12 +112,14 @@ export default function HolidayDetailPage() {
   }
 
   const icon = getHolidayIcon(holiday.icon);
-  const formattedDate = new Date(holiday.date).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  const formattedDate = holiday.date
+    ? new Date(holiday.date).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">

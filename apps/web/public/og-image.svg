@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#020617"/>
+      <stop offset="50%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#d946ef"/>
+    </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#d946ef"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Radial glow -->
+  <ellipse cx="600" cy="200" rx="500" ry="300" fill="#8b5cf6" opacity="0.1"/>
+  
+  <!-- Icon -->
+  <g transform="translate(540, 180)">
+    <rect x="0" y="0" width="120" height="120" rx="24" fill="url(#iconGrad)"/>
+    <g transform="translate(30, 30)" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M50 30v15a5 5 0 0 1-5 5H15a5 5 0 0 1-5-5V30"/>
+      <path d="M30 30V7.5"/>
+      <path d="M20 17.5l10-10 10 10"/>
+      <rect x="10" y="30" width="40" height="5" rx="2.5"/>
+    </g>
+  </g>
+  
+  <!-- Title -->
+  <text x="600" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="white">NiftyGifty</text>
+  
+  <!-- Tagline -->
+  <text x="600" y="450" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#94a3b8">Gift planning, simplified</text>
+  
+  <!-- URL -->
+  <text x="600" y="560" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="url(#accent)">faregalo.com</text>
+</svg>
+

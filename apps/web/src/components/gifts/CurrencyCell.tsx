@@ -11,11 +11,12 @@ interface CurrencyCellProps {
 
 export function CurrencyCell({ value, onChange, className }: CurrencyCellProps) {
   const [editing, setEditing] = useState(false);
-  const [localValue, setLocalValue] = useState(value || "");
+  const [editValue, setEditValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    setLocalValue(value || "");
+  const startEditing = useCallback(() => {
+    setEditValue(value || "");
+    setEditing(true);
   }, [value]);
 
   useEffect(() => {
@@ -34,18 +35,17 @@ export function CurrencyCell({ value, onChange, className }: CurrencyCellProps) 
 
   const commit = useCallback(() => {
     setEditing(false);
-    const cleaned = localValue.replace(/[^0-9.]/g, "");
+    const cleaned = editValue.replace(/[^0-9.]/g, "");
     const newValue = cleaned ? cleaned : null;
     if (newValue !== value) {
       onChange(newValue);
     }
-  }, [localValue, value, onChange]);
+  }, [editValue, value, onChange]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       commit();
     } else if (e.key === "Escape") {
-      setLocalValue(value || "");
       setEditing(false);
     }
   };
@@ -59,8 +59,8 @@ export function CurrencyCell({ value, onChange, className }: CurrencyCellProps) 
         <input
           ref={inputRef}
           type="text"
-          value={localValue}
-          onChange={(e) => setLocalValue(e.target.value)}
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
           onBlur={commit}
           onKeyDown={handleKeyDown}
           className={cn(
@@ -76,7 +76,7 @@ export function CurrencyCell({ value, onChange, className }: CurrencyCellProps) 
 
   return (
     <div
-      onClick={() => setEditing(true)}
+      onClick={startEditing}
       className={cn(
         "px-2 py-1 cursor-pointer min-h-[28px] hover:bg-muted/50 rounded text-sm text-right",
         !value && "text-muted-foreground",

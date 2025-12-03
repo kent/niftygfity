@@ -20,6 +20,7 @@ export type SubscriptionStatus = "free" | "active" | "expired";
 
 export interface User extends BaseEntity {
   email: string;
+  clerk_user_id: string;
   subscription_plan: SubscriptionPlan;
   subscription_expires_at: string | null;
   gift_count: number;
@@ -31,21 +32,6 @@ export interface User extends BaseEntity {
 export interface AuthResponse {
   message: string;
   user: User;
-}
-
-export interface SignUpRequest {
-  user: {
-    email: string;
-    password: string;
-    password_confirmation: string;
-  };
-}
-
-export interface SignInRequest {
-  user: {
-    email: string;
-    password: string;
-  };
 }
 
 export interface SignOutResponse {
@@ -123,6 +109,7 @@ export interface Holiday extends BaseEntity {
   date: string | null; // ISO date string (YYYY-MM-DD), null for templates
   icon: string | null; // Lucide icon name
   is_template: boolean;
+  completed: boolean;
 }
 
 export interface HolidayWithGifts extends Holiday {
@@ -134,6 +121,7 @@ export interface CreateHolidayRequest {
     name: string;
     date: string;
     icon?: string;
+    completed?: boolean;
   };
 }
 
@@ -340,6 +328,13 @@ export interface CouponRedemptionResponse {
   message: string;
   animation: "christmas" | null;
   subscription_expires_at: string;
+}
+
+export interface CharityStats {
+  fuzzy_raised_amount: string;
+  milestone_description: string;
+  charity_percentage: number;
+  currency: string;
 }
 
 export const BILLING_PLANS = {

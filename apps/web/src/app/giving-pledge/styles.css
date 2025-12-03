@@ -1,0 +1,94 @@
+/* Custom animations for giving pledge page */
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-delayed {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes expand {
+  from { width: 0; }
+  to { width: 6rem; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.gradient-bg-animation { 
+  background-size: 400% 400%;
+  animation: gradient-x 3s ease infinite;
+}
+
+.gradient-text-animation {
+  background-size: 400% 400%;
+  animation: gradient-x 3s ease infinite;
+}
+
+.fade-in-animation {
+  animation: fade-in 0.8s ease-out;
+}
+
+.slide-up-animation {
+  animation: slide-up 1s ease-out;
+}
+
+.fade-in-delayed-animation {
+  animation: fade-in-delayed 1.2s ease-out;
+}
+
+.expand-animation {
+  animation: expand 1.5s ease-out 0.5s both;
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.slide-in-left-animation {
+  animation: slide-in-left 1s ease-out;
+}
+
+.slide-in-right-animation {
+  animation: slide-in-right 1s ease-out 0.2s both;
+}
+
+/* Enhanced hover effects */
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+/* Smooth transitions for all hover states */
+* {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}

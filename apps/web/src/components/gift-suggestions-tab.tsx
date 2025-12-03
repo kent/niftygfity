@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { giftSuggestionsService } from "@/services";
+import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { ApiError } from "@/lib/api-client";
-import type { GiftSuggestion, User } from "@niftygifty/types";
+import type { GiftSuggestion } from "@niftygifty/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -25,7 +26,6 @@ interface GiftSuggestionsTabProps {
   personName: string;
   suggestions: GiftSuggestion[];
   onSuggestionsChange: (suggestions: GiftSuggestion[]) => void;
-  user: User | null;
 }
 
 function formatDate(dateStr: string | null) {
@@ -154,14 +154,12 @@ export function GiftSuggestionsTab({
   personName,
   suggestions,
   onSuggestionsChange,
-  user,
 }: GiftSuggestionsTabProps) {
+  const { isPremium } = useAuth();
   const [generating, setGenerating] = useState(false);
   const [acceptingId, setAcceptingId] = useState<number | null>(null);
   const [discardingId, setDiscardingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const isPremium = user?.subscription_status === "active";
 
   const handleGenerate = async () => {
     setGenerating(true);

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { giftStatusesService } from "@/services";
+import { giftStatusesService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import {
   GiftStatusSection,
@@ -27,7 +27,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push(AUTH_ROUTES.signIn);
     }
   }, [authLoading, isAuthenticated, router]);
 
@@ -48,10 +48,10 @@ export default function SettingsPage() {
     loadData();
   }, [isAuthenticated]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
-    router.push("/login");
-  };
+    router.push(AUTH_ROUTES.signIn);
+  }, [signOut, router]);
 
   const handleAddStatus = useCallback(async (name: string) => {
     const nextPosition = statuses.length > 0

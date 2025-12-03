@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
-import { holidaysService } from "@/services";
+import { holidaysService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import { HolidaysNav, type HolidaysSection } from "@/components/holidays";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, ChevronRight, Plus, Pencil } from "lucide-react";
+import { Calendar, ChevronRight, Plus, Pencil, Check, Archive, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import type { Holiday } from "@niftygifty/types";
 
@@ -44,7 +44,13 @@ function getHolidayIcon(icon?: string | null) {
   return icon ? icons[icon] || "🎁" : "🎁";
 }
 
-function HolidayCard({ holiday }: { holiday: Holiday }) {
+function HolidayCard({
+  holiday,
+  onToggleComplete,
+}: {
+  holiday: Holiday;
+  onToggleComplete?: (holiday: Holiday) => void;
+}) {
   const icon = getHolidayIcon(holiday.icon);
   const date = holiday.date ? new Date(holiday.date) : null;
   const formattedDate = date
@@ -56,20 +62,45 @@ function HolidayCard({ holiday }: { holiday: Holiday }) {
     : null;
 
   return (
-    <Link href={`/holidays/${holiday.id}`}>
-      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
-        <CardContent className="p-5 flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
-            {icon}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
-            {formattedDate && <p className="text-sm text-slate-400">{formattedDate}</p>}
-          </div>
-          <ChevronRight className="h-5 w-5 text-slate-600 group-hover:text-violet-400 transition-colors" />
-        </CardContent>
-      </Card>
-    </Link>
+    <div className="relative group">
+      <Link href={`/holidays/${holiday.id}`}>
+        <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
+              {icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
+              {formattedDate && <p className="text-sm text-slate-400">{formattedDate}</p>}
+            </div>
+            <div className="w-5" /> {/* Spacer for arrow/button */}
+          </CardContent>
+        </Card>
+      </Link>
+      
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        {onToggleComplete && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleComplete(holiday);
+            }}
+            title={holiday.completed ? "Mark as active" : "Mark as complete"}
+          >
+            {holiday.completed ? (
+              <RotateCcw className="h-4 w-4" />
+            ) : (
+              <Check className="h-4 w-4" />
+            )}
+          </Button>
+        )}
+        <ChevronRight className="h-5 w-5 text-slate-600 group-hover:text-violet-400 transition-colors pointer-events-none" />
+      </div>
+    </div>
   );
 }
 
@@ -193,7 +224,13 @@ function CreateHolidayForm({
   );
 }
 
-function ActiveSection({ holidays }: { holidays: Holiday[] }) {
+function ActiveSection({
+  holidays,
+  onToggleComplete,
+}: {
+  holidays: Holiday[];
+  onToggleComplete: (holiday: Holiday) => void;
+}) {
   if (holidays.length === 0) {
     return (
       <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
@@ -209,20 +246,30 @@ function ActiveSection({ holidays }: { holidays: Holiday[] }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {holidays.map((holiday) => (
-        <HolidayCard key={holiday.id} holiday={holiday} />
+        <HolidayCard
+          key={holiday.id}
+          holiday={holiday}
+          onToggleComplete={onToggleComplete}
+        />
       ))}
     </div>
   );
 }
 
-function PastSection({ holidays }: { holidays: Holiday[] }) {
+function PastSection({
+  holidays,
+  onToggleComplete,
+}: {
+  holidays: Holiday[];
+  onToggleComplete: (holiday: Holiday) => void;
+}) {
   if (holidays.length === 0) {
     return (
       <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
-        <Calendar className="h-12 w-12 mx-auto text-slate-600 mb-4" />
+        <Archive className="h-12 w-12 mx-auto text-slate-600 mb-4" />
         <h2 className="text-xl font-semibold text-white mb-2">No Past Holidays</h2>
         <p className="text-slate-400 max-w-md mx-auto">
-          Past holidays will appear here after their date has passed.
+          Holidays marked as complete will appear here.
         </p>
       </div>
     );
@@ -231,7 +278,11 @@ function PastSection({ holidays }: { holidays: Holiday[] }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {holidays.map((holiday) => (
-        <HolidayCard key={holiday.id} holiday={holiday} />
+        <HolidayCard
+          key={holiday.id}
+          holiday={holiday}
+          onToggleComplete={onToggleComplete}
+        />
       ))}
     </div>
   );
@@ -316,7 +367,7 @@ export default function HolidaysPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push(AUTH_ROUTES.signIn);
     }
   }, [authLoading, isAuthenticated, router]);
 
@@ -341,16 +392,32 @@ export default function HolidaysPage() {
     loadData();
   }, [isAuthenticated]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
-    router.push("/login");
-  };
+    router.push(AUTH_ROUTES.signIn);
+  }, [signOut, router]);
 
   const handleCreateHoliday = async (name: string, date: string, icon?: string) => {
     const holiday = await holidaysService.create({ name, date, icon });
     setHolidays((prev) => [...prev, holiday]);
     setActiveSection("active");
     toast.success(`Created "${holiday.name}"`);
+  };
+
+  const handleToggleComplete = async (holiday: Holiday) => {
+    try {
+      const updated = await holidaysService.update(holiday.id, {
+        completed: !holiday.completed,
+      });
+      setHolidays((prev) => prev.map((h) => (h.id === holiday.id ? updated : h)));
+      toast.success(
+        updated.completed
+          ? `Marked "${updated.name}" as complete`
+          : `Marked "${updated.name}" as active`
+      );
+    } catch {
+      toast.error("Failed to update holiday");
+    }
   };
 
   if (authLoading || dataLoading) {
@@ -375,8 +442,8 @@ export default function HolidaysPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const activeHolidays = holidays.filter((h) => h.date && new Date(h.date) >= today);
-  const pastHolidays = holidays.filter((h) => h.date && new Date(h.date) < today);
+  const activeHolidays = holidays.filter((h) => !h.completed);
+  const pastHolidays = holidays.filter((h) => h.completed);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -400,10 +467,23 @@ export default function HolidaysPage() {
           />
 
           <div className="flex-1">
-            {activeSection === "active" && <ActiveSection holidays={activeHolidays} />}
-            {activeSection === "past" && <PastSection holidays={pastHolidays} />}
+            {activeSection === "active" && (
+              <ActiveSection
+                holidays={activeHolidays}
+                onToggleComplete={handleToggleComplete}
+              />
+            )}
+            {activeSection === "past" && (
+              <PastSection
+                holidays={pastHolidays}
+                onToggleComplete={handleToggleComplete}
+              />
+            )}
             {activeSection === "new" && (
-              <NewHolidaySection templates={templates} onCreateHoliday={handleCreateHoliday} />
+              <NewHolidaySection
+                templates={templates}
+                onCreateHoliday={handleCreateHoliday}
+              />
             )}
           </div>
         </div>

@@ -1,15 +1,24 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
-import { peopleService, giftSuggestionsService } from "@/services";
+import { peopleService, giftSuggestionsService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import { GiftSuggestionsTab } from "@/components/gift-suggestions-tab";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   ArrowLeft,
   User,
@@ -20,12 +29,16 @@ import {
   Package,
   Heart,
   Sparkles,
+  BarChart3,
+  UserCog,
+  Save,
+  Lightbulb,
 } from "lucide-react";
 import type { PersonWithGifts, Gift, Holiday, RelationshipCategory, GiftSuggestion } from "@niftygifty/types";
 import { RELATIONSHIP_CATEGORIES } from "@niftygifty/types";
 import { cn } from "@/lib/utils";
 
-type NavTab = "received" | "giving" | "holidays" | "suggestions";
+type NavTab = "received" | "giving" | "holidays" | "suggestions" | "stats" | "about";
 
 function getHolidayIcon(icon?: string | null) {
   const icons: Record<string, string> = {
@@ -213,38 +226,124 @@ function HolidaysSection({ holidays }: { holidays: Holiday[] }) {
   );
 }
 
-function RelationshipSelector({
-  current,
-  onSelect,
-  disabled,
+function StatsSection({
+  receivedCount,
+  givingCount,
+  totalReceiving,
+  totalGiving,
 }: {
-  current: string | null;
-  onSelect: (category: RelationshipCategory) => void;
-  disabled: boolean;
+  receivedCount: number;
+  givingCount: number;
+  totalReceiving: number;
+  totalGiving: number;
 }) {
+  const stats = [
+    { label: "Gifts Receiving", value: receivedCount, icon: Package, color: "text-violet-400" },
+    { label: "Total Cost", value: `$${totalReceiving.toFixed(2)}`, icon: DollarSign, color: "text-emerald-400" },
+    { label: "Gifts Giving", value: givingCount, icon: Heart, color: "text-pink-400" },
+    { label: "Given Value", value: `$${totalGiving.toFixed(2)}`, icon: DollarSign, color: "text-emerald-400" },
+  ];
+
   return (
-    <div className="flex flex-wrap gap-2">
-      {RELATIONSHIP_CATEGORIES.map((category) => {
-        const isSelected = current === category;
-        return (
-          <button
-            key={category}
-            onClick={() => onSelect(category)}
-            disabled={disabled}
-            className={cn(
-              "px-3 py-1.5 rounded-full text-sm font-medium transition-all capitalize",
-              "border focus:outline-none focus:ring-2 focus:ring-violet-500/50",
-              isSelected
-                ? "bg-violet-600 border-violet-500 text-white"
-                : "bg-slate-800/50 border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-300",
-              disabled && "opacity-50 cursor-not-allowed"
-            )}
-          >
-            {category}
-          </button>
-        );
-      })}
+    <div className="grid gap-4 sm:grid-cols-2">
+      {stats.map(({ label, value, icon: Icon, color }) => (
+        <Card key={label} className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4">
+              <div className={cn("p-3 rounded-lg bg-slate-800/50", color)}>
+                <Icon className="h-6 w-6" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-white">{value}</div>
+                <div className="text-sm text-slate-400">{label}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
+  );
+}
+
+function AboutSection({
+  person,
+  onUpdate,
+}: {
+  person: PersonWithGifts;
+  onUpdate: (updates: { name?: string; age?: number | null; gender?: string | null }) => Promise<void>;
+}) {
+  const [name, setName] = useState(person.name);
+  const [age, setAge] = useState(person.age?.toString() ?? "");
+  const [gender, setGender] = useState(person.gender ?? "");
+  const [saving, setSaving] = useState(false);
+
+  const hasChanges = name !== person.name || 
+    age !== (person.age?.toString() ?? "") || 
+    gender !== (person.gender ?? "");
+
+  const handleSave = async () => {
+    if (!hasChanges || saving) return;
+    setSaving(true);
+    try {
+      await onUpdate({
+        name: name.trim() || person.name,
+        age: age ? parseInt(age, 10) : null,
+        gender: gender.trim() || null,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+      <CardHeader>
+        <CardTitle className="text-lg text-white flex items-center gap-2">
+          <UserCog className="h-5 w-5 text-violet-400" />
+          Edit Person
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="name" className="text-slate-300">Name</Label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="bg-slate-800/50 border-slate-700 text-white"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="age" className="text-slate-300">Age</Label>
+          <Input
+            id="age"
+            type="number"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            placeholder="Optional"
+            className="bg-slate-800/50 border-slate-700 text-white"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="gender" className="text-slate-300">Gender</Label>
+          <Input
+            id="gender"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            placeholder="Optional"
+            className="bg-slate-800/50 border-slate-700 text-white"
+          />
+        </div>
+        <Button
+          onClick={handleSave}
+          disabled={!hasChanges || saving}
+          className="w-full bg-violet-600 hover:bg-violet-700"
+        >
+          <Save className="h-4 w-4 mr-2" />
+          {saving ? "Saving..." : "Save Changes"}
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -263,11 +362,13 @@ function VerticalNav({
   holidaysCount: number;
   suggestionsCount: number;
 }) {
-  const tabs: { id: NavTab; label: string; icon: typeof Package; count: number }[] = [
+  const tabs: { id: NavTab; label: string; icon: typeof Package; count?: number }[] = [
     { id: "received", label: "Received", icon: Package, count: receivedCount },
     { id: "giving", label: "Giving", icon: Heart, count: givingCount },
     { id: "holidays", label: "Holidays", icon: Sparkles, count: holidaysCount },
-    { id: "suggestions", label: "Suggestions", icon: Sparkles, count: suggestionsCount },
+    { id: "suggestions", label: "Suggestions", icon: Lightbulb, count: suggestionsCount },
+    { id: "stats", label: "Stats", icon: BarChart3 },
+    { id: "about", label: "About", icon: UserCog },
   ];
 
   return (
@@ -286,14 +387,16 @@ function VerticalNav({
         >
           <Icon className={cn("h-5 w-5", activeTab === id ? "text-violet-400" : "")} />
           <span className="font-medium">{label}</span>
-          <span className={cn(
-            "ml-auto text-xs px-2 py-0.5 rounded-full",
-            activeTab === id 
-              ? "bg-violet-500/30 text-violet-300" 
-              : "bg-slate-700/50 text-slate-500"
-          )}>
-            {count}
-          </span>
+          {count !== undefined && (
+            <span className={cn(
+              "ml-auto text-xs px-2 py-0.5 rounded-full",
+              activeTab === id 
+                ? "bg-violet-500/30 text-violet-300" 
+                : "bg-slate-700/50 text-slate-500"
+            )}>
+              {count}
+            </span>
+          )}
         </button>
       ))}
     </nav>
@@ -315,7 +418,7 @@ export default function PersonDetailPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/login");
+      router.push(AUTH_ROUTES.signIn);
     }
   }, [authLoading, isAuthenticated, router]);
 
@@ -340,10 +443,10 @@ export default function PersonDetailPage() {
     loadData();
   }, [isAuthenticated, personId]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
-    router.push("/login");
-  };
+    router.push(AUTH_ROUTES.signIn);
+  }, [signOut, router]);
 
   const handleRelationshipSelect = async (category: RelationshipCategory) => {
     if (!person || updatingRelationship) return;
@@ -357,6 +460,18 @@ export default function PersonDetailPage() {
     } finally {
       setUpdatingRelationship(false);
     }
+  };
+
+  const handlePersonUpdate = async (updates: { name?: string; age?: number | null; gender?: string | null }) => {
+    if (!person) return;
+    // Convert null to undefined for API compatibility
+    const apiUpdates = {
+      name: updates.name,
+      age: updates.age ?? undefined,
+      gender: updates.gender ?? undefined,
+    };
+    const updated = await peopleService.update(personId, apiUpdates);
+    setPerson({ ...person, ...updated });
   };
 
   // Extract unique holidays from all gifts (received + given), sorted descending by date
@@ -434,62 +549,25 @@ export default function PersonDetailPage() {
             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-violet-500/20">
               <User className="h-7 w-7 text-fuchsia-400" />
             </div>
-            <div>
+            <div className="flex-1">
               <h1 className="text-3xl font-bold text-white">{person.name}</h1>
-              {person.relationship && (
-                <span className="text-sm text-slate-400 capitalize">{person.relationship}</span>
-              )}
             </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-            <Card className="border-slate-800 bg-slate-900/30">
-              <CardContent className="p-4 flex items-center gap-3">
-                <Package className="h-5 w-5 text-violet-400" />
-                <div>
-                  <div className="text-2xl font-bold text-white">{person.gifts_received.length}</div>
-                  <div className="text-xs text-slate-500">Receiving</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-slate-800 bg-slate-900/30">
-              <CardContent className="p-4 flex items-center gap-3">
-                <DollarSign className="h-5 w-5 text-emerald-400" />
-                <div>
-                  <div className="text-2xl font-bold text-white">${totalReceiving.toFixed(0)}</div>
-                  <div className="text-xs text-slate-500">Total Cost</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-slate-800 bg-slate-900/30">
-              <CardContent className="p-4 flex items-center gap-3">
-                <Heart className="h-5 w-5 text-pink-400" />
-                <div>
-                  <div className="text-2xl font-bold text-white">{person.gifts_given.length}</div>
-                  <div className="text-xs text-slate-500">Giving</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-slate-800 bg-slate-900/30">
-              <CardContent className="p-4 flex items-center gap-3">
-                <DollarSign className="h-5 w-5 text-emerald-400" />
-                <div>
-                  <div className="text-2xl font-bold text-white">${totalGiving.toFixed(0)}</div>
-                  <div className="text-xs text-slate-500">Given Value</div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Relationship Selector */}
-          <div className="mt-6">
-            <label className="block text-sm text-slate-400 mb-2">Category</label>
-            <RelationshipSelector
-              current={person.relationship}
-              onSelect={handleRelationshipSelect}
+            <Select
+              value={person.relationship ?? ""}
+              onValueChange={(value) => handleRelationshipSelect(value as RelationshipCategory)}
               disabled={updatingRelationship}
-            />
+            >
+              <SelectTrigger className="w-40 bg-slate-800/50 border-slate-700 text-white">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                {RELATIONSHIP_CATEGORIES.map((category) => (
+                  <SelectItem key={category} value={category} className="capitalize text-white hover:bg-slate-700">
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -530,7 +608,20 @@ export default function PersonDetailPage() {
                 personName={person.name}
                 suggestions={suggestions}
                 onSuggestionsChange={setSuggestions}
-                user={user}
+              />
+            )}
+            {activeTab === "stats" && (
+              <StatsSection
+                receivedCount={person.gifts_received.length}
+                givingCount={person.gifts_given.length}
+                totalReceiving={totalReceiving}
+                totalGiving={totalGiving}
+              />
+            )}
+            {activeTab === "about" && (
+              <AboutSection
+                person={person}
+                onUpdate={handlePersonUpdate}
               />
             )}
           </div>
