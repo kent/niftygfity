@@ -8,13 +8,25 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
  */
 
 export async function getCharityStats(): Promise<CharityStats | null> {
-  // Skip fetching if in Vercel build and API URL is not set or localhost
-  // This prevents build failures when the API is not running
-  const isVercelBuild = process.env.VERCEL === "1";
-  const isLocalhost = API_URL.includes("localhost");
+  // Skip fetching during build if API is not available
+  // Check multiple build-time indicators
+  const isBuildTime = 
+    process.env.VERCEL === "1" || 
+    process.env.NEXT_PHASE === "phase-production-build" ||
+    process.env.CI === "true";
   
-  if (isVercelBuild && (!process.env.NEXT_PUBLIC_API_URL || isLocalhost)) {
-    console.warn("Skipping charity stats fetch during Vercel build (API not available)");
+  const hasValidApiUrl = 
+    process.env.NEXT_PUBLIC_API_URL && 
+    !process.env.NEXT_PUBLIC_API_URL.includes("localhost") &&
+    !process.env.NEXT_PUBLIC_API_URL.includes("127.0.0.1");
+  
+  // Skip fetch during build unless we have a valid production API URL
+  if (isBuildTime && !hasValidApiUrl) {
+    return null;
+  }
+
+  // Also skip if API_URL is localhost (fallback case)
+  if (API_URL.includes("localhost") || API_URL.includes("127.0.0.1")) {
     return null;
   }
 
@@ -24,13 +36,13 @@ export async function getCharityStats(): Promise<CharityStats | null> {
     });
 
     if (!res.ok) {
-      console.error(`Failed to fetch charity stats: ${res.status}`);
       return null;
     }
 
     return res.json();
   } catch (error) {
-    console.error("Error fetching charity stats:", error);
+    // Silently return null - default stats will be used
+    // Never throw errors to prevent build failures
     return null;
   }
 }
