@@ -15,6 +15,11 @@ if ENV["CLERK_SECRET_KEY"].present?
     config.secret_key = ENV["CLERK_SECRET_KEY"]
   end
 elsif Rails.env.production?
-  raise "CLERK_SECRET_KEY must be set in production!"
+  # Allow migrations and other db tasks to run without Clerk configured
+  if defined?(Rake) && Rake.application.top_level_tasks.any? { |task| task.start_with?("db:") }
+    # Skip Clerk configuration for database tasks
+  else
+    raise "CLERK_SECRET_KEY must be set in production!"
+  end
 end
 
