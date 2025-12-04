@@ -10,12 +10,20 @@ class ApplicationController < ActionController::API
     payload = verify_clerk_token(token)
     return render_unauthorized unless payload
 
+    clerk_user_id = payload["sub"]
+
     # Auto-create local user record if they don't exist yet
-    @current_user = User.find_or_create_by!(clerk_user_id: payload["sub"]) do |u|
-      # Extract email from JWT claims or generate placeholder
-      u.email = extract_email_from_payload(payload)
+    @current_user = User.find_or_create_by!(clerk_user_id: clerk_user_id) do |u|
+      u.email = fetch_clerk_email(clerk_user_id) || "#{clerk_user_id}@clerk.user"
       u.subscription_plan = "free"
     end
+
+    # Update email if it's a placeholder
+    if @current_user.email.end_with?("@clerk.user")
+      real_email = fetch_clerk_email(clerk_user_id)
+      @current_user.update!(email: real_email) if real_email
+    end
+
     Current.user = @current_user
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Failed to create user: #{e.message}"
@@ -41,12 +49,14 @@ class ApplicationController < ActionController::API
     nil
   end
 
-  def extract_email_from_payload(payload)
-    # Clerk JWT may have email in different locations depending on configuration
-    payload["email"] ||
-      payload.dig("user", "email") ||
-      payload.dig("user", "primary_email_address") ||
-      "#{payload['sub']}@clerk.user"
+  def fetch_clerk_email(clerk_user_id)
+    return nil unless ENV["CLERK_SECRET_KEY"].present?
+
+    clerk_user = Clerk::SDK.new.users.find(clerk_user_id)
+    clerk_user&.email_addresses&.find { |e| e["id"] == clerk_user.primary_email_address_id }&.dig("email_address")
+  rescue StandardError => e
+    Rails.logger.warn "Failed to fetch Clerk user email: #{e.message}"
+    nil
   end
 
   def current_user
