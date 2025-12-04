@@ -239,13 +239,13 @@ export default async function GivingPledgePage() {
                 </h2>
                 <div className="space-y-6 text-slate-300 leading-relaxed text-lg">
                   <p>
-                    Gift-giving is about expressing <strong className="text-white">love, appreciation, and connection</strong>. It's about thinking of others before yourself.
+                    Gift-giving is about expressing <strong className="text-white">love, appreciation, and connection</strong>. It&apos;s about thinking of others before yourself.
                   </p>
                   <p>
-                    We built FareGalo to make that process easier, but we didn't want the spirit of giving to end with our app. By pledging 10% of our revenue, we ensure that every subscription helps someone in need, extending the chain of generosity far beyond our user base.
+                    We built FareGalo to make that process easier, but we didn&apos;t want the spirit of giving to end with our app. By pledging 10% of our revenue, we ensure that every subscription helps someone in need, extending the chain of generosity far beyond our user base.
                   </p>
                   <p>
-                    Whether it's supporting education, fighting poverty, or protecting the environment, <em className="text-emerald-300">your subscription makes a tangible difference in the world</em>.
+                    Whether it&apos;s supporting education, fighting poverty, or protecting the environment, <em className="text-emerald-300">your subscription makes a tangible difference in the world</em>.
                   </p>
                 </div>
               </div>
@@ -399,7 +399,7 @@ export default async function GivingPledgePage() {
                     <span className="text-white font-bold">Legally Binding Commitment</span>
                   </div>
                   <p className="text-slate-300 text-sm max-w-2xl">
-                    Our 10% pledge is written into our company charter and articles of incorporation. This isn't just a promise—it's a legal obligation that ensures we'll keep giving, even as we grow.
+                    Our 10% pledge is written into our company charter and articles of incorporation. This isn&apos;t just a promise—it&apos;s a legal obligation that ensures we&apos;ll keep giving, even as we grow.
                   </p>
                 </div>
               </div>
@@ -433,7 +433,7 @@ export default async function GivingPledgePage() {
                 >
                   <Link href={AUTH_ROUTES.signUp}>
                     <span className="relative z-10 flex items-center gap-2">
-                      Create My Giving Pledge - It's Free
+                      Create My Giving Pledge - It&apos;s Free
                       <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>

@@ -233,7 +233,7 @@ export default async function HomePage() {
                   </div>
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                  "I started small with just $25/month. Seeing the real impact through the platform motivated me to increase my pledge. Last year, I helped fund clean water for 30 families."
+                  &quot;I started small with just $25/month. Seeing the real impact through the platform motivated me to increase my pledge. Last year, I helped fund clean water for 30 families.&quot;
                 </p>
                 <div className="flex items-center text-xs text-slate-400">
                   <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
@@ -258,7 +258,7 @@ export default async function HomePage() {
                   </div>
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                  "The transparency is incredible. I get quarterly reports showing exactly where my money went and what impact it had. It's like having a personal philanthropy advisor."
+                  &quot;The transparency is incredible. I get quarterly reports showing exactly where my money went and what impact it had. It&apos;s like having a personal philanthropy advisor.&quot;
                 </p>
                 <div className="flex items-center text-xs text-slate-400">
                   <div className="w-2 h-2 bg-teal-400 rounded-full mr-2"></div>
