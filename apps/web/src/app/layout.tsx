@@ -23,13 +23,13 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://faregalo.com";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "NiftyGifty - Gift Planning Made Simple",
-    template: "%s | NiftyGifty",
+    default: "FareGalo - Gift Planning Made Simple",
+    template: "%s | FareGalo",
   },
   description:
-    "Track gift ideas, manage budgets, and never forget a special occasion. NiftyGifty helps you organize thoughtful gifts for everyone you love.",
-  applicationName: "NiftyGifty",
-  authors: [{ name: "NiftyGifty Team" }],
+    "Track gift ideas, manage budgets, and never forget a special occasion. FareGalo helps you organize thoughtful gifts for everyone you love.",
+  applicationName: "FareGalo",
+  authors: [{ name: "FareGalo Team" }],
   generator: "Next.js",
   keywords: [
     "gift planning",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     "christmas gift list",
   ],
   referrer: "origin-when-cross-origin",
-  creator: "NiftyGifty",
-  publisher: "NiftyGifty",
+  creator: "FareGalo",
+  publisher: "FareGalo",
   formatDetection: {
     email: false,
     address: false,
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: baseUrl,
-    siteName: "NiftyGifty",
-    title: "NiftyGifty - Gift Planning Made Simple",
+    siteName: "FareGalo",
+    title: "FareGalo - Gift Planning Made Simple",
     description:
       "Track gift ideas, manage budgets, and never forget a special occasion.",
     images: [
@@ -68,17 +68,17 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "NiftyGifty - Gift Planning Made Simple",
+        alt: "FareGalo - Gift Planning Made Simple",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NiftyGifty - Gift Planning Made Simple",
+    title: "FareGalo - Gift Planning Made Simple",
     description:
       "Track gift ideas, manage budgets, and never forget a special occasion.",
     images: ["/og-image.png"],
-    creator: "@niftygifty", // Placeholder, update if real handle exists
+    creator: "@faregalo", // Placeholder, update if real handle exists
   },
   robots: {
     index: true,
@@ -122,15 +122,15 @@ export default function RootLayout({
           data={{
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "NiftyGifty",
+            name: "FareGalo",
             url: baseUrl,
             logo: `${baseUrl}/icon-512.png`,
             sameAs: [
-              "https://twitter.com/niftygifty", // Placeholder
-              "https://github.com/niftygifty", // Placeholder
+              "https://twitter.com/faregalo", // Placeholder
+              "https://github.com/faregalo", // Placeholder
             ],
             description:
-              "NiftyGifty helps you organize thoughtful gifts for everyone you love.",
+              "FareGalo helps you organize thoughtful gifts for everyone you love.",
           }}
         />
         <Providers>

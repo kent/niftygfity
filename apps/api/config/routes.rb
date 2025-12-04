@@ -8,6 +8,14 @@ Rails.application.routes.draw do
   resources :holidays do
     collection do
       get :templates
+      post :join
+    end
+    member do
+      get :share
+      post :share
+      delete :leave
+      get :collaborators
+      delete "collaborators/:user_id", action: :remove_collaborator, as: :remove_collaborator
     end
   end
   resources :people do

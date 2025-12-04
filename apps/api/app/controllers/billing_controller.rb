@@ -64,7 +64,7 @@ class BillingController < ApplicationController
         quantity: 1
       } ],
       mode: "payment",
-      success_url: "#{frontend_url}/billing?success=true&session_id={CHECKOUT_SESSION_ID}",
+      success_url: "#{frontend_url}/billing/thank-you?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: "#{frontend_url}/billing?canceled=true",
       metadata: {
         user_id: current_user.id,

@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :people, dependent: :destroy
   has_many :holiday_users, dependent: :destroy
   has_many :holidays, through: :holiday_users
+  has_many :gift_changes, dependent: :nullify
 
   validates :subscription_plan, inclusion: { in: SUBSCRIPTION_PLANS }
   validates :clerk_user_id, presence: true, uniqueness: true
@@ -52,6 +53,10 @@ class User < ApplicationRecord
   def cancel_premium!
     # Don't remove immediately - let it expire
     # Just mark that it won't renew (could add a field for this)
+  end
+
+  def reset_billing!
+    update!(subscription_plan: "free", subscription_expires_at: nil, stripe_customer_id: nil)
   end
 
   def subscription_status

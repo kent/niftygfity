@@ -16,6 +16,9 @@ gem "oj"
 # Payments
 gem "stripe"
 
+# Email
+gem "postmark-rails"
+
 # AI
 gem "ruby-openai"
 

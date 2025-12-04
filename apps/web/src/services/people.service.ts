@@ -6,6 +6,11 @@ class PeopleService {
     return apiClient.get<Person[]>("/people");
   }
 
+  // Get people for a specific holiday (includes shared people from collaborators)
+  async getForHoliday(holidayId: number): Promise<Person[]> {
+    return apiClient.get<Person[]>(`/people?holiday_id=${holidayId}`);
+  }
+
   async getById(id: number): Promise<Person> {
     return apiClient.get<Person>(`/people/${id}`);
   }

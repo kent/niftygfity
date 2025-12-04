@@ -16,6 +16,7 @@ class ApplicationController < ActionController::API
       u.email = extract_email_from_payload(payload)
       u.subscription_plan = "free"
     end
+    Current.user = @current_user
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Failed to create user: #{e.message}"
     render_unauthorized

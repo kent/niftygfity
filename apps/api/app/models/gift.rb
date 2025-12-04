@@ -5,12 +5,15 @@ class Gift < ApplicationRecord
   has_many :recipients, through: :gift_recipients, source: :person
   has_many :gift_givers, dependent: :destroy
   has_many :givers, through: :gift_givers, source: :person
+  has_many :gift_changes, dependent: :destroy
 
   validates :name, presence: true
 
   default_scope { order(:position) }
 
   before_create :set_position
+  after_create :track_creation
+  after_update :track_update
 
   # Reorder gifts within a holiday - updates positions for all affected gifts
   def self.reorder_within_holiday(holiday_id, gift_id, new_position)
@@ -37,6 +40,35 @@ class Gift < ApplicationRecord
   end
 
   private
+
+  def track_creation
+    return unless Current.user && holiday.holiday_users.where.not(user: Current.user).exists?
+
+    GiftChange.create!(
+      gift: self,
+      holiday: holiday,
+      user: Current.user,
+      change_type: :created,
+      changes_data: { name: name, description: description, cost: cost&.to_f }
+    )
+  end
+
+  def track_update
+    return unless Current.user && holiday.holiday_users.where.not(user: Current.user).exists?
+    return if saved_changes.keys == ["updated_at"] || saved_changes.keys == ["position", "updated_at"]
+
+    tracked_attrs = %w[name description cost link gift_status_id]
+    relevant_changes = saved_changes.slice(*tracked_attrs)
+    return if relevant_changes.empty?
+
+    GiftChange.create!(
+      gift: self,
+      holiday: holiday,
+      user: Current.user,
+      change_type: :updated,
+      changes_data: relevant_changes
+    )
+  end
 
   def set_position
     if position.present? && position > 0

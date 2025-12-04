@@ -10,9 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_02_200000) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_03_220001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "gift_changes", force: :cascade do |t|
+    t.string "change_type", null: false
+    t.jsonb "changes_data", default: {}
+    t.datetime "created_at", null: false
+    t.bigint "gift_id", null: false
+    t.bigint "holiday_id", null: false
+    t.datetime "notified_at"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["gift_id"], name: "index_gift_changes_on_gift_id"
+    t.index ["holiday_id", "notified_at"], name: "index_gift_changes_on_holiday_id_and_notified_at"
+    t.index ["holiday_id"], name: "index_gift_changes_on_holiday_id"
+    t.index ["notified_at"], name: "index_gift_changes_on_notified_at"
+    t.index ["user_id"], name: "index_gift_changes_on_user_id"
+  end
 
   create_table "gift_givers", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -66,9 +82,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_200000) do
     t.index ["holiday_id"], name: "index_gifts_on_holiday_id"
   end
 
+  create_table "holiday_people", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "holiday_id", null: false
+    t.bigint "person_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holiday_id", "person_id"], name: "index_holiday_people_on_holiday_id_and_person_id", unique: true
+    t.index ["holiday_id"], name: "index_holiday_people_on_holiday_id"
+    t.index ["person_id"], name: "index_holiday_people_on_person_id"
+  end
+
   create_table "holiday_users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "holiday_id", null: false
+    t.string "role", default: "collaborator", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["holiday_id"], name: "index_holiday_users_on_holiday_id"
@@ -82,7 +109,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_200000) do
     t.string "icon"
     t.boolean "is_template", default: false, null: false
     t.string "name"
+    t.string "share_token"
     t.datetime "updated_at", null: false
+    t.index ["share_token"], name: "index_holidays_on_share_token", unique: true
   end
 
   create_table "people", force: :cascade do |t|
@@ -99,7 +128,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_200000) do
   create_table "users", force: :cascade do |t|
     t.string "clerk_user_id", null: false
     t.datetime "created_at", null: false
+    t.boolean "digest_enabled", default: true, null: false
     t.string "email", null: false
+    t.datetime "last_digest_sent_at"
     t.string "stripe_customer_id"
     t.datetime "subscription_expires_at"
     t.string "subscription_plan", default: "free", null: false
@@ -109,6 +140,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_200000) do
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
   end
 
+  add_foreign_key "gift_changes", "gifts"
+  add_foreign_key "gift_changes", "holidays"
+  add_foreign_key "gift_changes", "users"
   add_foreign_key "gift_givers", "gifts"
   add_foreign_key "gift_givers", "people"
   add_foreign_key "gift_recipients", "gifts"
@@ -117,6 +151,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_02_200000) do
   add_foreign_key "gift_suggestions", "people"
   add_foreign_key "gifts", "gift_statuses"
   add_foreign_key "gifts", "holidays"
+  add_foreign_key "holiday_people", "holidays"
+  add_foreign_key "holiday_people", "people"
   add_foreign_key "holiday_users", "holidays"
   add_foreign_key "holiday_users", "users"
   add_foreign_key "people", "users"

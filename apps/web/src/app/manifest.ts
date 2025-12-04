@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "NiftyGifty",
-    short_name: "NiftyGifty",
+    name: "FareGalo",
+    short_name: "FareGalo",
     description: "Gift planning made simple. Track gift ideas, manage budgets, and never forget a special occasion.",
     start_url: "/",
     display: "standalone",

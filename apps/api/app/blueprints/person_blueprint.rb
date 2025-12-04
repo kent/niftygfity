@@ -5,8 +5,18 @@ class PersonBlueprint < ApplicationBlueprint
     person.gifts_received.count + person.gifts_given.count
   end
 
+  field :user_id do |person|
+    person.user_id
+  end
+
+  field :is_mine do |person, options|
+    current_user = options[:current_user]
+    current_user ? person.user_id == current_user.id : true
+  end
+
   view :with_gifts do
     association :gifts_received, blueprint: GiftBlueprint
     association :gifts_given, blueprint: GiftBlueprint
   end
 end
+

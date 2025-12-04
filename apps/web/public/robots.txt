@@ -91,5 +91,5 @@ Sitemap: https://faregalo.com/sitemap.xml
 
 # LLMs.txt - AI-readable site information
 # See: https://llmstxt.org/
-# This file provides context for AI systems about NiftyGifty
+# This file provides context for AI systems about FareGalo
 

@@ -104,7 +104,7 @@ export default function SettingsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
           <p className="text-slate-400">
-            Customize NiftyGifty to fit your workflow.
+            Customize FareGalo to fit your workflow.
           </p>
         </div>
 

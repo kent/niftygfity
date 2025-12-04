@@ -9,12 +9,12 @@ import "./styles.css";
 export const metadata: Metadata = {
   title: "Giving Pledge - 10% of All Revenue Goes to Charity",
   description:
-    "NiftyGifty pledges 10% of all gross revenue to charitable causes, forever. Learn about our commitment to transparent, sustainable giving.",
+    "FareGalo pledges 10% of all gross revenue to charitable causes, forever. Learn about our commitment to transparent, sustainable giving.",
   alternates: {
     canonical: "/giving-pledge",
   },
   openGraph: {
-    title: "NiftyGifty Giving Pledge - 10% for Charity",
+    title: "FareGalo Giving Pledge - 10% for Charity",
     description:
       "We donate 10% of all revenue to charity. Your subscription makes a tangible difference in the world.",
   },
@@ -36,18 +36,18 @@ export default async function GivingPledgePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          name: "NiftyGifty Giving Pledge",
+          name: "FareGalo Giving Pledge",
           description:
-            "NiftyGifty pledges 10% of all gross revenue to charitable causes.",
+            "FareGalo pledges 10% of all gross revenue to charitable causes.",
           url: `${baseUrl}/giving-pledge`,
           mainEntity: {
             "@type": "Article",
             headline: "Our 10% Promise",
             description:
-              "NiftyGifty pledges to donate 10% of all gross revenue to charitable causes, forever.",
+              "FareGalo pledges to donate 10% of all gross revenue to charitable causes, forever.",
             author: {
               "@type": "Organization",
-              name: "NiftyGifty",
+              name: "FareGalo",
             },
           },
         }}
@@ -74,7 +74,7 @@ export default async function GivingPledgePage() {
                 <rect x="4" y="12" width="16" height="2" rx="1" />
               </svg>
             </div>
-            <span className="text-xl font-bold text-white">NiftyGifty</span>
+            <span className="text-xl font-bold text-white">FareGalo</span>
           </Link>
           <Button variant="ghost" asChild className="text-white hover:text-white hover:bg-white/10">
             <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
@@ -112,7 +112,7 @@ export default async function GivingPledgePage() {
             </div>
             
             <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed fade-in-delayed-animation">
-              We believe that success is meaningless unless it's shared. That's why NiftyGifty pledges to donate{" "}
+              We believe that success is meaningless unless it's shared. That's why FareGalo pledges to donate{" "}
               <span className="text-white font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent animate-pulse">
                 10% of all gross revenue
               </span>{" "}
@@ -204,7 +204,7 @@ export default async function GivingPledgePage() {
                     Gift-giving is about expressing <strong className="text-white">love, appreciation, and connection</strong>. It's about thinking of others before yourself.
                   </p>
                   <p>
-                    We built NiftyGifty to make that process easier, but we didn't want the spirit of giving to end with our app. By pledging 10% of our revenue, we ensure that every subscription helps someone in need, extending the chain of generosity far beyond our user base.
+                    We built FareGalo to make that process easier, but we didn't want the spirit of giving to end with our app. By pledging 10% of our revenue, we ensure that every subscription helps someone in need, extending the chain of generosity far beyond our user base.
                   </p>
                   <p>
                     Whether it's supporting education, fighting poverty, or protecting the environment, <em className="text-emerald-300">your subscription makes a tangible difference in the world</em>.
@@ -305,7 +305,7 @@ export default async function GivingPledgePage() {
               </svg>
             </div>
             <p className="text-slate-400 text-sm">
-              © {new Date().getFullYear()} NiftyGifty. Made with{" "}
+              © {new Date().getFullYear()} FareGalo. Made with{" "}
               <span className="text-red-400 animate-pulse">💜</span>{" "}
               and a commitment to giving back.
             </p>

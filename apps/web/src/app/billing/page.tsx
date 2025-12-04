@@ -139,7 +139,6 @@ export default function BillingPage() {
   const [showCouponInput, setShowCouponInput] = useState(false);
   const couponInputRef = useRef<HTMLInputElement>(null);
 
-  const success = searchParams.get("success");
   const canceled = searchParams.get("canceled");
 
   const refreshStatus = useCallback(async () => {
@@ -153,16 +152,12 @@ export default function BillingPage() {
   }, [refreshBillingStatus]);
 
   useEffect(() => {
-    if (success) {
-      toast.success("Welcome to Premium! 🎉", {
-        description: "You now have unlimited gift tracking.",
-      });
-    } else if (canceled) {
+    if (canceled) {
       toast.info("Checkout canceled", {
         description: "No worries, you can upgrade anytime.",
       });
     }
-  }, [success, canceled]);
+  }, [canceled]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -249,7 +244,7 @@ export default function BillingPage() {
             One dollar for each day of December before Christmas
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 text-transparent bg-clip-text">
-            NiftyGifty Premium
+            FareGalo Premium
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Track unlimited gifts for everyone on your list. Just{" "}

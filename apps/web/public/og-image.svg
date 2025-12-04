@@ -33,7 +33,7 @@
   </g>
   
   <!-- Title -->
-  <text x="600" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="white">NiftyGifty</text>
+  <text x="600" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="white">FareGalo</text>
   
   <!-- Tagline -->
   <text x="600" y="450" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#94a3b8">Gift planning, simplified</text>

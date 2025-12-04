@@ -9,9 +9,11 @@ import { holidaysService, giftsService, peopleService, giftStatusesService, AUTH
 import { AppHeader } from "@/components/layout";
 import { GiftFilters } from "@/components/filters";
 import { GiftGrid, HolidayReports } from "@/components/gifts";
+import { ShareHolidayDialog } from "@/components/holidays";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3 } from "lucide-react";
+import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users } from "lucide-react";
 import type { Holiday, Gift, Person, GiftStatus } from "@niftygifty/types";
 
 function getHolidayIcon(icon?: string | null) {
@@ -137,17 +139,33 @@ export default function HolidayDetailPage() {
             Back to Holidays
           </Link>
 
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-3xl">
-              {icon}
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">{holiday.name}</h1>
-              <div className="flex items-center gap-2 text-slate-400">
-                <Calendar className="h-4 w-4" />
-                <span>{formattedDate}</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-3xl">
+                {icon}
+              </div>
+              <div>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-bold text-white">{holiday.name}</h1>
+                  {holiday.collaborator_count > 1 && (
+                    <Badge variant="secondary" className="gap-1">
+                      <Users className="h-3 w-3" />
+                      {holiday.collaborator_count}
+                    </Badge>
+                  )}
+                  {!holiday.is_owner && holiday.role === "collaborator" && (
+                    <Badge variant="outline" className="text-slate-400 border-slate-600">
+                      Shared with you
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-slate-400">
+                  <Calendar className="h-4 w-4" />
+                  <span>{formattedDate}</span>
+                </div>
               </div>
             </div>
+            <ShareHolidayDialog holiday={holiday} />
           </div>
         </div>
 

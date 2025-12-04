@@ -7,9 +7,9 @@ import { AuthRedirect } from "@/components/auth-redirect";
 import { JsonLd } from "@/components/json-ld";
 
 export const metadata: Metadata = {
-  title: "NiftyGifty - The Ultimate Gift Planner & Tracker",
+  title: "FareGalo - The Ultimate Gift Planner & Tracker",
   description:
-    "Stop stressing about gifts. NiftyGifty is the free gift planner that helps you track ideas, set budgets, and remember every special occasion.",
+    "Stop stressing about gifts. FareGalo is the free gift planner that helps you track ideas, set budgets, and remember every special occasion.",
   alternates: {
     canonical: "/",
   },
@@ -25,7 +25,7 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "WebApplication",
-          name: "NiftyGifty",
+          name: "FareGalo",
           applicationCategory: "ProductivityApplication",
           operatingSystem: "Any",
           url: baseUrl,
@@ -71,7 +71,7 @@ export default async function HomePage() {
                 <rect x="4" y="12" width="16" height="2" rx="1" />
               </svg>
             </div>
-            <span className="text-xl font-bold text-white">NiftyGifty</span>
+            <span className="text-xl font-bold text-white">FareGalo</span>
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -101,7 +101,7 @@ export default async function HomePage() {
           </h1>
           <p className="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
             Track gift ideas, manage budgets, and never forget a special
-            occasion. NiftyGifty helps you organize thoughtful gifts for
+            occasion. FareGalo helps you organize thoughtful gifts for
             everyone you love.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -190,7 +190,7 @@ export default async function HomePage() {
           </Link>
         </div>
         <p className="text-slate-500 text-sm">
-          © {new Date().getFullYear()} NiftyGifty. Made with 💜
+          © {new Date().getFullYear()} FareGalo. Made with 💜
         </p>
       </footer>
     </div>

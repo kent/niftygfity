@@ -3,11 +3,14 @@
 user_one_christmas:
   holiday: christmas
   user: one
+  role: owner
 
 user_two_christmas:
   holiday: christmas
   user: two
+  role: collaborator
 
 user_one_birthday:
   holiday: birthday
   user: one
+  role: owner

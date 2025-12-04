@@ -60,6 +60,8 @@ export interface Person extends BaseEntity {
   age: number | null;
   gender: string | null;
   gift_count: number;
+  user_id: number;
+  is_mine: boolean;
 }
 
 export interface PersonWithGifts extends Person {
@@ -104,16 +106,32 @@ export interface UpdateGiftStatusRequest {
 // Holiday
 // =============================================================================
 
+export type HolidayRole = "owner" | "collaborator";
+
 export interface Holiday extends BaseEntity {
   name: string;
   date: string | null; // ISO date string (YYYY-MM-DD), null for templates
   icon: string | null; // Lucide icon name
   is_template: boolean;
   completed: boolean;
+  share_token: string | null; // Only visible to owner
+  is_owner: boolean;
+  role: HolidayRole | null;
+  collaborator_count: number;
+}
+
+export interface HolidayCollaborator {
+  user_id: number;
+  email: string;
+  role: HolidayRole;
 }
 
 export interface HolidayWithGifts extends Holiday {
   gifts: Gift[];
+}
+
+export interface HolidayWithCollaborators extends Holiday {
+  collaborators: HolidayCollaborator[];
 }
 
 export interface CreateHolidayRequest {
@@ -128,6 +146,18 @@ export interface CreateHolidayRequest {
 export interface UpdateHolidayRequest {
   holiday: Partial<CreateHolidayRequest["holiday"]>;
 }
+
+export interface ShareLinkResponse {
+  share_token: string;
+  share_url: string;
+}
+
+export interface JoinHolidayRequest {
+  share_token: string;
+}
+
+export interface JoinHolidayResponse extends Holiday {}
+
 
 // =============================================================================
 // Gift
@@ -192,6 +222,7 @@ export interface GiftRecipient extends BaseEntity {
 export interface HolidayUser extends BaseEntity {
   holiday_id: number;
   user_id: number;
+  role: HolidayRole;
 }
 
 // =============================================================================
@@ -232,6 +263,12 @@ export const API_ENDPOINTS = {
   holidays: "/holidays",
   holidayTemplates: "/holidays/templates",
   holiday: (id: number) => `/holidays/${id}`,
+  holidayShare: (id: number) => `/holidays/${id}/share`,
+  holidayJoin: "/holidays/join",
+  holidayLeave: (id: number) => `/holidays/${id}/leave`,
+  holidayCollaborators: (id: number) => `/holidays/${id}/collaborators`,
+  holidayRemoveCollaborator: (id: number, userId: number) =>
+    `/holidays/${id}/collaborators/${userId}`,
 
   // Gifts
   gifts: "/gifts",

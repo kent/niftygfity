@@ -16,4 +16,10 @@ class UserBlueprint < ApplicationBlueprint
   field :subscription_status do |user|
     user.subscription_status
   end
+
+  # Minimal view for collaborator display
+  view :minimal do
+    fields :email
+  end
 end
+

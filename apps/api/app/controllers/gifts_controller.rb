@@ -15,6 +15,7 @@ class GiftsController < ApplicationController
     gift = Gift.new(gift_params)
 
     if gift.save
+      auto_share_people(gift)
       render json: GiftBlueprint.render(gift), status: :created
     else
       render json: { errors: gift.errors.full_messages }, status: :unprocessable_entity
@@ -23,6 +24,7 @@ class GiftsController < ApplicationController
 
   def update
     if @gift.update(gift_params)
+      auto_share_people(@gift)
       render json: GiftBlueprint.render(@gift)
     else
       render json: { errors: @gift.errors.full_messages }, status: :unprocessable_entity
@@ -62,5 +64,15 @@ class GiftsController < ApplicationController
       gifts_remaining: 0,
       upgrade_required: true
     }, status: :payment_required
+  end
+
+  # Auto-share people to the holiday when they're assigned as recipients or givers
+  def auto_share_people(gift)
+    holiday = gift.holiday
+    person_ids = (gift.recipient_ids + gift.giver_ids).uniq
+
+    person_ids.each do |person_id|
+      HolidayPerson.find_or_create_by(holiday_id: holiday.id, person_id: person_id)
+    end
   end
 end

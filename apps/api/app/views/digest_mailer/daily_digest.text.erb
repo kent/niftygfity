@@ -1,0 +1,26 @@
+Here's what's new!
+
+<%= @total_changes %> update<%= 's' if @total_changes != 1 %> from your shared holidays
+
+<% @changes_by_holiday.each do |holiday, changes| %>
+<%= holiday.name %>
+<%= '=' * holiday.name.length %>
+
+<% changes.each do |change| %>
+<% gift_name = change.gift&.name || change.changes_data.dig('name', 1) || change.changes_data['name'] || 'Gift' %>
+• <%= gift_name %> [<%= change.created? ? 'NEW' : 'UPDATED' %>]
+  Added by <%= change.user.email.split('@').first %>
+<% if change.updated? && change.changes_data.present? %>
+<% change.changes_data.each do |field, values| %>
+<% next if field == 'updated_at' %>
+<% if values.is_a?(Array) %>
+  <%= field.humanize %>: <%= values[0].presence || 'empty' %> → <%= values[1] %>
+<% end %>
+<% end %>
+<% end %>
+
+<% end %>
+<% end %>
+
+View your holidays: <%= ENV.fetch('FRONTEND_URL', 'https://niftygifty.com') %>/holidays
+
