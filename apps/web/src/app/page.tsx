@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const charityStats = (await getCharityStats()) ?? DEFAULT_CHARITY_STATS;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://faregalo.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://faregalo.com";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default async function GivingPledgePage() {
   const stats = (await getCharityStats()) ?? DEFAULT_CHARITY_STATS;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://faregalo.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://faregalo.com";
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col relative overflow-hidden">
