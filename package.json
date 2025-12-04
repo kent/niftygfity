@@ -1,6 +1,9 @@
 {
   "name": "niftygifty",
   "private": true,
+  "engines": {
+    "node": ">=20 <24"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
