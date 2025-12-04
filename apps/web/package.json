@@ -38,6 +38,9 @@
     "tailwind-merge": "^3.4.0",
     "zod": "^4.1.13"
   },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-linux-x64-gnu": "^4"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/canvas-confetti": "^1.9.0",

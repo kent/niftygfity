@@ -3,7 +3,7 @@
   "buildCommand": "npx turbo run build --filter=web",
   "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
-  "installCommand": "npm install --include=optional",
+  "installCommand": "npm ci",
   "ignoreCommand": "npx turbo-ignore --fallback=HEAD^"
 }
 
