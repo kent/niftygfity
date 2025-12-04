@@ -29,10 +29,10 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
   const [regenerating, setRegenerating] = useState(false);
 
   useEffect(() => {
-    if (open && holiday.is_owner) {
+    if (open) {
       loadShareData();
     }
-  }, [open, holiday.id, holiday.is_owner]);
+  }, [open, holiday.id]);
 
   async function loadShareData() {
     setLoading(true);
@@ -45,6 +45,7 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
       setCollaborators(collabData);
     } catch (err) {
       console.error("Failed to load share data:", err);
+      // If user is not owner, API will return error - this is fine
     } finally {
       setLoading(false);
     }
@@ -76,10 +77,6 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
     } catch (err) {
       console.error("Failed to remove collaborator:", err);
     }
-  }
-
-  if (!holiday.is_owner) {
-    return null;
   }
 
   return (
