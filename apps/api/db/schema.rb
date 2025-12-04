@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_03_220001) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_04_045209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -130,11 +130,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_03_220001) do
     t.datetime "created_at", null: false
     t.boolean "digest_enabled", default: true, null: false
     t.string "email", null: false
+    t.string "first_name"
+    t.string "image_url"
     t.datetime "last_digest_sent_at"
+    t.string "last_name"
+    t.string "phone"
     t.string "stripe_customer_id"
     t.datetime "subscription_expires_at"
     t.string "subscription_plan", default: "free", null: false
     t.datetime "updated_at", null: false
+    t.string "username"
     t.index ["clerk_user_id"], name: "index_users_on_clerk_user_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true

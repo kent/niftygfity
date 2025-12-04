@@ -78,6 +78,29 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
     }
   }
 
+  function getDisplayName(collab: HolidayCollaborator): string {
+    if (collab.first_name || collab.last_name) {
+      return [collab.first_name, collab.last_name].filter(Boolean).join(" ");
+    }
+    // Don't show weird clerk emails
+    if (collab.email.includes("@clerk.user")) {
+      return "Anonymous User";
+    }
+    return collab.email;
+  }
+
+  function getInitials(collab: HolidayCollaborator): string {
+    if (collab.first_name) {
+      const first = collab.first_name[0];
+      const last = collab.last_name?.[0] || "";
+      return (first + last).toUpperCase();
+    }
+    if (!collab.email.includes("@clerk.user")) {
+      return collab.email[0].toUpperCase();
+    }
+    return "?";
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -157,11 +180,19 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
                       className="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-800"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-violet-500/20 flex items-center justify-center text-sm font-medium text-violet-300">
-                          {collab.email[0].toUpperCase()}
-                        </div>
+                        {collab.image_url ? (
+                          <img
+                            src={collab.image_url}
+                            alt={getDisplayName(collab)}
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-8 w-8 rounded-full bg-violet-500/20 flex items-center justify-center text-sm font-medium text-violet-300">
+                            {getInitials(collab)}
+                          </div>
+                        )}
                         <div>
-                          <p className="text-sm text-white">{collab.email}</p>
+                          <p className="text-sm text-white">{getDisplayName(collab)}</p>
                           <p className="text-xs text-slate-500 capitalize">{collab.role}</p>
                         </div>
                       </div>

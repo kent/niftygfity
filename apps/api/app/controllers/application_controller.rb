@@ -14,15 +14,13 @@ class ApplicationController < ActionController::API
 
     # Auto-create local user record if they don't exist yet
     @current_user = User.find_or_create_by!(clerk_user_id: clerk_user_id) do |u|
-      u.email = fetch_clerk_email(clerk_user_id) || "#{clerk_user_id}@clerk.user"
+      clerk_user = fetch_clerk_user(clerk_user_id)
+      apply_clerk_data(u, clerk_user, clerk_user_id)
       u.subscription_plan = "free"
     end
 
-    # Update email if it's a placeholder
-    if @current_user.email.end_with?("@clerk.user")
-      real_email = fetch_clerk_email(clerk_user_id)
-      @current_user.update!(email: real_email) if real_email
-    end
+    # Sync user data if missing or stale
+    sync_clerk_user_data(@current_user, clerk_user_id)
 
     Current.user = @current_user
   rescue ActiveRecord::RecordInvalid => e
@@ -49,14 +47,50 @@ class ApplicationController < ActionController::API
     nil
   end
 
-  def fetch_clerk_email(clerk_user_id)
+  def fetch_clerk_user(clerk_user_id)
     return nil unless ENV["CLERK_SECRET_KEY"].present?
-
-    clerk_user = Clerk::SDK.new.users.find(clerk_user_id)
-    clerk_user&.email_addresses&.find { |e| e["id"] == clerk_user.primary_email_address_id }&.dig("email_address")
+    Clerk::SDK.new.users.find(clerk_user_id)
   rescue StandardError => e
-    Rails.logger.warn "Failed to fetch Clerk user email: #{e.message}"
+    Rails.logger.warn "Failed to fetch Clerk user: #{e.message}"
     nil
+  end
+
+  def clerk_user_email(clerk_user)
+    return nil unless clerk_user
+    clerk_user.email_addresses&.find { |e| e["id"] == clerk_user.primary_email_address_id }&.dig("email_address")
+  end
+
+  def clerk_user_phone(clerk_user)
+    return nil unless clerk_user&.phone_numbers&.any?
+    clerk_user.phone_numbers.find { |p| p["id"] == clerk_user.primary_phone_number_id }&.dig("phone_number")
+  end
+
+  def apply_clerk_data(user, clerk_user, clerk_user_id)
+    user.email = clerk_user_email(clerk_user) || "#{clerk_user_id}@clerk.user"
+    user.first_name = clerk_user&.first_name
+    user.last_name = clerk_user&.last_name
+    user.image_url = clerk_user&.image_url
+    user.phone = clerk_user_phone(clerk_user)
+    user.username = clerk_user&.username
+  end
+
+  def sync_clerk_user_data(user, clerk_user_id)
+    # Sync if email is placeholder or profile data is missing
+    needs_sync = user.email.end_with?("@clerk.user") || user.first_name.nil? || user.image_url.nil?
+    return unless needs_sync
+
+    clerk_user = fetch_clerk_user(clerk_user_id)
+    return unless clerk_user
+
+    updates = {}
+    updates[:email] = clerk_user_email(clerk_user) if user.email.end_with?("@clerk.user") && clerk_user_email(clerk_user)
+    updates[:first_name] = clerk_user.first_name if user.first_name.nil? && clerk_user.first_name.present?
+    updates[:last_name] = clerk_user.last_name if user.last_name.nil? && clerk_user.last_name.present?
+    updates[:image_url] = clerk_user.image_url if user.image_url.nil? && clerk_user.image_url.present?
+    updates[:phone] = clerk_user_phone(clerk_user) if user.phone.nil? && clerk_user_phone(clerk_user)
+    updates[:username] = clerk_user.username if user.username.nil? && clerk_user.username.present?
+
+    user.update!(updates) if updates.any?
   end
 
   def current_user

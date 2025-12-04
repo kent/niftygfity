@@ -123,6 +123,9 @@ export interface Holiday extends BaseEntity {
 export interface HolidayCollaborator {
   user_id: number;
   email: string;
+  first_name: string | null;
+  last_name: string | null;
+  image_url: string | null;
   role: HolidayRole;
 }
 
