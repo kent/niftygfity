@@ -71,7 +71,7 @@ class HolidaysController < ApplicationController
   # GET /holidays/:id/collaborators
   def collaborators
     users = @holiday.holiday_users.includes(:user)
-    render json: users.map { |hu| { id: hu.user.id, email: hu.user.email, role: hu.role } }
+    render json: users.map { |hu| { user_id: hu.user.id, email: hu.user.email, role: hu.role } }
   end
 
   # DELETE /holidays/:id/collaborators/:user_id
