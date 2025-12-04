@@ -8,6 +8,16 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
  */
 
 export async function getCharityStats(): Promise<CharityStats | null> {
+  // Skip fetching if in Vercel build and API URL is not set or localhost
+  // This prevents build failures when the API is not running
+  const isVercelBuild = process.env.VERCEL === "1";
+  const isLocalhost = API_URL.includes("localhost");
+  
+  if (isVercelBuild && (!process.env.NEXT_PUBLIC_API_URL || isLocalhost)) {
+    console.warn("Skipping charity stats fetch during Vercel build (API not available)");
+    return null;
+  }
+
   try {
     const res = await fetch(`${API_URL}/billing/charity_stats`, {
       next: { revalidate: 3600 }, // Cache for 1 hour
