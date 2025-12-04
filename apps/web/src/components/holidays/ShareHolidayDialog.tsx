@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Copy, Check, RefreshCw, Users, Share2 } from "lucide-react";
 import {
   Dialog,
@@ -28,13 +28,7 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
   const [loading, setLoading] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
 
-  useEffect(() => {
-    if (open) {
-      loadShareData();
-    }
-  }, [open, holiday.id]);
-
-  async function loadShareData() {
+  const loadShareData = useCallback(async () => {
     setLoading(true);
     try {
       const [shareData, collabData] = await Promise.all([
@@ -45,11 +39,16 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
       setCollaborators(collabData);
     } catch (err) {
       console.error("Failed to load share data:", err);
-      // If user is not owner, API will return error - this is fine
     } finally {
       setLoading(false);
     }
-  }
+  }, [holiday.id]);
+
+  useEffect(() => {
+    if (open) {
+      loadShareData();
+    }
+  }, [open, loadShareData]);
 
   async function handleRegenerate() {
     setRegenerating(true);
