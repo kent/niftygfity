@@ -1,6 +1,6 @@
 "use client";
 
-import { Tags, User, CreditCard } from "lucide-react";
+import { Tags, User, CreditCard, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type SettingsSection = "profile" | "statuses" | "billing";
@@ -10,42 +10,78 @@ interface SettingsNavProps {
   onSectionChange: (section: SettingsSection) => void;
 }
 
-const NAV_ITEMS: { id: SettingsSection; label: string; icon: typeof User; disabled?: boolean }[] = [
-  { id: "profile", label: "Profile", icon: User },
-  { id: "statuses", label: "Gift Statuses", icon: Tags },
-  { id: "billing", label: "Billing", icon: CreditCard, disabled: true },
+const NAV_ITEMS: { id: SettingsSection; label: string; icon: typeof User; disabled?: boolean; color: string }[] = [
+  { id: "profile", label: "Profile", icon: User, color: "violet" },
+  { id: "statuses", label: "Gift Statuses", icon: Tags, color: "emerald" },
+  { id: "billing", label: "Billing", icon: CreditCard, disabled: true, color: "amber" },
 ];
+
+const colorMap = {
+  violet: "from-violet-500 to-fuchsia-500 text-violet-300 shadow-violet-500/20",
+  emerald: "from-emerald-500 to-teal-500 text-emerald-300 shadow-emerald-500/20",
+  amber: "from-amber-500 to-orange-500 text-amber-300 shadow-amber-500/20",
+};
 
 export function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps) {
   return (
-    <nav className="w-56 shrink-0">
-      <ul className="space-y-1">
-        {NAV_ITEMS.map(({ id, label, icon: Icon, disabled }) => (
-          <li key={id}>
-            <button
-              onClick={() => !disabled && onSectionChange(id)}
-              disabled={disabled}
-              className={cn(
-                "w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left",
-                activeSection === id
-                  ? "bg-violet-500/20 text-violet-300"
-                  : disabled
-                    ? "text-slate-600 cursor-not-allowed"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800"
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              <span className="flex-1">{label}</span>
-              {disabled && (
-                <span className="text-[10px] uppercase tracking-wider text-slate-600 bg-slate-800 px-1.5 py-0.5 rounded">
-                  Soon
-                </span>
-              )}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <nav className="w-64 shrink-0">
+      <div className="sticky top-8">
+        <div className="rounded-2xl border border-slate-800/50 bg-slate-900/30 backdrop-blur-xl p-2 shadow-xl shadow-black/20">
+          <ul className="space-y-1">
+            {NAV_ITEMS.map(({ id, label, icon: Icon, disabled, color }) => {
+              const isActive = activeSection === id;
+              const colors = colorMap[color as keyof typeof colorMap];
+              
+              return (
+                <li key={id}>
+                  <button
+                    onClick={() => !disabled && onSectionChange(id)}
+                    disabled={disabled}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 text-left group",
+                      isActive
+                        ? `bg-gradient-to-r ${colors} shadow-lg`
+                        : disabled
+                          ? "text-slate-600 cursor-not-allowed"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200",
+                      isActive
+                        ? "bg-white/20"
+                        : disabled
+                          ? "bg-slate-800/30"
+                          : "bg-slate-800/50 group-hover:bg-slate-700/50"
+                    )}>
+                      <Icon className={cn(
+                        "h-4 w-4 transition-colors",
+                        isActive ? "text-white" : disabled ? "text-slate-600" : "text-slate-400 group-hover:text-white"
+                      )} />
+                    </div>
+                    <span className={cn(
+                      "flex-1 transition-colors",
+                      isActive && "text-white"
+                    )}>{label}</span>
+                    {disabled ? (
+                      <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 bg-slate-800 px-2 py-1 rounded-full">
+                        Soon
+                      </span>
+                    ) : (
+                      <ChevronRight className={cn(
+                        "h-4 w-4 transition-all duration-200",
+                        isActive
+                          ? "text-white/70 translate-x-0 opacity-100"
+                          : "text-slate-600 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                      )} />
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
     </nav>
   );
 }
-

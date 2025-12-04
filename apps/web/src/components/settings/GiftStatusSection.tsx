@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import type { GiftStatus } from "@niftygifty/types";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tags, Plus, Trash2, GripVertical } from "lucide-react";
+import { Tags, Plus, Trash2, GripVertical, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface GiftStatusSectionProps {
   statuses: GiftStatus[];
@@ -32,35 +32,40 @@ function AddStatusForm({ onAdd }: { onAdd: (name: string) => Promise<void> }) {
   };
 
   return (
-    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm mb-4">
-      <CardContent className="p-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <Input
-            placeholder="New status name (e.g. Shipped, Wrapped)"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500"
-          />
+    <div className="group relative rounded-2xl border border-dashed border-slate-700/50 bg-slate-900/20 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-emerald-500/30 hover:bg-slate-900/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative p-4">
+        <form onSubmit={handleSubmit} className="flex gap-3">
+          <div className="flex-1 relative">
+            <Input
+              placeholder="New status name (e.g. Shipped, Wrapped)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20 pr-4 transition-all"
+            />
+          </div>
           <Button
             type="submit"
             disabled={!name.trim() || isAdding}
-            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shrink-0"
+            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-500/25 disabled:shadow-none disabled:opacity-50 shrink-0 transition-all duration-200"
           >
             <Plus className="mr-2 h-4 w-4" />
-            {isAdding ? "Adding..." : "Add"}
+            {isAdding ? "Adding..." : "Add Status"}
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
 function StatusItem({
   status,
   onDelete,
+  index,
 }: {
   status: GiftStatus;
   onDelete: () => void;
+  index: number;
 }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -74,17 +79,33 @@ function StatusItem({
   };
 
   return (
-    <div className="group flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-slate-600 transition-colors">
-      <GripVertical className="h-4 w-4 text-slate-600 cursor-grab" />
-      <span className="flex-1 text-slate-200">{status.name}</span>
-      <span className="text-xs text-slate-500 tabular-nums">#{status.position}</span>
-      <button
-        onClick={handleDelete}
-        disabled={isDeleting}
-        className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 hover:text-red-400 disabled:opacity-50"
-      >
-        <Trash2 className="h-4 w-4" />
-      </button>
+    <div 
+      className="group relative flex items-center gap-4 px-5 py-4 rounded-xl bg-slate-800/30 border border-slate-700/50 hover:border-slate-600/50 hover:bg-slate-800/50 transition-all duration-200"
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
+      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-700/50 cursor-grab active:cursor-grabbing transition-colors group-hover:bg-slate-600/50">
+        <GripVertical className="h-4 w-4 text-slate-500 group-hover:text-slate-400 transition-colors" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <span className="text-slate-200 font-medium">{status.name}</span>
+      </div>
+      <div className="flex items-center gap-3">
+        <span className="px-2 py-1 rounded-lg bg-slate-700/50 text-xs font-mono text-slate-400">
+          #{status.position}
+        </span>
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className={cn(
+            "flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200",
+            "opacity-0 group-hover:opacity-100",
+            "text-slate-500 hover:text-red-400 hover:bg-red-500/10",
+            "disabled:opacity-50 disabled:cursor-not-allowed"
+          )}
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -98,21 +119,27 @@ function StatusList({
 }) {
   if (statuses.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-500">
-        <Tags className="h-12 w-12 mx-auto mb-3 opacity-30" />
-        <p>No gift statuses yet</p>
-        <p className="text-sm">Add statuses to track your gift progress</p>
+      <div className="relative rounded-2xl border border-slate-800/50 bg-slate-900/30 backdrop-blur-xl overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-800/20 via-transparent to-slate-800/20" />
+        <div className="relative py-16 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700/50 mb-4">
+            <Tags className="h-8 w-8 text-slate-500" />
+          </div>
+          <p className="text-slate-400 font-medium mb-1">No gift statuses yet</p>
+          <p className="text-sm text-slate-500">Add statuses to track your gift progress</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="space-y-2">
-      {statuses.map((status) => (
+      {statuses.map((status, index) => (
         <StatusItem
           key={status.id}
           status={status}
           onDelete={() => onDelete(status)}
+          index={index}
         />
       ))}
     </div>
@@ -125,18 +152,43 @@ export function GiftStatusSection({
   onDelete,
 }: GiftStatusSectionProps) {
   return (
-    <section>
-      <div className="flex items-center gap-2 mb-4">
-        <Tags className="h-5 w-5 text-emerald-400" />
-        <h2 className="text-xl font-semibold text-white">Gift Statuses</h2>
+    <section className="space-y-8">
+      {/* Header */}
+      <div className="relative">
+        <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full" />
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30">
+            <Tags className="h-5 w-5 text-emerald-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white">Gift Statuses</h2>
+            <p className="text-slate-400 text-sm">
+              Create custom statuses to track your gift progress
+            </p>
+          </div>
+        </div>
       </div>
-      <p className="text-slate-400 text-sm mb-4">
-        Create custom statuses to track your gift progress (e.g., Idea, Purchased, Wrapped, Given).
-      </p>
+
+      {/* Suggestions */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-xs text-slate-500 flex items-center gap-1.5">
+          <Sparkles className="h-3 w-3" />
+          Suggestions:
+        </span>
+        {["Idea", "Purchased", "Wrapped", "Shipped", "Given"].map((suggestion) => (
+          <button
+            key={suggestion}
+            onClick={() => onAdd(suggestion)}
+            disabled={statuses.some(s => s.name.toLowerCase() === suggestion.toLowerCase())}
+            className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+          >
+            {suggestion}
+          </button>
+        ))}
+      </div>
 
       <AddStatusForm onAdd={onAdd} />
       <StatusList statuses={statuses} onDelete={onDelete} />
     </section>
   );
 }
-
