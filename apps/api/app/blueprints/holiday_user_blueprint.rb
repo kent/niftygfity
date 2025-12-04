@@ -11,4 +11,3 @@ class HolidayUserBlueprint < ApplicationBlueprint
     holiday_user.role
   end
 end
-

@@ -32,4 +32,3 @@ class HolidayBlueprint < ApplicationBlueprint
     association :holiday_users, blueprint: HolidayUserBlueprint, name: :collaborators
   end
 end
-

@@ -55,7 +55,7 @@ class Gift < ApplicationRecord
 
   def track_update
     return unless Current.user && holiday.holiday_users.where.not(user: Current.user).exists?
-    return if saved_changes.keys == ["updated_at"] || saved_changes.keys == ["position", "updated_at"]
+    return if saved_changes.keys == [ "updated_at" ] || saved_changes.keys == [ "position", "updated_at" ]
 
     tracked_attrs = %w[name description cost link gift_status_id]
     relevant_changes = saved_changes.slice(*tracked_attrs)

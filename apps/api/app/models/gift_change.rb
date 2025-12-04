@@ -14,4 +14,3 @@ class GiftChange < ApplicationRecord
     where(id: ids).update_all(notified_at: Time.current)
   end
 end
-

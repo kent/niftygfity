@@ -43,4 +43,3 @@ class SendDigestJob < ApplicationJob
     Rails.logger.error "[SendDigestJob] Failed to send digest to #{user.email}: #{e.message}"
   end
 end
-

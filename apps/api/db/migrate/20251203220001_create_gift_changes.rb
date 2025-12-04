@@ -12,7 +12,6 @@ class CreateGiftChanges < ActiveRecord::Migration[8.1]
     end
 
     add_index :gift_changes, :notified_at
-    add_index :gift_changes, [:holiday_id, :notified_at]
+    add_index :gift_changes, [ :holiday_id, :notified_at ]
   end
 end
-

@@ -22,4 +22,3 @@ elsif Rails.env.production?
     raise "CLERK_SECRET_KEY must be set in production!"
   end
 end
-

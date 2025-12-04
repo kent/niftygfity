@@ -8,13 +8,13 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
 
   test "protected routes accessible with valid token" do
     user = create_test_user
-    
+
     headers = auth_headers_for(user)
     get holidays_path, headers: headers, as: :json
-    
+
     assert_response :success
   end
-  
+
   test "user is auto-created if not exists" do
     # Simulate a valid Clerk token for a user not in our DB
     clerk_id = "user_new_456"

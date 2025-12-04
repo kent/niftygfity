@@ -6,4 +6,3 @@ class HolidayUser < ApplicationRecord
 
   validates :user_id, uniqueness: { scope: :holiday_id }
 end
-

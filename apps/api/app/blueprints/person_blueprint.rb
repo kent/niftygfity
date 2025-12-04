@@ -19,4 +19,3 @@ class PersonBlueprint < ApplicationBlueprint
     association :gifts_given, blueprint: GiftBlueprint
   end
 end
-

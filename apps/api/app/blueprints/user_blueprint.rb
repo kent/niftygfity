@@ -22,4 +22,3 @@ class UserBlueprint < ApplicationBlueprint
     fields :email
   end
 end
-

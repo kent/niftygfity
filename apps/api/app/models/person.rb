@@ -21,4 +21,3 @@ class Person < ApplicationRecord
     shared_holidays.joins(:holiday_users).where(holiday_users: { user_id: user.id }).exists?
   end
 end
-

@@ -4,4 +4,3 @@ class AddDigestPreferencesToUsers < ActiveRecord::Migration[8.1]
     add_column :users, :last_digest_sent_at, :datetime
   end
 end
-

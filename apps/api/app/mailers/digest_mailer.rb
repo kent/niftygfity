@@ -10,4 +10,3 @@ class DigestMailer < ApplicationMailer
     )
   end
 end
-

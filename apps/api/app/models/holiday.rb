@@ -35,4 +35,3 @@ class Holiday < ApplicationRecord
     save!
   end
 end
-
