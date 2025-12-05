@@ -138,7 +138,7 @@ function PremiumUpsell() {
           Get personalized gift ideas powered by AI. Our smart suggestions
           consider age, relationship, occasion, and gift history.
         </p>
-        <Link href="/settings">
+        <Link href="/billing">
           <Button className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700">
             <Sparkles className="h-4 w-4 mr-2" />
             Upgrade to Premium

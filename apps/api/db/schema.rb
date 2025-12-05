@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_04_045209) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_04_164129) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,6 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_045209) do
   create_table "gifts", force: :cascade do |t|
     t.decimal "cost", precision: 10, scale: 2
     t.datetime "created_at", null: false
+    t.integer "created_by_user_id"
     t.text "description"
     t.integer "gift_status_id", null: false
     t.integer "holiday_id", null: false
@@ -77,6 +78,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_045209) do
     t.string "name"
     t.integer "position", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["created_by_user_id"], name: "index_gifts_on_created_by_user_id"
     t.index ["gift_status_id"], name: "index_gifts_on_gift_status_id"
     t.index ["holiday_id", "position"], name: "index_gifts_on_holiday_id_and_position"
     t.index ["holiday_id"], name: "index_gifts_on_holiday_id"
@@ -156,6 +158,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_045209) do
   add_foreign_key "gift_suggestions", "people"
   add_foreign_key "gifts", "gift_statuses"
   add_foreign_key "gifts", "holidays"
+  add_foreign_key "gifts", "users", column: "created_by_user_id"
   add_foreign_key "holiday_people", "holidays"
   add_foreign_key "holiday_people", "people"
   add_foreign_key "holiday_users", "holidays"

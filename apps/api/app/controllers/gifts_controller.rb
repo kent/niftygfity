@@ -4,11 +4,11 @@ class GiftsController < ApplicationController
 
   def index
     gifts = Gift.joins(:holiday).where(holidays: { id: current_user.holiday_ids })
-    render json: GiftBlueprint.render(gifts)
+    render json: GiftBlueprint.render(gifts, current_user: current_user)
   end
 
   def show
-    render json: GiftBlueprint.render(@gift)
+    render json: GiftBlueprint.render(@gift, current_user: current_user)
   end
 
   def create
@@ -16,7 +16,7 @@ class GiftsController < ApplicationController
 
     if gift.save
       auto_share_people(gift)
-      render json: GiftBlueprint.render(gift), status: :created
+      render json: GiftBlueprint.render(gift, current_user: current_user), status: :created
     else
       render json: { errors: gift.errors.full_messages }, status: :unprocessable_entity
     end
@@ -25,7 +25,7 @@ class GiftsController < ApplicationController
   def update
     if @gift.update(gift_params)
       auto_share_people(@gift)
-      render json: GiftBlueprint.render(@gift)
+      render json: GiftBlueprint.render(@gift, current_user: current_user)
     else
       render json: { errors: @gift.errors.full_messages }, status: :unprocessable_entity
     end
@@ -42,7 +42,7 @@ class GiftsController < ApplicationController
 
     # Return all gifts for this holiday with updated positions
     gifts = Gift.where(holiday_id: @gift.holiday_id)
-    render json: GiftBlueprint.render(gifts)
+    render json: GiftBlueprint.render(gifts, current_user: current_user)
   end
 
   private

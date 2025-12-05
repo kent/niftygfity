@@ -5,4 +5,5 @@ export { giftsService } from "./gifts.service";
 export { giftStatusesService } from "./gift-statuses.service";
 export { billingService } from "./billing.service";
 export { giftSuggestionsService } from "./gift-suggestions.service";
+export { usersService } from "./users.service";
 

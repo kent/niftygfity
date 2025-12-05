@@ -1,0 +1,13 @@
+# Links people to holidays for sharing
+# When a person is linked to a holiday, all holiday collaborators can access them
+
+# User one's "mom" is shared to christmas holiday
+mom_christmas:
+  holiday: christmas
+  person: mom
+
+# User one's "dad" is shared to christmas holiday
+dad_christmas:
+  holiday: christmas
+  person: dad
+

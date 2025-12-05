@@ -1,5 +1,5 @@
 class UserBlueprint < ApplicationBlueprint
-  fields :email, :created_at, :subscription_plan, :subscription_expires_at
+  fields :email, :first_name, :last_name, :created_at, :subscription_plan, :subscription_expires_at
 
   field :gift_count do |user|
     user.gift_count

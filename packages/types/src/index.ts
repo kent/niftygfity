@@ -21,6 +21,8 @@ export type SubscriptionStatus = "free" | "active" | "expired";
 export interface User extends BaseEntity {
   email: string;
   clerk_user_id: string;
+  first_name: string | null;
+  last_name: string | null;
   subscription_plan: SubscriptionPlan;
   subscription_expires_at: string | null;
   gift_count: number;
@@ -62,6 +64,7 @@ export interface Person extends BaseEntity {
   gift_count: number;
   user_id: number;
   is_mine: boolean;
+  is_shared: boolean;
 }
 
 export interface PersonWithGifts extends Person {
@@ -166,6 +169,14 @@ export interface JoinHolidayResponse extends Holiday {}
 // Gift
 // =============================================================================
 
+export interface GiftCreator {
+  id: number;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  safe_name: string;
+}
+
 export interface Gift extends BaseEntity {
   name: string;
   description: string | null;
@@ -178,6 +189,8 @@ export interface Gift extends BaseEntity {
   holiday: Holiday;
   recipients: Person[];
   givers: Person[];
+  created_by: GiftCreator | null;
+  is_mine: boolean;
 }
 
 export interface GiftSummary extends BaseEntity {

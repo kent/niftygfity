@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, ChevronRight, Plus, Pencil, Check, Archive, RotateCcw } from "lucide-react";
+import { Calendar, ChevronRight, Plus, Pencil, Check, Archive, RotateCcw, Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import type { Holiday } from "@niftygifty/types";
 
@@ -60,17 +61,26 @@ function HolidayCard({
         year: "numeric",
       })
     : null;
+  const isShared = !holiday.is_owner;
 
   return (
     <div className="relative group">
       <Link href={`/holidays/${holiday.id}`}>
-        <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer">
+        <Card className={`border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer ${isShared ? "border-l-2 border-l-cyan-500/50" : ""}`}>
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
+            <div className={`flex h-12 w-12 items-center justify-center rounded-xl text-2xl ${isShared ? "bg-gradient-to-br from-cyan-500/20 to-violet-500/20" : "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20"}`}>
               {icon}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
+                {isShared && (
+                  <Badge variant="outline" className="text-xs text-cyan-400 border-cyan-500/50 gap-1 shrink-0">
+                    <Users className="h-3 w-3" />
+                    Shared
+                  </Badge>
+                )}
+              </div>
               {formattedDate && <p className="text-sm text-slate-400">{formattedDate}</p>}
             </div>
             <div className="w-5" /> {/* Spacer for arrow/button */}

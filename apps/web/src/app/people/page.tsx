@@ -11,6 +11,7 @@ import {
   FavouritesSection,
   RecentSection,
   FamilySection,
+  SharedSection,
   NewPersonModal,
   type PeopleSection,
 } from "@/components/people";
@@ -75,6 +76,7 @@ export default function PeoplePage() {
     favourites: people.filter((p) => p.gift_count > 0).length,
     recent: people.length,
     family: people.filter((p) => p.relationship === "family").length,
+    shared: people.filter((p) => p.is_shared).length,
   }), [people]);
 
   if (authLoading || dataLoading) {
@@ -122,6 +124,7 @@ export default function PeoplePage() {
             {activeSection === "favourites" && <FavouritesSection people={people} />}
             {activeSection === "recent" && <RecentSection people={people} />}
             {activeSection === "family" && <FamilySection people={people} />}
+            {activeSection === "shared" && <SharedSection people={people} />}
           </div>
         </div>
       </main>

@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { User } from "@niftygifty/types";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User as UserIcon, Mail, Lock, Shield, Eye, EyeOff } from "lucide-react";
+import { User as UserIcon, Mail, Lock, Shield, Eye, EyeOff, Pencil, Check, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { usersService } from "@/services";
 
 interface ProfileSectionProps {
   user: User | null;
@@ -13,11 +16,51 @@ interface ProfileSectionProps {
 }
 
 export function ProfileSection({ user }: ProfileSectionProps) {
+  const { user: clerkUser } = useUser();
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [firstName, setFirstName] = useState(user?.first_name || "");
+  const [lastName, setLastName] = useState(user?.last_name || "");
+  const [isSaving, setIsSaving] = useState(false);
+
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPasswords, setShowPasswords] = useState(false);
+
+  // Sync form state when user changes
+  useEffect(() => {
+    setFirstName(user?.first_name || "");
+    setLastName(user?.last_name || "");
+  }, [user?.first_name, user?.last_name]);
+
+  const handleNameSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clerkUser) return;
+
+    setIsSaving(true);
+    try {
+      // Update in Clerk (source of truth)
+      await clerkUser.update({
+        firstName: firstName.trim() || undefined,
+        lastName: lastName.trim() || undefined,
+      });
+      // Sync to backend for collaboration features
+      await usersService.syncProfile();
+      toast.success("Profile updated");
+      setIsEditingName(false);
+    } catch {
+      toast.error("Failed to update profile");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setFirstName(user?.first_name || "");
+    setLastName(user?.last_name || "");
+    setIsEditingName(false);
+  };
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +85,101 @@ export function ProfileSection({ user }: ProfileSectionProps) {
             <p className="text-slate-400 text-sm">
               Manage your account settings and preferences
             </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Name Card */}
+      <div className="group relative rounded-2xl border border-slate-800/50 bg-slate-900/30 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-slate-700/50 hover:shadow-lg hover:shadow-violet-500/5">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="relative p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700/50 shrink-0">
+              <UserIcon className="h-5 w-5 text-slate-400" />
+            </div>
+            <div className="flex-1">
+              {!isEditingName ? (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-medium uppercase tracking-wider text-slate-500 block mb-1">
+                      Name
+                    </span>
+                    <p className="text-lg font-medium text-white">
+                      {user?.first_name || user?.last_name
+                        ? `${user?.first_name || ""} ${user?.last_name || ""}`.trim()
+                        : "Not set"}
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsEditingName(true)}
+                    className="border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-700 hover:text-white hover:border-slate-600 transition-all duration-200"
+                  >
+                    <Pencil className="h-4 w-4 mr-1.5" />
+                    Edit
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleNameSubmit} className="space-y-4">
+                  <span className="text-xs font-medium uppercase tracking-wider text-slate-500 block mb-4">
+                    Edit Name
+                  </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="first-name" className="text-slate-300 text-sm">
+                        First Name
+                      </Label>
+                      <Input
+                        id="first-name"
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        className="bg-slate-800/50 border-slate-700 text-white focus:border-violet-500 focus:ring-violet-500/20 transition-all"
+                        placeholder="First name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="last-name" className="text-slate-300 text-sm">
+                        Last Name
+                      </Label>
+                      <Input
+                        id="last-name"
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className="bg-slate-800/50 border-slate-700 text-white focus:border-violet-500 focus:ring-violet-500/20 transition-all"
+                        placeholder="Last name"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCancelEdit}
+                      disabled={isSaving}
+                      className="flex-1 border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-700 hover:text-white"
+                    >
+                      <X className="h-4 w-4 mr-1.5" />
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isSaving}
+                      className="flex-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/25 disabled:shadow-none disabled:opacity-50 transition-all duration-200"
+                    >
+                      {isSaving ? (
+                        <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                      ) : (
+                        <Check className="h-4 w-4 mr-1.5" />
+                      )}
+                      Save
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </div>

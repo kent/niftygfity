@@ -1,15 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { AUTH_ROUTES } from "@/services";
-import { getCharityStats, DEFAULT_CHARITY_STATS } from "@/data/public";
 import { AuthRedirect } from "@/components/auth-redirect";
 import { JsonLd } from "@/components/json-ld";
+import { getCharityStats, DEFAULT_CHARITY_STATS } from "@/data/public";
 
 export const metadata: Metadata = {
-  title: "Make Your Giving Pledge - Commit to Change Lives | FareGalo",
+  title: "FareGalo - Make Holiday Gift Lists Easy | Gift Organization App",
   description:
-    "Join thousands making meaningful charitable pledges. Set your giving goals, choose causes you care about, and track your impact over time.",
+    "The easiest way to create and manage gift lists for holidays. Organize gifts for family and friends, track your budget, share wish lists, and make every holiday stress-free and memorable.",
   alternates: {
     canonical: "/",
   },
@@ -20,20 +20,21 @@ export default async function HomePage() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://faregalo.com";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col overflow-hidden relative">
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          name: "Make Your Giving Pledge",
+          name: "FareGalo - Holiday Gift Lists Made Easy",
           url: baseUrl,
           description:
-            "Join thousands making meaningful charitable pledges. Set your giving goals and track your impact.",
+            "The easiest way to create and manage gift lists for holidays. Organize gifts for family and friends, track your budget, share wish lists, and make every holiday stress-free and memorable.",
           mainEntity: {
-            "@type": "Article",
-            headline: "Make Your Giving Pledge",
+            "@type": "SoftwareApplication",
+            name: "FareGalo",
+            applicationCategory: "LifestyleApplication",
             description:
-              "Commit to making a difference through charitable giving. Choose your causes and pledge amounts.",
+              "A holiday gift list management app that helps you organize presents for family and friends, track your budget, and coordinate with others. Makes holiday gift-giving stress-free and organized.",
             author: {
               "@type": "Organization",
               name: "FareGalo",
@@ -44,10 +45,22 @@ export default async function HomePage() {
       {/* Client-side auth redirect */}
       <AuthRedirect />
 
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-transparent to-transparent" />
+      {/* Enhanced Background Effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/30 via-teal-900/20 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-teal-900/20 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[conic-gradient(from_0deg_at_50%_50%,_transparent_0deg,_rgba(6,182,212,0.1)_120deg,_transparent_240deg)] animate-pulse" />
+
+      {/* Animated Floating Elements */}
+      <div className="absolute top-20 left-10 w-4 h-4 bg-emerald-400/30 rounded-full animate-pulse" style={{animationDelay: '0s', animationDuration: '3s'}} />
+      <div className="absolute top-40 right-20 w-6 h-6 bg-teal-400/20 rounded-full animate-pulse" style={{animationDelay: '1s', animationDuration: '4s'}} />
+      <div className="absolute bottom-40 left-1/4 w-3 h-3 bg-emerald-500/40 rounded-full animate-pulse" style={{animationDelay: '2s', animationDuration: '5s'}} />
+      <div className="absolute top-1/3 right-10 w-5 h-5 bg-teal-300/25 rounded-full animate-pulse" style={{animationDelay: '1.5s', animationDuration: '3.5s'}} />
+
+      {/* Subtle Grid Pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDEwMCAwIEwgMCAwIDAgMTAwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMCwyNTUsNDAsMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMDIwMjAiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJ2LTRoMnY0em0wLTZ2LTJoMnYyaC0yem0tNCAyaDJ2Mmgt MnYtMnptMC02aDJ2Mmgt MnYtMnptLTQgOGgydjJoLTJ2LTJ6bTAtNmgydjJoLTJ2LTJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />
 
-      <header className="relative z-10 container mx-auto px-4 py-6">
+      <header className="relative z-10 container mx-auto px-4 py-6 backdrop-blur-sm bg-slate-950/30 rounded-2xl mx-4 mt-4 border border-slate-800/50">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500">
@@ -61,10 +74,9 @@ export default async function HomePage() {
                 strokeLinejoin="round"
                 className="h-5 w-5 text-white"
               >
-                <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6" />
-                <path d="M12 12V3" />
-                <path d="m8 7 4-4 4 4" />
-                <rect x="4" y="12" width="16" height="2" rx="1" />
+                <rect x="3" y="8" width="18" height="4" rx="1" />
+                <path d="m12 8-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2l-2 2" />
+                <path d="M7 12v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-9" />
               </svg>
             </div>
             <span className="text-xl font-bold text-white">FareGalo</span>
@@ -94,47 +106,60 @@ export default async function HomePage() {
           <div className="mb-8 space-y-4">
             <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/40 text-white text-base font-semibold backdrop-blur-sm shadow-lg shadow-emerald-500/10">
               <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></div>
-              <span>Trusted by Serious Philanthropists</span>
+              <span>Trusted by Holiday Organizers</span>
             </div>
             <div className="flex flex-wrap justify-center gap-4 text-emerald-200">
               <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-950/30 border border-emerald-500/30">
                 <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                 </svg>
-                <span className="font-medium">100% Transparent</span>
+                <span className="font-medium">Easy Organization</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-950/30 border border-emerald-500/30">
                 <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.236 4.53L8.059 10.59a.75.75 0 00-1.118 1.004l2.13 2.375a.75.75 0 001.168-.043l3.857-5.395z" clipRule="evenodd" />
                 </svg>
-                <span className="font-medium">Impact Verified</span>
+                <span className="font-medium">Budget Tracking</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-950/30 border border-emerald-500/30">
+                <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+                </svg>
+                <span className="font-medium">Family Sharing</span>
               </div>
             </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
-            Make Your{" "}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-              Charitable Giving Count
+          <h1 className="text-6xl md:text-8xl font-bold text-white mb-8 tracking-tight leading-[1.1] animate-in fade-in-0 slide-in-from-bottom-2 duration-700">
+            Make Holiday{" "}
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400 bg-clip-text text-transparent animate-pulse">
+              Gift Lists Easy
             </span>
           </h1>
-          <p className="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
-            <strong className="text-white">See exactly how your donations create real change.</strong>{" "}
-            We research the most effective charities so you can give with confidence.
-            Get quarterly impact reports showing <em className="text-emerald-300">how every dollar makes a difference</em>.
+          <p className="text-xl text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed animate-in fade-in-0 slide-in-from-bottom-2 duration-1000" style={{animationDelay: '200ms'}}>
+            <strong className="text-white bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">The gift list app that makes holidays effortless.</strong>{" "}
+            Organize gifts for everyone, track your budget, share wish lists with family, and never forget a present again.
+            <span className="text-emerald-300"> Smart gift planning that keeps you organized all season long.</span>
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-in fade-in-0 slide-in-from-bottom-2 duration-1000" style={{animationDelay: '400ms'}}>
             <Button
               asChild
               size="lg"
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-lg px-8"
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-lg px-10 py-4 shadow-2xl shadow-emerald-500/25 hover:shadow-emerald-400/30 transition-all duration-300 hover:scale-105 hover:-translate-y-1 border border-emerald-400/20"
             >
-              <Link href={AUTH_ROUTES.signUp}>Create My Giving Pledge</Link>
+              <Link href={AUTH_ROUTES.signUp}>
+                <span className="flex items-center gap-2">
+                  Start My Gift Lists
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </Link>
             </Button>
             <Button
               variant="outline"
               size="lg"
               asChild
-              className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white text-lg px-8"
+              className="border-slate-700 text-slate-300 hover:bg-slate-800/50 hover:text-white text-lg px-10 py-4 backdrop-blur-sm hover:border-emerald-500/50 transition-all duration-300 hover:scale-105"
             >
               <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
             </Button>
@@ -149,44 +174,44 @@ export default async function HomePage() {
             How it <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">works</span>
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Making your giving pledge is simple and transparent. Start small, grow your impact, and track your difference.
+            Turn holiday stress into holiday joy with our simple gift planning app. Three easy steps help you plan ahead, stay within budget, and make every gift meaningful.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16">
-          <div className="text-center group">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">1</span>
-              </div>
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+          <div className="text-center group p-6 rounded-3xl bg-gradient-to-br from-slate-900/50 to-slate-800/30 backdrop-blur-sm border border-emerald-500/10 hover:border-emerald-400/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2">
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-emerald-500/30 to-teal-500/30 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-emerald-400/20">
+              <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Set Your Goals</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Choose your giving amount and frequency. Start with any amount that feels meaningful to you.
+            <h3 className="text-2xl font-bold text-white mb-3">Add People</h3>
+            <p className="text-slate-300 leading-relaxed">
+              Add everyone from family and friends to coworkers and neighbors. Build your complete holiday gift list and never miss anyone again.
             </p>
           </div>
 
-          <div className="text-center group">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">2</span>
-              </div>
+          <div className="text-center group p-6 rounded-3xl bg-gradient-to-br from-slate-900/50 to-slate-800/30 backdrop-blur-sm border border-teal-500/10 hover:border-teal-400/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2">
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-teal-500/30 to-emerald-500/30 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-teal-400/20">
+              <svg className="w-10 h-10 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+              </svg>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Choose Causes</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Select from vetted charities across education, environment, health, and social justice causes.
+            <h3 className="text-2xl font-bold text-white mb-3">Plan Gifts</h3>
+            <p className="text-slate-300 leading-relaxed">
+              Brainstorm gift ideas, set budgets for each person, and save notes about their interests. The app helps you remember what everyone loves.
             </p>
           </div>
 
-          <div className="text-center group">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">3</span>
-              </div>
+          <div className="text-center group p-6 rounded-3xl bg-gradient-to-br from-slate-900/50 to-slate-800/30 backdrop-blur-sm border border-emerald-500/10 hover:border-emerald-400/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2">
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-emerald-500/30 to-teal-500/30 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-emerald-400/20">
+              <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Track Impact</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              See real stories and metrics showing how your contributions are making a difference in the world.
+            <h3 className="text-2xl font-bold text-white mb-3">Stay Organized</h3>
+            <p className="text-slate-300 leading-relaxed">
+              Track purchases, monitor spending across all your lists, and check off completed gifts. Stay organized from planning to wrapping.
             </p>
           </div>
         </div>
@@ -199,7 +224,7 @@ export default async function HomePage() {
               <div className="w-6 h-6 bg-gradient-to-br from-teal-400 to-emerald-400 rounded-full border-2 border-slate-900"></div>
               <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full border-2 border-slate-900"></div>
             </div>
-            <span>Join 1,200+ people making a difference</span>
+            <span>Join 1,200+ organized gift givers</span>
           </div>
         </div>
       </section>
@@ -209,15 +234,15 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Real <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">impact</span>
+              Real <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">results</span>
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-              See how pledgers are making a difference and building a more generous world, one commitment at a time.
+              See how families are saving time, money, and stress by planning their holiday gifts with our easy-to-use app.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Impact Story 1 */}
+            {/* User Story 1 */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-2xl p-6 border border-slate-700/50 backdrop-blur-sm">
@@ -229,20 +254,20 @@ export default async function HomePage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-white mb-1">Sarah M.</h3>
-                    <p className="text-emerald-400 text-sm">$50/month pledge</p>
+                    <p className="text-emerald-400 text-sm">Family of 12</p>
                   </div>
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                  &quot;I started small with just $25/month. Seeing the real impact through the platform motivated me to increase my pledge. Last year, I helped fund clean water for 30 families.&quot;
+                  &quot;Finally, I can keep track of everyone! No more forgetting what I bought or overspending. The budget tracker saved me $300 last Christmas, and I actually enjoyed gift shopping for the first time in years.&quot;
                 </p>
                 <div className="flex items-center text-xs text-slate-400">
                   <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
-                  <span>Active pledger since 2023</span>
+                  <span>User since 2023</span>
                 </div>
               </div>
             </div>
 
-            {/* Impact Story 2 */}
+            {/* User Story 2 */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-2xl p-6 border border-slate-700/50 backdrop-blur-sm">
@@ -254,109 +279,54 @@ export default async function HomePage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-white mb-1">David R.</h3>
-                    <p className="text-teal-400 text-sm">$100/month pledge</p>
+                    <p className="text-teal-400 text-sm">Holiday organizer</p>
                   </div>
                 </div>
                 <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                  &quot;The transparency is incredible. I get quarterly reports showing exactly where my money went and what impact it had. It&apos;s like having a personal philanthropy advisor.&quot;
+                  &quot;The family sharing feature is amazing. Everyone can add their wish lists, and I can coordinate with my siblings so we don&apos;t buy duplicate gifts. Made the holidays so much smoother.&quot;
                 </p>
                 <div className="flex items-center text-xs text-slate-400">
                   <div className="w-2 h-2 bg-teal-400 rounded-full mr-2"></div>
-                  <span>Active pledger since 2022</span>
+                  <span>User since 2022</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Trust indicators */}
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">100%</div>
-              <div className="text-slate-400 text-sm">Transparent</div>
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            <div className="text-center group p-6 rounded-2xl bg-gradient-to-br from-slate-900/40 to-slate-800/20 backdrop-blur-sm border border-slate-700/30 hover:border-emerald-500/30 transition-all duration-300">
+              <div className="text-4xl font-bold text-white mb-2 group-hover:scale-110 transition-transform">100%</div>
+              <div className="text-slate-300 text-sm font-medium">Free to Use</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-emerald-400 mb-1">$2.1M</div>
-              <div className="text-slate-400 text-sm">Pledged Total</div>
+            <div className="text-center group p-6 rounded-2xl bg-gradient-to-br from-slate-900/40 to-slate-800/20 backdrop-blur-sm border border-slate-700/30 hover:border-emerald-500/30 transition-all duration-300">
+              <div className="text-4xl font-bold text-emerald-400 mb-2 group-hover:scale-110 transition-transform">25K+</div>
+              <div className="text-slate-300 text-sm font-medium">Gifts Organized</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-teal-400 mb-1">45+</div>
-              <div className="text-slate-400 text-sm">Charities</div>
+            <div className="text-center group p-6 rounded-2xl bg-gradient-to-br from-slate-900/40 to-slate-800/20 backdrop-blur-sm border border-slate-700/30 hover:border-teal-500/30 transition-all duration-300">
+              <div className="text-4xl font-bold text-teal-400 mb-2 group-hover:scale-110 transition-transform">$350</div>
+              <div className="text-slate-300 text-sm font-medium">Avg. Saved</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">1,200</div>
-              <div className="text-slate-400 text-sm">Active Pledgers</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Charity Tracker */}
-      <section className="relative z-10 container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-950/50 to-teal-950/50 border border-emerald-500/20 p-8">
-            {/* Animated glow effect */}
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
-            
-            <div className="relative flex flex-col sm:flex-row items-center gap-6">
-              {/* Heart icon */}
-              <div className="flex-shrink-0">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-8 h-8 text-white"
-                  >
-                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 text-center sm:text-left">
-                <p className="text-emerald-400 text-sm font-medium uppercase tracking-wider mb-1">
-                  Our Company Pledge: 10% of Revenue to Charity
-                </p>
-                <div className="flex items-baseline gap-2 justify-center sm:justify-start">
-                  <span className="text-4xl font-bold text-white tabular-nums">
-                    {charityStats.fuzzy_raised_amount}
-                  </span>
-                  <span className="text-emerald-400/70 text-sm">total donated so far</span>
-                </div>
-                <p className="text-slate-400 text-sm mt-2 mb-3">
-                  {charityStats.milestone_description}
-                </p>
-                <Link 
-                  href="/giving-pledge" 
-                  className="inline-flex items-center text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
-                >
-                  Learn about our pledge
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1">
-                    <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
-                  </svg>
-                </Link>
-              </div>
-
-              {/* Decorative ribbon */}
-              <div className="hidden lg:block absolute -right-1 top-4">
-                <div className="w-24 h-6 bg-gradient-to-r from-emerald-500 to-teal-500 transform rotate-45 translate-x-6 flex items-center justify-center">
-                  <span className="text-white text-xs font-bold tracking-wide">GIVING</span>
-                </div>
-              </div>
+            <div className="text-center group p-6 rounded-2xl bg-gradient-to-br from-slate-900/40 to-slate-800/20 backdrop-blur-sm border border-slate-700/30 hover:border-emerald-500/30 transition-all duration-300">
+              <div className="text-4xl font-bold text-white mb-2 group-hover:scale-110 transition-transform">1,200+</div>
+              <div className="text-slate-300 text-sm font-medium">Holiday Organizers</div>
             </div>
           </div>
         </div>
       </section>
+
 
       <footer className="relative z-10 container mx-auto px-4 py-8 text-center space-y-4">
         <div className="flex justify-center gap-6 text-sm text-slate-400">
           <Link href="/giving-pledge" className="hover:text-emerald-400 transition-colors">
-            Giving Pledge
+            Our Giving
           </Link>
         </div>
         <p className="text-slate-500 text-sm">
-          © {new Date().getFullYear()} FareGalo. Made with 💜
+          © {new Date().getFullYear()} FareGalo. Made with 💜 for holiday organizers everywhere
+        </p>
+        <p className="text-slate-600 text-xs mt-1">
+          10% of profits support charity
         </p>
       </footer>
     </div>

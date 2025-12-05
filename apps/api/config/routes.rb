@@ -39,6 +39,9 @@ Rails.application.routes.draw do
   post "billing/redeem_coupon" => "billing#redeem_coupon"
   post "billing/webhook" => "billing#webhook"
 
+  # Profile
+  post "profile/sync" => "profile#sync"
+
   # Health check endpoints
   get "up" => "rails/health#show", as: :rails_health_check
   get "/" => "health#show", as: :api_health

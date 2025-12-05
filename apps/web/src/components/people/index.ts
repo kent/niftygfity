@@ -7,4 +7,5 @@ export { AllSection } from "./AllSection";
 export { FavouritesSection } from "./FavouritesSection";
 export { RecentSection } from "./RecentSection";
 export { FamilySection } from "./FamilySection";
+export { SharedSection } from "./SharedSection";
 

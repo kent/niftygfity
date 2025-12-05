@@ -54,6 +54,8 @@ export function mapClerkUser(
     id: 0, // Internal ID not available without backend fetch
     email: clerkUser.primaryEmailAddress?.emailAddress || "",
     clerk_user_id: clerkUser.id,
+    first_name: clerkUser.firstName || null,
+    last_name: clerkUser.lastName || null,
     subscription_plan: billingStatus?.subscription_plan || "free",
     subscription_expires_at: billingStatus?.subscription_expires_at || null,
     gift_count: billingStatus?.gift_count || 0,

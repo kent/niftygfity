@@ -1,6 +1,7 @@
 class Gift < ApplicationRecord
   belongs_to :holiday
   belongs_to :gift_status
+  belongs_to :created_by, class_name: "User", foreign_key: "created_by_user_id", optional: true
   has_many :gift_recipients, dependent: :destroy
   has_many :recipients, through: :gift_recipients, source: :person
   has_many :gift_givers, dependent: :destroy
@@ -12,6 +13,7 @@ class Gift < ApplicationRecord
   default_scope { order(:position) }
 
   before_create :set_position
+  before_create :set_created_by
   after_create :track_creation
   after_update :track_update
 
@@ -81,5 +83,9 @@ class Gift < ApplicationRecord
       max_pos = Gift.unscoped.where(holiday_id: holiday_id).maximum(:position) || 0
       self.position = max_pos + 1
     end
+  end
+
+  def set_created_by
+    self.created_by_user_id ||= Current.user&.id
   end
 end

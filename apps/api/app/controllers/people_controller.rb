@@ -4,18 +4,18 @@ class PeopleController < ApplicationController
 
   # GET /people
   # GET /people?holiday_id=X (returns your people + people shared to holiday X)
+  # Without holiday_id: returns all accessible people (owned + shared via any holiday)
   def index
     if params[:holiday_id].present?
       holiday = current_user.holidays.find_by(id: params[:holiday_id])
       return render json: { error: "Holiday not found" }, status: :not_found unless holiday
 
       # Your people + people shared to this holiday (from any collaborator)
-      own_people = current_user.people
-      shared_people = holiday.shared_people.where.not(user_id: current_user.id)
-      people = Person.where(id: own_people.select(:id)).or(Person.where(id: shared_people.select(:id)))
+      people = accessible_people_for_holiday(holiday)
       render json: PersonBlueprint.render(people, current_user: current_user)
     else
-      people = current_user.people
+      # All accessible people: owned + shared via any holiday user is member of
+      people = all_accessible_people
       render json: PersonBlueprint.render(people, current_user: current_user)
     end
   end
@@ -71,5 +71,21 @@ class PeopleController < ApplicationController
 
   def person_params
     params.require(:person).permit(:name, :relationship, :age, :gender)
+  end
+
+  def accessible_people_for_holiday(holiday)
+    own_people = current_user.people
+    shared_people = holiday.shared_people.where.not(user_id: current_user.id)
+    Person.where(id: own_people.select(:id)).or(Person.where(id: shared_people.select(:id)))
+  end
+
+  def all_accessible_people
+    own_people_ids = current_user.people.select(:id)
+    # People shared to any holiday the user is a member of
+    shared_people_ids = Person.joins(:shared_holidays)
+                              .where(holidays: { id: current_user.holiday_ids })
+                              .where.not(user_id: current_user.id)
+                              .select(:id)
+    Person.where(id: own_people_ids).or(Person.where(id: shared_people_ids))
   end
 end

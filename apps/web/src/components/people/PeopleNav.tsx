@@ -1,14 +1,14 @@
 "use client";
 
-import { Users, Star, Clock, Heart, Plus } from "lucide-react";
+import { Users, Star, Clock, Heart, Plus, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type PeopleSection = "all" | "favourites" | "recent" | "family" | "new";
+export type PeopleSection = "all" | "favourites" | "recent" | "family" | "shared" | "new";
 
 interface PeopleNavProps {
   activeSection: PeopleSection;
   onSectionChange: (section: PeopleSection) => void;
-  counts?: { all: number; favourites: number; recent: number; family: number };
+  counts?: { all: number; favourites: number; recent: number; family: number; shared: number };
 }
 
 const NAV_ITEMS: { id: PeopleSection; label: string; icon: typeof Users }[] = [
@@ -16,6 +16,7 @@ const NAV_ITEMS: { id: PeopleSection; label: string; icon: typeof Users }[] = [
   { id: "favourites", label: "Favourites", icon: Star },
   { id: "recent", label: "Recent", icon: Clock },
   { id: "family", label: "Family", icon: Heart },
+  { id: "shared", label: "Shared", icon: Share2 },
   { id: "new", label: "New Person", icon: Plus },
 ];
 

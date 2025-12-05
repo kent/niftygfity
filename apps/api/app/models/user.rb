@@ -68,4 +68,9 @@ class User < ApplicationRecord
       :free
     end
   end
+
+  # Display name: first_name if present, otherwise email
+  def safe_name
+    first_name.presence || email
+  end
 end

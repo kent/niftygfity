@@ -14,6 +14,13 @@ class PersonBlueprint < ApplicationBlueprint
     current_user ? person.user_id == current_user.id : true
   end
 
+  field :is_shared do |person|
+    person.shared_holidays.joins(:holiday_users)
+          .group("holidays.id")
+          .having("COUNT(holiday_users.id) > 1")
+          .exists?
+  end
+
   view :with_gifts do
     association :gifts_received, blueprint: GiftBlueprint
     association :gifts_given, blueprint: GiftBlueprint

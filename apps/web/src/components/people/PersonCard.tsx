@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Person } from "@niftygifty/types";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, ChevronRight, Gift } from "lucide-react";
+import { User, ChevronRight, Gift, Users } from "lucide-react";
 
 interface PersonCardProps {
   person: Person;
@@ -18,7 +18,12 @@ export function PersonCard({ person }: PersonCardProps) {
             <User className="h-6 w-6 text-fuchsia-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white truncate">{person.name}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-white truncate">{person.name}</h3>
+              {person.is_shared && (
+                <Users className="h-3.5 w-3.5 text-slate-500" />
+              )}
+            </div>
             <div className="flex items-center gap-3 text-sm text-slate-400">
               {person.relationship && (
                 <span className="capitalize">{person.relationship}</span>
