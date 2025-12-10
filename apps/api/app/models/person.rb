@@ -7,6 +7,7 @@ class Person < ApplicationRecord
   has_many :gift_suggestions, dependent: :destroy
   has_many :holiday_people, dependent: :destroy
   has_many :shared_holidays, through: :holiday_people, source: :holiday
+  has_many :match_slots, dependent: :destroy
 
   validates :name, presence: true
 

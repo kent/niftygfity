@@ -53,7 +53,7 @@ class MatchArrangementsApiTest < ActionDispatch::IntegrationTest
         match_arrangement: {
           slots: [
             { person_id: people(:mom).id, gift_id: gifts(:sweater).id, row_index: 0 },
-            { person_id: people(:dad).id, gift_id: nil, row_index: 0 }
+            { person_id: people(:dad).id, gift_id: nil, group_key: "group_1", row_index: 0 }
           ]
         }
       },

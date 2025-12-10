@@ -8,6 +8,7 @@ class Holiday < ApplicationRecord
   has_many :gifts, dependent: :destroy
   has_many :gift_changes, dependent: :destroy
   has_many :gift_suggestions, dependent: :nullify
+  has_many :match_arrangements, dependent: :destroy
 
   validates :name, presence: true
 

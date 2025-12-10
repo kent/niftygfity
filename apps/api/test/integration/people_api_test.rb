@@ -41,7 +41,8 @@ class PeopleApiTest < ActionDispatch::IntegrationTest
   end
 
   test "destroy removes a person" do
-    person = people(:mom)
+    # Create a person without gifts attached
+    person = @user.people.create!(name: "Test Person")
     assert_difference("Person.count", -1) do
       delete person_path(person), headers: @auth_headers, as: :json
     end

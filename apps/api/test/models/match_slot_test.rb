@@ -16,7 +16,8 @@ class MatchSlotTest < ActiveSupport::TestCase
       match_arrangement: match_arrangements(:one),
       person: people(:sister),
       row_index: 5,
-      gift: nil
+      gift: nil,
+      group_key: "group_1"
     )
     assert slot.valid?
   end

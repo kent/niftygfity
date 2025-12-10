@@ -21,6 +21,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     email = "new@example.com"
 
     mock_clerk_token("some_valid_token", { "sub" => clerk_id, "email" => email })
+    mock_clerk_user_fetch(clerk_id, email)
+
+    # Ensure user doesn't already exist
+    User.where(clerk_user_id: clerk_id).destroy_all
 
     assert_difference("User.count", 1) do
       get holidays_path, headers: { "Authorization" => "Bearer some_valid_token" }, as: :json

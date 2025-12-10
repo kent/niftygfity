@@ -7,6 +7,7 @@ class Gift < ApplicationRecord
   has_many :gift_givers, dependent: :destroy
   has_many :givers, through: :gift_givers, source: :person
   has_many :gift_changes, dependent: :destroy
+  has_many :match_slots, dependent: :destroy
 
   validates :name, presence: true
 
