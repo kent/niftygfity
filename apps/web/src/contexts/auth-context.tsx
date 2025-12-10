@@ -16,7 +16,7 @@ import {
   useUser as useClerkUser,
   useClerk,
 } from "@clerk/nextjs";
-import { billingService, mapClerkUser } from "@/services";
+import { billingService, usersService, mapClerkUser } from "@/services";
 import { apiClient } from "@/lib/api-client";
 
 interface AuthContextType {
@@ -75,12 +75,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await clerk.signOut();
   }, [clerk]);
 
-  // Fetch billing status when authenticated
+  // Fetch billing status and sync profile when authenticated
   // This is a valid data fetching pattern - setState in callback is intentional
   useEffect(() => {
     let cancelled = false;
 
-    if (isAuthenticated) {
+    if (isAuthenticated && clerkUser) {
+      // Sync profile to backend (fire-and-forget to ensure DB has latest Clerk data)
+      // Pass Clerk data as fallback in case backend can't reach Clerk API
+      usersService.syncProfile({
+        first_name: clerkUser.firstName,
+        last_name: clerkUser.lastName,
+        image_url: clerkUser.imageUrl,
+      }).catch(() => {
+        // Silently fail - sync will retry on next load
+      });
+      
       billingService.getStatus().then((status) => {
         if (!cancelled) {
           setBillingStatus(status);
@@ -88,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }).catch(() => {
         // Silently fail - billing might not be set up yet
       });
-    } else {
+    } else if (!isAuthenticated) {
       // Reset billing when logged out - this is intentional
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setBillingStatus(null);
@@ -97,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, clerkUser]);
 
   // Memoize derived billing values
   const billingValues = useMemo(() => {

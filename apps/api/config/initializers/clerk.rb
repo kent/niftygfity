@@ -15,9 +15,18 @@ if ENV["CLERK_SECRET_KEY"].present?
     config.secret_key = ENV["CLERK_SECRET_KEY"]
   end
 elsif Rails.env.production?
-  # Allow migrations and other db tasks to run without Clerk configured
-  if defined?(Rake) && Rake.application.top_level_tasks.any? { |task| task.start_with?("db:") }
-    # Skip Clerk configuration for database tasks
+  # Only require Clerk when running the web server
+  # Allow all other commands (runner, console, db tasks, etc.) to run without Clerk
+  is_server = false
+  
+  # Check if we're running the server command
+  if $PROGRAM_NAME&.include?("rails") || $0&.include?("rails")
+    # Check command line arguments - only require for "server" command
+    is_server = ARGV.any? { |arg| %w[server s].include?(arg) }
+  end
+  
+  unless is_server
+    # Skip Clerk for non-server commands (runner, console, db tasks, etc.)
   else
     raise "CLERK_SECRET_KEY must be set in production!"
   end

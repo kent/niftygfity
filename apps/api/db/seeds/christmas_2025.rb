@@ -1,11 +1,19 @@
 # Christmas 2025 Gift List Seed
 # Run with: bin/rails runner db/seeds/christmas_2025.rb
+# Or specify user email: USER_EMAIL=user@example.com bin/rails runner db/seeds/christmas_2025.rb
 
 puts "Seeding Christmas 2025 gift list..."
 
-# Find user (first user in dev, or specify email)
-user = User.first!
-puts "Using user: #{user.email}"
+# Find user (first user in dev, or specify email via USER_EMAIL env var)
+if ENV["USER_EMAIL"].present?
+  user = User.find_by!(email: ENV["USER_EMAIL"])
+  puts "Using specified user: #{user.email}"
+elsif User.any?
+  user = User.first!
+  puts "Using first user: #{user.email}"
+else
+  raise "No users found in database! Please create a user first or specify USER_EMAIL=user@example.com"
+end
 
 # Clean up existing Christmas 2025 data
 existing_holiday = Holiday.find_by(name: "Christmas 2025", is_template: false)

@@ -46,7 +46,12 @@ export function ProfileSection({ user }: ProfileSectionProps) {
         lastName: lastName.trim() || undefined,
       });
       // Sync to backend for collaboration features
-      await usersService.syncProfile();
+      // Pass updated values directly in case backend can't reach Clerk API
+      await usersService.syncProfile({
+        first_name: firstName.trim() || null,
+        last_name: lastName.trim() || null,
+        image_url: clerkUser.imageUrl || null,
+      });
       toast.success("Profile updated");
       setIsEditingName(false);
     } catch {
