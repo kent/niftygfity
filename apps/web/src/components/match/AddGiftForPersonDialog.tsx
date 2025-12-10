@@ -73,7 +73,7 @@ export function AddGiftForPersonDialog({
             name: name.trim(),
             holiday_id: holidayId,
             gift_status_id: statusId,
-            cost: cost ? cost : undefined,
+            cost: cost ? parseFloat(cost) : undefined,
             link: link.trim() || undefined,
             description: description.trim() || undefined,
             recipient_ids: [person.id],
