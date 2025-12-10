@@ -33,7 +33,18 @@ import {
   UserCog,
   Save,
   Lightbulb,
+  Trash2,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
 import type { PersonWithGifts, Gift, Holiday, RelationshipCategory, GiftSuggestion } from "@niftygifty/types";
 import { RELATIONSHIP_CATEGORIES } from "@niftygifty/types";
 import { cn } from "@/lib/utils";
@@ -268,18 +279,24 @@ function StatsSection({
 function AboutSection({
   person,
   onUpdate,
+  onDelete,
 }: {
   person: PersonWithGifts;
   onUpdate: (updates: { name?: string; age?: number | null; gender?: string | null }) => Promise<void>;
+  onDelete: () => Promise<void>;
 }) {
   const [name, setName] = useState(person.name);
   const [age, setAge] = useState(person.age?.toString() ?? "");
   const [gender, setGender] = useState(person.gender ?? "");
   const [saving, setSaving] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const hasChanges = name !== person.name || 
     age !== (person.age?.toString() ?? "") || 
     gender !== (person.gender ?? "");
+
+  const hasGifts = person.gifts_received.length > 0 || person.gifts_given.length > 0;
 
   const handleSave = async () => {
     if (!hasChanges || saving) return;
@@ -295,55 +312,110 @@ function AboutSection({
     }
   };
 
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await onDelete();
+    } catch {
+      setDeleting(false);
+    }
+  };
+
   return (
-    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle className="text-lg text-white flex items-center gap-2">
-          <UserCog className="h-5 w-5 text-violet-400" />
-          Edit Person
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name" className="text-slate-300">Name</Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="bg-slate-800/50 border-slate-700 text-white"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="age" className="text-slate-300">Age</Label>
-          <Input
-            id="age"
-            type="number"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            placeholder="Optional"
-            className="bg-slate-800/50 border-slate-700 text-white"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="gender" className="text-slate-300">Gender</Label>
-          <Input
-            id="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            placeholder="Optional"
-            className="bg-slate-800/50 border-slate-700 text-white"
-          />
-        </div>
-        <Button
-          onClick={handleSave}
-          disabled={!hasChanges || saving}
-          className="w-full bg-violet-600 hover:bg-violet-700"
-        >
-          <Save className="h-4 w-4 mr-2" />
-          {saving ? "Saving..." : "Save Changes"}
-        </Button>
-      </CardContent>
-    </Card>
+    <>
+      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-lg text-white flex items-center gap-2">
+            <UserCog className="h-5 w-5 text-violet-400" />
+            Edit Person
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-slate-300">Name</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-slate-800/50 border-slate-700 text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="age" className="text-slate-300">Age</Label>
+            <Input
+              id="age"
+              type="number"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              placeholder="Optional"
+              className="bg-slate-800/50 border-slate-700 text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="gender" className="text-slate-300">Gender</Label>
+            <Input
+              id="gender"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              placeholder="Optional"
+              className="bg-slate-800/50 border-slate-700 text-white"
+            />
+          </div>
+          <Button
+            onClick={handleSave}
+            disabled={!hasChanges || saving}
+            className="w-full bg-violet-600 hover:bg-violet-700"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
+
+          <div className="pt-4 border-t border-slate-700">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(true)}
+              disabled={hasGifts}
+              className="w-full border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Person
+            </Button>
+            {hasGifts && (
+              <p className="text-xs text-slate-500 mt-2 text-center">
+                Cannot delete: this person has {person.gift_count} gift{person.gift_count !== 1 ? "s" : ""} attached
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="bg-slate-900 border-slate-700">
+          <DialogHeader>
+            <DialogTitle className="text-white">Delete {person.name}?</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              This action cannot be undone. This will permanently remove {person.name} from your gift list.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              className="border-slate-600 text-slate-300 hover:bg-slate-800"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
@@ -473,6 +545,21 @@ export default function PersonDetailPage() {
     const updated = await peopleService.update(personId, apiUpdates);
     setPerson({ ...person, ...updated });
   };
+
+  const handlePersonDelete = useCallback(async () => {
+    try {
+      await peopleService.delete(personId);
+      toast.success("Person deleted successfully");
+      router.push("/people");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+      } else {
+        toast.error("Failed to delete person");
+      }
+      throw err;
+    }
+  }, [personId, router]);
 
   // Extract unique holidays from all gifts (received + given), sorted descending by date
   const uniqueHolidays = useMemo(() => {
@@ -622,6 +709,7 @@ export default function PersonDetailPage() {
               <AboutSection
                 person={person}
                 onUpdate={handlePersonUpdate}
+                onDelete={handlePersonDelete}
               />
             )}
           </div>

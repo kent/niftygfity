@@ -303,6 +303,11 @@ export const API_ENDPOINTS = {
   refineGiftSuggestions: (personId: number) => `/people/${personId}/gift_suggestions/refine`,
   giftSuggestion: (id: number) => `/gift_suggestions/${id}`,
   acceptGiftSuggestion: (id: number) => `/gift_suggestions/${id}/accept`,
+
+  // Match Arrangements
+  matchArrangements: "/match_arrangements",
+  matchArrangement: (id: number) => `/match_arrangements/${id}`,
+  matchArrangementsByHoliday: (holidayId: number) => `/holidays/${holidayId}/match_arrangements`,
 } as const;
 
 // =============================================================================
@@ -450,3 +455,56 @@ export interface ApiRequestConfig {
   headers?: Record<string, string>;
   body?: unknown;
 }
+
+// =============================================================================
+// Gift Match Arrangements (for comparing gifts across people)
+// =============================================================================
+
+export interface MatchSlot extends BaseEntity {
+  match_arrangement_id: number;
+  person_id: number;
+  gift_id: number | null;
+  group_key: string | null;
+  row_index: number; // Which row (0-based) this slot is in
+}
+
+export interface MatchGrouping {
+  id: string;
+  label: string;
+  person_id: number;
+  gift_ids: number[];
+}
+
+export interface MatchArrangement extends BaseEntity {
+  holiday_id: number;
+  title: string;
+  person_ids: number[]; // Up to 4 people
+  slots: MatchSlot[];
+  groupings: MatchGrouping[];
+}
+
+export interface CreateMatchArrangementRequest {
+  match_arrangement: {
+    holiday_id: number;
+    title?: string;
+    person_ids: number[];
+    groupings?: MatchGrouping[];
+  };
+}
+
+export interface UpdateMatchArrangementRequest {
+  match_arrangement: {
+    title?: string;
+    person_ids?: number[];
+    slots?: Array<{
+      id?: number;
+      person_id: number;
+      gift_id: number | null;
+      group_key?: string | null;
+      row_index: number;
+    }>;
+    groupings?: MatchGrouping[];
+  };
+}
+
+export type MatchArrangementsResponse = MatchArrangement[];

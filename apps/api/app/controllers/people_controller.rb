@@ -47,6 +47,9 @@ class PeopleController < ApplicationController
   end
 
   def destroy
+    if @person.gifts_received.exists? || @person.gifts_given.exists?
+      return render json: { error: "Cannot delete a person who has gifts attached" }, status: :unprocessable_entity
+    end
     @person.destroy!
     head :no_content
   end

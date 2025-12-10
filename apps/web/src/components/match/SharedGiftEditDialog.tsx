@@ -1,0 +1,152 @@
+"use client";
+
+import { useState, useCallback, useTransition } from "react";
+import { Gift as GiftIcon, ExternalLink, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { PeopleCell } from "@/components/gifts/PeopleCell";
+import { giftsService } from "@/services";
+import { toast } from "sonner";
+import type { Gift, Person } from "@niftygifty/types";
+
+interface SharedGiftEditDialogProps {
+  gift: Gift | null;
+  people: Person[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onGiftUpdated: (gift: Gift) => void;
+  onPersonCreated: (person: Person) => void;
+}
+
+export function SharedGiftEditDialog({
+  gift,
+  people,
+  open,
+  onOpenChange,
+  onGiftUpdated,
+  onPersonCreated,
+}: SharedGiftEditDialogProps) {
+  const [isPending, startTransition] = useTransition();
+  const [localRecipients, setLocalRecipients] = useState<number[]>([]);
+  const [localGivers, setLocalGivers] = useState<number[]>([]);
+
+  // Sync local state when gift changes
+  const handleOpenChange = useCallback((isOpen: boolean) => {
+    if (isOpen && gift) {
+      setLocalRecipients(gift.recipients.map(r => r.id));
+      setLocalGivers(gift.givers.map(g => g.id));
+    }
+    onOpenChange(isOpen);
+  }, [gift, onOpenChange]);
+
+  const updateRecipients = useCallback((ids: number[]) => {
+    if (!gift) return;
+    setLocalRecipients(ids);
+    
+    startTransition(async () => {
+      try {
+        const updated = await giftsService.update(gift.id, { recipient_ids: ids });
+        onGiftUpdated(updated);
+      } catch {
+        toast.error("Failed to update recipients");
+        setLocalRecipients(gift.recipients.map(r => r.id));
+      }
+    });
+  }, [gift, onGiftUpdated]);
+
+  const updateGivers = useCallback((ids: number[]) => {
+    if (!gift) return;
+    setLocalGivers(ids);
+    
+    startTransition(async () => {
+      try {
+        const updated = await giftsService.update(gift.id, { giver_ids: ids });
+        onGiftUpdated(updated);
+      } catch {
+        toast.error("Failed to update givers");
+        setLocalGivers(gift.givers.map(g => g.id));
+      }
+    });
+  }, [gift, onGiftUpdated]);
+
+  if (!gift) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <GiftIcon className="h-5 w-5 text-violet-400" />
+            Edit Gift
+            {isPending && <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
+          </DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-4">
+          {/* Gift Name & Link */}
+          <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700">
+            <p className="font-medium text-white">{gift.name}</p>
+            {gift.link && (
+              <a
+                href={gift.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-violet-400 hover:text-violet-300 flex items-center gap-1 mt-1"
+              >
+                View link <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
+            {gift.description && (
+              <p className="text-sm text-slate-400 mt-2">{gift.description}</p>
+            )}
+          </div>
+
+          {/* Cost & Status */}
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <Label className="text-sm text-slate-400">Cost</Label>
+              <p className="font-medium text-white">
+                {gift.cost ? `$${parseFloat(gift.cost).toFixed(0)}` : "—"}
+              </p>
+            </div>
+            <div className="flex-1">
+              <Label className="text-sm text-slate-400">Status</Label>
+              <p className="font-medium text-white">{gift.gift_status.name}</p>
+            </div>
+          </div>
+
+          {/* Recipients (To) */}
+          <div>
+            <Label className="text-sm text-slate-400 mb-2 block">To (Recipients)</Label>
+            <PeopleCell
+              selectedIds={localRecipients}
+              people={people}
+              onChange={updateRecipients}
+              onPersonCreated={onPersonCreated}
+              placeholder="Select recipients..."
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-800"
+            />
+          </div>
+
+          {/* Givers (From) */}
+          <div>
+            <Label className="text-sm text-slate-400 mb-2 block">From (Givers)</Label>
+            <PeopleCell
+              selectedIds={localGivers}
+              people={people}
+              onChange={updateGivers}
+              onPersonCreated={onPersonCreated}
+              placeholder="Select givers..."
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-800"
+            />
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

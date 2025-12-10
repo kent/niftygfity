@@ -2,16 +2,27 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { holidaysService, peopleService, AUTH_ROUTES } from "@/services";
-import {
-  StatsCards,
-  HolidayTemplatesSection,
-  PeopleSection,
-} from "@/components/dashboard";
 import { AppHeader } from "@/components/layout";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Gift, Plus, ArrowRight, Loader2 } from "lucide-react";
 import type { Holiday, Person } from "@niftygifty/types";
+
+const HOLIDAY_ICONS: Record<string, string> = {
+  Christmas: "🎄",
+  Hanukkah: "🕎",
+  Diwali: "🪔",
+  Easter: "🐣",
+  Birthday: "🎂",
+  "Mother's Day": "💐",
+  "Father's Day": "👔",
+  Valentine: "💝",
+};
 
 export default function DashboardPage() {
   const { user, isAuthenticated, isLoading, signOut } = useAuth();
@@ -22,6 +33,8 @@ export default function DashboardPage() {
   const [people, setPeople] = useState<Person[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [creatingHolidayId, setCreatingHolidayId] = useState<number | null>(null);
+  const [newPersonName, setNewPersonName] = useState("");
+  const [addingPerson, setAddingPerson] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -54,9 +67,7 @@ export default function DashboardPage() {
 
   const handleSignOut = useCallback(async () => {
     await signOut();
-    toast.success("Signed out", {
-      description: "You've been signed out successfully.",
-    });
+    toast.success("Signed out");
     router.push(AUTH_ROUTES.signIn);
   }, [signOut, router]);
 
@@ -78,60 +89,145 @@ export default function DashboardPage() {
     }
   };
 
-  const handleAddPerson = async (name: string, relationship?: string) => {
-    const person = await peopleService.create({ name, relationship });
-    setPeople((prev) => [...prev, person]);
-    toast.success(`Added ${person.name} to your gift list!`);
-  };
-
-  const handleDeletePerson = async (person: Person) => {
-    await peopleService.delete(person.id);
-    setPeople((prev) => prev.filter((p) => p.id !== person.id));
-    toast.success(`Removed ${person.name}`);
+  const handleAddPerson = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPersonName.trim()) return;
+    
+    setAddingPerson(true);
+    try {
+      const person = await peopleService.create({ name: newPersonName.trim() });
+      setPeople((prev) => [...prev, person]);
+      setNewPersonName("");
+      toast.success(`Added ${person.name}`);
+    } catch {
+      toast.error("Failed to add person");
+    } finally {
+      setAddingPerson(false);
+    }
   };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
+        <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+  const getIcon = (name: string) => {
+    for (const [key, icon] of Object.entries(HOLIDAY_ICONS)) {
+      if (name.toLowerCase().includes(key.toLowerCase())) return icon;
+    }
+    return "🎁";
+  };
 
+  return (
+    <div className="min-h-screen bg-slate-950">
       <AppHeader user={user} onSignOut={handleSignOut} />
 
-      <main className="relative z-10 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-slate-400">
-            Start planning your gifts by choosing a holiday and adding people to
-            your list.
-          </p>
-        </div>
+      <main className="container max-w-2xl mx-auto px-4 py-8">
+        {/* Active Holidays */}
+        {userHolidays.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-sm font-medium text-slate-400 mb-3">Your Holidays</h2>
+            <div className="flex flex-wrap gap-2">
+              {userHolidays.map((holiday) => (
+                <Link key={holiday.id} href={`/holidays/${holiday.id}`}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-violet-500/50 text-violet-300 hover:bg-violet-500/20"
+                  >
+                    {getIcon(holiday.name)} {holiday.name}
+                    <ArrowRight className="ml-1 h-3 w-3" />
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
-        <StatsCards
-          holidayCount={userHolidays.length}
-          peopleCount={people.length}
-        />
+        {/* Quick Actions */}
+        <div className="space-y-4">
+          {/* Start a Holiday */}
+          <Card className="border-slate-800 bg-slate-900/50">
+            <CardContent className="p-4">
+              <h2 className="font-semibold text-white mb-3">Start a Holiday</h2>
+              {loadingData ? (
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="h-9 w-24 bg-slate-800 rounded animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {templates.slice(0, 6).map((template) => (
+                    <Button
+                      key={template.id}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleStartPlanning(template)}
+                      disabled={creatingHolidayId === template.id}
+                      className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+                    >
+                      {creatingHolidayId === template.id ? (
+                        <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                      ) : (
+                        <span className="mr-1">{getIcon(template.name)}</span>
+                      )}
+                      {template.name}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          <HolidayTemplatesSection
-            templates={templates}
-            userHolidays={userHolidays}
-            isLoading={loadingData}
-            creatingHolidayId={creatingHolidayId}
-            onStartPlanning={handleStartPlanning}
-          />
+          {/* Add People */}
+          <Card className="border-slate-800 bg-slate-900/50">
+            <CardContent className="p-4">
+              <h2 className="font-semibold text-white mb-3">Add People</h2>
+              <form onSubmit={handleAddPerson} className="flex gap-2 mb-3">
+                <Input
+                  placeholder="Name"
+                  value={newPersonName}
+                  onChange={(e) => setNewPersonName(e.target.value)}
+                  className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500"
+                />
+                <Button
+                  type="submit"
+                  disabled={!newPersonName.trim() || addingPerson}
+                  className="bg-violet-600 hover:bg-violet-500 shrink-0"
+                >
+                  {addingPerson ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                </Button>
+              </form>
+              {people.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {people.map((person) => (
+                    <Link key={person.id} href={`/people/${person.id}`}>
+                      <span className="inline-flex px-2.5 py-1 rounded-full bg-slate-800 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors cursor-pointer">
+                        {person.name}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-          <PeopleSection
-            people={people}
-            onAddPerson={handleAddPerson}
-            onDeletePerson={handleDeletePerson}
-          />
+          {/* Gift Tracker */}
+          <Link href="/gifts" className="block">
+            <Card className="border-slate-800 bg-slate-900/50 hover:border-violet-500/50 transition-colors">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Gift className="h-5 w-5 text-emerald-400" />
+                  <span className="font-semibold text-white">Gift Tracker</span>
+                </div>
+                <ArrowRight className="h-4 w-4 text-slate-500" />
+              </CardContent>
+            </Card>
+          </Link>
         </div>
       </main>
     </div>

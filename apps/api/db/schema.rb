@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_04_164129) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_09_200001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -116,6 +116,30 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_164129) do
     t.index ["share_token"], name: "index_holidays_on_share_token", unique: true
   end
 
+  create_table "match_arrangements", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "groupings", default: [], null: false
+    t.bigint "holiday_id", null: false
+    t.integer "person_ids", default: [], array: true
+    t.string "title", default: "Gift Comparison"
+    t.datetime "updated_at", null: false
+    t.index ["holiday_id"], name: "index_match_arrangements_on_holiday_id"
+  end
+
+  create_table "match_slots", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "gift_id"
+    t.string "group_key"
+    t.bigint "match_arrangement_id", null: false
+    t.bigint "person_id", null: false
+    t.integer "row_index", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["gift_id"], name: "index_match_slots_on_gift_id"
+    t.index ["match_arrangement_id", "person_id", "row_index"], name: "idx_match_slots_unique", unique: true
+    t.index ["match_arrangement_id"], name: "index_match_slots_on_match_arrangement_id"
+    t.index ["person_id"], name: "index_match_slots_on_person_id"
+  end
+
   create_table "people", force: :cascade do |t|
     t.integer "age"
     t.datetime "created_at", null: false
@@ -163,5 +187,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_04_164129) do
   add_foreign_key "holiday_people", "people"
   add_foreign_key "holiday_users", "holidays"
   add_foreign_key "holiday_users", "users"
+  add_foreign_key "match_arrangements", "holidays"
+  add_foreign_key "match_slots", "gifts"
+  add_foreign_key "match_slots", "match_arrangements"
+  add_foreign_key "match_slots", "people"
   add_foreign_key "people", "users"
 end

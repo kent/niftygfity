@@ -1,0 +1,4 @@
+one:
+  holiday: christmas
+  title: "Kids Gift Comparison"
+  person_ids: <%= [ActiveRecord::FixtureSet.identify(:mom), ActiveRecord::FixtureSet.identify(:dad)].to_json %>

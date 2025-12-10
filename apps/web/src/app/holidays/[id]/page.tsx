@@ -13,7 +13,7 @@ import { ShareHolidayDialog } from "@/components/holidays";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users } from "lucide-react";
+import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users, Scale } from "lucide-react";
 import type { Holiday, Gift, Person, GiftStatus } from "@niftygifty/types";
 
 function getHolidayIcon(icon?: string | null) {
@@ -165,7 +165,15 @@ export default function HolidayDetailPage() {
                 </div>
               </div>
             </div>
-            <ShareHolidayDialog holiday={holiday} />
+            <div className="flex items-center gap-2">
+              <Link href={`/match/${holidayId}`}>
+                <Button variant="outline" className="gap-2">
+                  <Scale className="h-4 w-4" />
+                  Match Gifts
+                </Button>
+              </Link>
+              <ShareHolidayDialog holiday={holiday} />
+            </div>
           </div>
         </div>
 

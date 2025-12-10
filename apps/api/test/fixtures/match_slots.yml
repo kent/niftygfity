@@ -1,0 +1,11 @@
+one:
+  match_arrangement: one
+  person: mom
+  gift: sweater
+  row_index: 0
+
+two:
+  match_arrangement: one
+  person: dad
+  gift: book
+  row_index: 0

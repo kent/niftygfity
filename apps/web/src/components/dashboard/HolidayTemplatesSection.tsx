@@ -72,7 +72,7 @@ export function HolidayTemplatesSection({
           </h3>
           <div className="flex flex-wrap gap-2">
             {userHolidays.map((holiday) => (
-              <Link key={holiday.id} href={`/gifts?holiday=${holiday.id}`}>
+              <Link key={holiday.id} href={`/holidays/${holiday.id}`}>
                 <Button
                   variant="outline"
                   size="sm"
