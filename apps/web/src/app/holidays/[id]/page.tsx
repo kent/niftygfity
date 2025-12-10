@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users, Scale } from "lucide-react";
-import type { Holiday, Gift, Person, GiftStatus } from "@niftygifty/types";
+import type { Holiday, Gift, Person, GiftStatus, HolidayCollaborator } from "@niftygifty/types";
 
 function getHolidayIcon(icon?: string | null) {
   const icons: Record<string, string> = {
@@ -31,6 +31,28 @@ function getHolidayIcon(icon?: string | null) {
   return icon ? icons[icon] || "🎁" : "🎁";
 }
 
+function getCollaboratorName(collab: HolidayCollaborator): string {
+  if (collab.first_name || collab.last_name) {
+    return [collab.first_name, collab.last_name].filter(Boolean).join(" ");
+  }
+  if (collab.email.includes("@clerk.user")) {
+    return "Anonymous user";
+  }
+  return collab.email;
+}
+
+function getCollaboratorInitials(collab: HolidayCollaborator): string {
+  if (collab.first_name) {
+    const first = collab.first_name[0];
+    const last = collab.last_name?.[0] || "";
+    return (first + last).toUpperCase();
+  }
+  if (!collab.email.includes("@clerk.user")) {
+    return collab.email[0].toUpperCase();
+  }
+  return "?";
+}
+
 export default function HolidayDetailPage() {
   const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
   const router = useRouter();
@@ -42,7 +64,9 @@ export default function HolidayDetailPage() {
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
   const [statuses, setStatuses] = useState<GiftStatus[]>([]);
+  const [collaborators, setCollaborators] = useState<HolidayCollaborator[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [collaboratorsLoading, setCollaboratorsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const {
@@ -65,22 +89,32 @@ export default function HolidayDetailPage() {
 
     async function loadData() {
       try {
-        const [holidayData, holidaysData, giftsData, peopleData, statusesData] = await Promise.all([
+        const [
+          holidayData,
+          holidaysData,
+          giftsData,
+          peopleData,
+          statusesData,
+          collaboratorsData,
+        ] = await Promise.all([
           holidaysService.getById(holidayId),
           holidaysService.getAll(),
           giftsService.getAll(),
           peopleService.getAll(),
           giftStatusesService.getAll(),
+          holidaysService.getCollaborators(holidayId),
         ]);
         setHoliday(holidayData);
         setHolidays(holidaysData);
         setGifts(giftsData.filter((g) => g.holiday_id === holidayId));
         setPeople(peopleData);
         setStatuses(statusesData);
+        setCollaborators(collaboratorsData);
       } catch {
         setError("Failed to load holiday. Please try again.");
       } finally {
         setDataLoading(false);
+        setCollaboratorsLoading(false);
       }
     }
 
@@ -122,6 +156,8 @@ export default function HolidayDetailPage() {
         year: "numeric",
       })
     : null;
+  const collaboratorPeers = collaborators.filter((c) => c.role !== "owner");
+  const collaboratorJoinCount = Math.max(collaborators.length - 1, 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -162,6 +198,49 @@ export default function HolidayDetailPage() {
                 <div className="flex items-center gap-2 text-slate-400">
                   <Calendar className="h-4 w-4" />
                   <span>{formattedDate}</span>
+                </div>
+                <div className="mt-2 text-sm text-slate-300">
+                  {collaboratorsLoading ? (
+                    <div className="h-4 w-32 animate-pulse rounded bg-slate-800" />
+                  ) : collaboratorJoinCount > 0 ? (
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <Users className="h-4 w-4" />
+                        <span>
+                          {collaboratorJoinCount} {collaboratorJoinCount === 1 ? "person" : "people"} joined
+                        </span>
+                      </div>
+                      <div className="flex -space-x-2">
+                        {collaboratorPeers.slice(0, 3).map((collab) =>
+                          collab.image_url ? (
+                            <img
+                              key={collab.user_id}
+                              src={collab.image_url}
+                              alt={getCollaboratorName(collab)}
+                              className="h-8 w-8 rounded-full border-2 border-slate-900 object-cover"
+                            />
+                          ) : (
+                            <div
+                              key={collab.user_id}
+                              className="h-8 w-8 rounded-full bg-violet-500/20 border-2 border-slate-900 flex items-center justify-center text-xs font-semibold text-violet-200"
+                            >
+                              {getCollaboratorInitials(collab)}
+                            </div>
+                          )
+                        )}
+                        {collaboratorPeers.length > 3 && (
+                          <div className="h-8 w-8 rounded-full bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-xs text-slate-300">
+                            +{collaboratorPeers.length - 3}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <Users className="h-4 w-4" />
+                      <span>No collaborators yet — share your link.</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
