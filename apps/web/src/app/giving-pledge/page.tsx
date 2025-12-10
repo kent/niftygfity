@@ -9,20 +9,20 @@ import "./styles.css";
 export const metadata: Metadata = {
   title: "Transform Lives Through Giving - Our 10% Commitment",
   description:
-    "Join FareGalo's mission to transform lives through strategic giving. We pledge 10% of all revenue to charitable causes, creating lasting impact for communities worldwide.",
+    "Join Listy Gifty's mission to transform lives through strategic giving. We pledge 10% of all revenue to charitable causes, creating lasting impact for communities worldwide.",
   alternates: {
     canonical: "/giving-pledge",
   },
   openGraph: {
     title: "Transform Lives Through Giving - Our 10% Commitment",
     description:
-      "Discover how FareGalo transforms lives by donating 10% of all revenue to charitable causes. Join our movement of committed philanthropists making a real difference.",
+      "Discover how Listy Gifty transforms lives by donating 10% of all revenue to charitable causes. Join our movement of committed philanthropists making a real difference.",
   },
 };
 
 export default async function GivingPledgePage() {
   const stats = (await getCharityStats()) ?? DEFAULT_CHARITY_STATS;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://faregalo.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://listygifty.com";
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col relative overflow-hidden">
@@ -47,7 +47,7 @@ export default async function GivingPledgePage() {
               "Commit to making a difference through charitable giving. Choose your causes and pledge amounts.",
             author: {
               "@type": "Organization",
-              name: "FareGalo",
+              name: "Listy Gifty",
             },
           },
         }}
@@ -74,7 +74,7 @@ export default async function GivingPledgePage() {
                 <rect x="4" y="12" width="16" height="2" rx="1" />
               </svg>
             </div>
-            <span className="text-xl font-bold text-white">FareGalo</span>
+            <span className="text-xl font-bold text-white">Listy Gifty</span>
           </Link>
           <Button variant="ghost" asChild className="text-white hover:text-white hover:bg-white/10">
             <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
@@ -242,7 +242,7 @@ export default async function GivingPledgePage() {
                     Gift-giving is about expressing <strong className="text-white">love, appreciation, and connection</strong>. It&apos;s about thinking of others before yourself.
                   </p>
                   <p>
-                    We built FareGalo to make that process easier, but we didn&apos;t want the spirit of giving to end with our app. By pledging 10% of our revenue, we ensure that every subscription helps someone in need, extending the chain of generosity far beyond our user base.
+                    We built Listy Gifty to make that process easier, but we didn&apos;t want the spirit of giving to end with our app. By pledging 10% of our revenue, we ensure that every subscription helps someone in need, extending the chain of generosity far beyond our user base.
                   </p>
                   <p>
                     Whether it&apos;s supporting education, fighting poverty, or protecting the environment, <em className="text-emerald-300">your subscription makes a tangible difference in the world</em>.
@@ -464,7 +464,7 @@ export default async function GivingPledgePage() {
               </svg>
             </div>
             <p className="text-slate-400 text-sm">
-              © {new Date().getFullYear()} FareGalo. Made with{" "}
+              © {new Date().getFullYear()} Listy Gifty. Made with{" "}
               <span className="text-red-400 animate-pulse">💜</span>{" "}
               and a commitment to giving back.
             </p>

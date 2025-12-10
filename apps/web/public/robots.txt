@@ -87,9 +87,9 @@ Disallow: /settings
 Disallow: /billing
 Disallow: /gifts
 
-Sitemap: https://faregalo.com/sitemap.xml
+Sitemap: https://listygifty.com/sitemap.xml
 
 # LLMs.txt - AI-readable site information
 # See: https://llmstxt.org/
-# This file provides context for AI systems about FareGalo
+# This file provides context for AI systems about Listy Gifty
 

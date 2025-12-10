@@ -18,18 +18,18 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://faregalo.com";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://listygifty.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "FareGalo - Gift Planning Made Simple",
-    template: "%s | FareGalo",
+    default: "Listy Gifty - Gift Planning Made Simple",
+    template: "%s | Listy Gifty",
   },
   description:
-    "Track gift ideas, manage budgets, and never forget a special occasion. FareGalo helps you organize thoughtful gifts for everyone you love.",
-  applicationName: "FareGalo",
-  authors: [{ name: "FareGalo Team" }],
+    "Track gift ideas, manage budgets, and never forget a special occasion. Listy Gifty helps you organize thoughtful gifts for everyone you love.",
+  applicationName: "Listy Gifty",
+  authors: [{ name: "Listy Gifty Team" }],
   generator: "Next.js",
   keywords: [
     "gift planning",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     "christmas gift list",
   ],
   referrer: "origin-when-cross-origin",
-  creator: "FareGalo",
-  publisher: "FareGalo",
+  creator: "Listy Gifty",
+  publisher: "Listy Gifty",
   formatDetection: {
     email: false,
     address: false,
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: baseUrl,
-    siteName: "FareGalo",
-    title: "FareGalo - Gift Planning Made Simple",
+    siteName: "Listy Gifty",
+    title: "Listy Gifty - Gift Planning Made Simple",
     description:
       "Track gift ideas, manage budgets, and never forget a special occasion.",
     images: [
@@ -68,17 +68,17 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "FareGalo - Gift Planning Made Simple",
+        alt: "Listy Gifty - Gift Planning Made Simple",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "FareGalo - Gift Planning Made Simple",
+    title: "Listy Gifty - Gift Planning Made Simple",
     description:
       "Track gift ideas, manage budgets, and never forget a special occasion.",
     images: ["/og-image.png"],
-    creator: "@faregalo", // Placeholder, update if real handle exists
+    creator: "@listygifty", // Placeholder, update if real handle exists
   },
   robots: {
     index: true,
@@ -122,15 +122,15 @@ export default function RootLayout({
           data={{
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "FareGalo",
+            name: "Listy Gifty",
             url: baseUrl,
             logo: `${baseUrl}/icon-512.png`,
             sameAs: [
-              "https://twitter.com/faregalo", // Placeholder
-              "https://github.com/faregalo", // Placeholder
+              "https://twitter.com/listygifty", // Placeholder
+              "https://github.com/listygifty", // Placeholder
             ],
             description:
-              "FareGalo helps you organize thoughtful gifts for everyone you love.",
+              "Listy Gifty helps you organize thoughtful gifts for everyone you love.",
           }}
         />
         <Providers>

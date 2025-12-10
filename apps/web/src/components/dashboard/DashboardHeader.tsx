@@ -17,7 +17,7 @@ export function DashboardHeader({ user, onSignOut }: DashboardHeaderProps) {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
             <Gift className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-white">FareGalo</span>
+          <span className="text-xl font-bold text-white">Listy Gifty</span>
         </div>
         <div className="flex items-center gap-4">
           {user && <span className="text-sm text-slate-400">{user.email}</span>}

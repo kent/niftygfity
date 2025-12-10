@@ -244,7 +244,7 @@ export default function BillingPage() {
             One dollar for each day of December before Christmas
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 text-transparent bg-clip-text">
-            FareGalo Premium
+            Listy Gifty Premium
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Track unlimited gifts for everyone on your list. Just{" "}
@@ -443,10 +443,10 @@ export default function BillingPage() {
               <p>
                 Questions? Contact us at{" "}
                 <a
-                  href="mailto:support@faregalo.com"
+                  href="mailto:support@listygifty.com"
                   className="text-violet-400 hover:underline"
                 >
-                  support@faregalo.com
+                  support@listygifty.com
                 </a>
               </p>
               <p className="mt-2">

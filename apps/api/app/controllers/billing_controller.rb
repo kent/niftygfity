@@ -56,7 +56,7 @@ class BillingController < ApplicationController
         price_data: {
           currency: price_config[:currency],
           product_data: {
-            name: plan == :yearly ? "FareGalo Premium (1 Year)" : "FareGalo Premium (2 Years)",
+            name: plan == :yearly ? "Listy Gifty Premium (1 Year)" : "Listy Gifty Premium (2 Years)",
             description: "Unlimited gift tracking • $0.068 CAD/day"
           },
           unit_amount: price_config[:amount]

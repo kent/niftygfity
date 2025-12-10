@@ -33,12 +33,12 @@
   </g>
   
   <!-- Title -->
-  <text x="600" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="white">FareGalo</text>
+  <text x="600" y="380" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="white">Listy Gifty</text>
   
   <!-- Tagline -->
   <text x="600" y="450" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#94a3b8">Gift planning, simplified</text>
   
   <!-- URL -->
-  <text x="600" y="560" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="url(#accent)">faregalo.com</text>
+  <text x="600" y="560" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="url(#accent)">listygifty.com</text>
 </svg>
 

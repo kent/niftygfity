@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getCharityStats, DEFAULT_CHARITY_STATS } from "@/data/public";
 
 export const metadata: Metadata = {
-  title: "FareGalo - Make Holiday Gift Lists Easy | Gift Organization App",
+  title: "Listy Gifty - Make Holiday Gift Lists Easy | Gift Organization App",
   description:
     "The easiest way to create and manage gift lists for holidays. Organize gifts for family and friends, track your budget, share wish lists, and make every holiday stress-free and memorable.",
   alternates: {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const charityStats = (await getCharityStats()) ?? DEFAULT_CHARITY_STATS;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://faregalo.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://listygifty.com";
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col">
@@ -25,19 +25,19 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          name: "FareGalo - Holiday Gift Lists Made Easy",
+          name: "Listy Gifty - Holiday Gift Lists Made Easy",
           url: baseUrl,
           description:
             "The easiest way to create and manage gift lists for holidays. Organize gifts for family and friends, track your budget, share wish lists, and make every holiday stress-free and memorable.",
           mainEntity: {
             "@type": "SoftwareApplication",
-            name: "FareGalo",
+            name: "Listy Gifty",
             applicationCategory: "LifestyleApplication",
             description:
               "A holiday gift list management app that helps you organize presents for family and friends, track your budget, and coordinate with others. Makes holiday gift-giving stress-free and organized.",
             author: {
               "@type": "Organization",
-              name: "FareGalo",
+              name: "Listy Gifty",
             },
           },
         }}
@@ -65,7 +65,7 @@ export default async function HomePage() {
                 <path d="M7 12v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-9" />
               </svg>
             </div>
-            <span className="text-xl font-bold text-white">FareGalo</span>
+            <span className="text-xl font-bold text-white">Listy Gifty</span>
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -173,7 +173,7 @@ export default async function HomePage() {
           </Link>
         </div>
         <p className="text-slate-500 text-sm">
-          © {new Date().getFullYear()} FareGalo. Made with 💜 for holiday organizers everywhere
+          © {new Date().getFullYear()} Listy Gifty. Made with 💜 for holiday organizers everywhere
         </p>
         <p className="text-slate-600 text-xs mt-1">
           10% of profits support charity
