@@ -10,6 +10,7 @@ import { AppHeader } from "@/components/layout";
 import { GiftFilters } from "@/components/filters";
 import { GiftGrid, HolidayReports } from "@/components/gifts";
 import { ShareHolidayDialog } from "@/components/holidays";
+import { CursorOverlay } from "@/components/cursors";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -313,6 +314,8 @@ export default function HolidayDetailPage() {
           </Tabs>
         )}
       </main>
+
+      <CursorOverlay holidayId={holidayId} />
     </div>
   );
 }
