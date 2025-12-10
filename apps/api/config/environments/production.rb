@@ -49,8 +49,8 @@ Rails.application.configure do
   # Use memory store for caching (simple, no external dependencies)
   config.cache_store = :memory_store
 
-  # Use async adapter for Active Job (runs jobs in-process)
-  config.active_job.queue_adapter = :async
+  # Use Solid Queue for background jobs (PostgreSQL-backed)
+  config.active_job.queue_adapter = :solid_queue
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

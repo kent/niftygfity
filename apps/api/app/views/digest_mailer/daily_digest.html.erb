@@ -1,48 +1,70 @@
-<h1 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 600; color: #18181b;">Your gift updates</h1>
-<p style="margin: 0 0 24px 0; font-size: 14px; color: #71717a;"><%= @total_changes %> update<%= 's' if @total_changes != 1 %> from shared holidays</p>
+<% content_for :preview_text do %><%= @total_changes %> gift update<%= 's' if @total_changes != 1 %> from your shared holidays<% end %>
+
+<h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #18181b;">
+  Your gift updates 🔔
+</h1>
+
+<p style="margin: 0 0 24px 0; font-size: 16px; color: #52525b;">
+  <%= @total_changes %> update<%= 's' if @total_changes != 1 %> from your shared holidays
+</p>
 
 <% @changes_by_holiday.each do |holiday, changes| %>
-<p style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; color: #a855f7; text-transform: uppercase; letter-spacing: 0.5px;"><%= holiday.name %></p>
-
-<% changes.each do |change| %>
-<% gift = change.gift %>
-<% gift_name = gift&.name || 'Gift' %>
-<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 12px;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
   <tr>
-    <td style="background-color: #fafafa; border-radius: 8px; padding: 16px;">
-      <p style="margin: 0 0 4px 0;">
-        <strong style="color: #18181b;"><%= gift_name %></strong>
-        <% if change.created? %>
-        <span style="display: inline-block; margin-left: 8px; padding: 2px 8px; font-size: 10px; font-weight: 600; background-color: #dcfce7; color: #166534; border-radius: 4px;">NEW</span>
-        <% else %>
-        <span style="display: inline-block; margin-left: 8px; padding: 2px 8px; font-size: 10px; font-weight: 600; background-color: #fef3c7; color: #92400e; border-radius: 4px;">UPDATED</span>
-        <% end %>
+    <td style="background: linear-gradient(135deg, #faf5ff, #fdf2f8); border-radius: 12px; padding: 20px;">
+      <p style="margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">
+        <%= holiday.icon.presence || '🎁' %> <%= holiday.name %>
       </p>
-      <% if gift.respond_to?(:recipients) && gift.recipients.any? %>
-      <p style="margin: 4px 0 0 0; font-size: 13px; color: #52525b;">
-        <strong>For:</strong> <%= gift.recipients.map(&:name).join(', ') %>
-      </p>
-      <% end %>
-      <% if gift.respond_to?(:givers) && gift.givers.any? %>
-      <p style="margin: 4px 0 0 0; font-size: 13px; color: #52525b;">
-        <strong>From:</strong> <%= gift.givers.map(&:name).join(', ') %>
-      </p>
-      <% end %>
-      <p style="margin: 8px 0 0 0; font-size: 12px; color: #a1a1aa;">Added by <%= change.user.email.split('@').first %></p>
-      <% if change.updated? && change.changes_data.present? %>
-      <% change.changes_data.each do |field, values| %>
-      <% next unless values.is_a?(Array) %>
-      <p style="margin: 8px 0 0 0; font-size: 13px; color: #52525b;">
-        <%= field.humanize %>: <span style="text-decoration: line-through; color: #a1a1aa;"><%= values[0].presence || 'none' %></span> &rarr; <%= values[1] %>
-      </p>
-      <% end %>
+
+      <% changes.each do |change| %>
+      <% gift = change.gift %>
+      <% gift_name = gift&.name || 'Gift' %>
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 12px;">
+        <tr>
+          <td style="background-color: #ffffff; border-radius: 8px; padding: 16px;">
+            <p style="margin: 0 0 4px 0;">
+              <strong style="color: #18181b;"><%= gift_name %></strong>
+              <% if change.created? %>
+              <span style="display: inline-block; margin-left: 8px; padding: 2px 8px; font-size: 10px; font-weight: 600; background-color: #dcfce7; color: #166534; border-radius: 4px;">NEW</span>
+              <% else %>
+              <span style="display: inline-block; margin-left: 8px; padding: 2px 8px; font-size: 10px; font-weight: 600; background-color: #fef3c7; color: #92400e; border-radius: 4px;">UPDATED</span>
+              <% end %>
+            </p>
+            <% if gift.respond_to?(:recipients) && gift.recipients.any? %>
+            <p style="margin: 4px 0 0 0; font-size: 13px; color: #52525b;">
+              <strong>For:</strong> <%= gift.recipients.map(&:name).join(', ') %>
+            </p>
+            <% end %>
+            <% if gift.respond_to?(:givers) && gift.givers.any? %>
+            <p style="margin: 4px 0 0 0; font-size: 13px; color: #52525b;">
+              <strong>From:</strong> <%= gift.givers.map(&:name).join(', ') %>
+            </p>
+            <% end %>
+            <p style="margin: 8px 0 0 0; font-size: 12px; color: #a1a1aa;">Added by <%= change.user&.first_name.presence || change.user.email.split('@').first %></p>
+            <% if change.updated? && change.changes_data.present? %>
+            <% change.changes_data.each do |field, values| %>
+            <% next unless values.is_a?(Array) %>
+            <% next if field == 'updated_at' %>
+            <p style="margin: 8px 0 0 0; font-size: 13px; color: #52525b;">
+              <%= field.humanize %>: <span style="text-decoration: line-through; color: #a1a1aa;"><%= values[0].presence || 'none' %></span> → <%= values[1] %>
+            </p>
+            <% end %>
+            <% end %>
+          </td>
+        </tr>
+      </table>
       <% end %>
     </td>
   </tr>
 </table>
 <% end %>
-<% end %>
 
-<p style="margin: 24px 0 0 0; text-align: center;">
-  <a href="<%= ENV.fetch('FRONTEND_URL', 'https://listygifty.com') %>/holidays" style="display: inline-block; padding: 12px 24px; background-color: #a855f7; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px;">View all gifts</a>
-</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td align="center">
+      <a href="<%= @frontend_url %>/holidays" class="button" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #a855f7, #ec4899); color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">
+        View All Gifts
+      </a>
+    </td>
+  </tr>
+</table>

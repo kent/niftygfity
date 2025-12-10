@@ -23,7 +23,7 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLI
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Listy Gifty - Gift Planning Made Simple",
+    default: "Listy Gifty: Manage and Share Gift Lists",
     template: "%s | Listy Gifty",
   },
   description:

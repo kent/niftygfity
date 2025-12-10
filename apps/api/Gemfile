@@ -19,6 +19,9 @@ gem "stripe"
 # Email
 gem "postmark-rails"
 
+# Background jobs (PostgreSQL-backed)
+gem "solid_queue"
+
 # AI
 gem "ruby-openai"
 

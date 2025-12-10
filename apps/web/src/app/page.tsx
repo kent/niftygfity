@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getCharityStats, DEFAULT_CHARITY_STATS } from "@/data/public";
 
 export const metadata: Metadata = {
-  title: "Listy Gifty - Make Holiday Gift Lists Easy | Gift Organization App",
+  title: "Listy Gifty: Manage and Share Gift Lists",
   description:
     "The easiest way to create and manage gift lists for holidays. Organize gifts for family and friends, track your budget, share wish lists, and make every holiday stress-free and memorable.",
   alternates: {
@@ -25,7 +25,7 @@ export default async function HomePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          name: "Listy Gifty - Holiday Gift Lists Made Easy",
+          name: "Listy Gifty: Manage and Share Gift Lists",
           url: baseUrl,
           description:
             "The easiest way to create and manage gift lists for holidays. Organize gifts for family and friends, track your budget, share wish lists, and make every holiday stress-free and memorable.",

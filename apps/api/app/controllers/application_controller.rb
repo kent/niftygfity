@@ -14,14 +14,19 @@ class ApplicationController < ActionController::API
     email_from_token = token_email(payload)
 
     # Auto-create local user record if they don't exist yet
+    is_new_user = false
     @current_user = User.find_or_create_by!(clerk_user_id: clerk_user_id) do |u|
       clerk_user = fetch_clerk_user(clerk_user_id)
       apply_clerk_data(u, clerk_user, clerk_user_id, token_email: email_from_token)
       u.subscription_plan = "free"
+      is_new_user = true
     end
 
     # Sync user data if missing or stale
     sync_clerk_user_data(@current_user, clerk_user_id, token_email: email_from_token)
+
+    # Queue welcome email for new users (delayed to allow invite flow to take precedence)
+    SendWelcomeEmailJob.set(wait: 1.minute).perform_later(@current_user.id) if is_new_user
 
     Current.user = @current_user
   rescue ActiveRecord::RecordInvalid => e

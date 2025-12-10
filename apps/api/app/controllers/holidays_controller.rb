@@ -56,6 +56,13 @@ class HolidaysController < ApplicationController
     return render json: { error: "You are already a member of this holiday" }, status: :unprocessable_entity if holiday.member?(current_user)
 
     holiday.holiday_users.create!(user: current_user, role: "collaborator")
+
+    # Send invite welcome email if user hasn't been welcomed yet
+    if current_user.welcomed_at.nil?
+      current_user.update!(welcomed_at: Time.current)
+      WelcomeMailer.welcome_from_invite(current_user, holiday).deliver_later
+    end
+
     render json: HolidayBlueprint.render(holiday, current_user: current_user), status: :created
   end
 

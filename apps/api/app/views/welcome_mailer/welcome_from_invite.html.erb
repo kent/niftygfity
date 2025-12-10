@@ -1,0 +1,66 @@
+<% content_for :preview_text do %>You've been invited to collaborate on <%= @holiday.name %>!</% end %>
+
+<h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #18181b;">
+  Welcome<%= ", #{@user.first_name}" if @user.first_name.present? %>! 🎉
+</h1>
+
+<p style="margin: 0 0 24px 0; font-size: 16px; color: #52525b;">
+  You've joined <strong><%= @holiday.name %></strong> on Listy Gifty — now you can collaborate on gift planning together!
+</p>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="background: linear-gradient(135deg, #faf5ff, #fdf2f8); border-radius: 12px; padding: 24px; text-align: center;">
+      <p style="margin: 0 0 4px 0; font-size: 32px;"><%= @holiday.icon.presence || '🎁' %></p>
+      <p style="margin: 0; font-size: 18px; font-weight: 600; color: #18181b;"><%= @holiday.name %></p>
+      <% if @holiday.date.present? %>
+      <p style="margin: 8px 0 0 0; font-size: 14px; color: #71717a;"><%= @holiday.date.strftime("%B %d, %Y") %></p>
+      <% end %>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="background-color: #faf5ff; border-radius: 12px; padding: 20px;">
+      <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #7c3aed;">As a collaborator you can:</p>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td style="padding: 6px 0; font-size: 14px; color: #52525b;">
+            <span style="margin-right: 8px;">👀</span> See everyone's gift ideas
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 6px 0; font-size: 14px; color: #52525b;">
+            <span style="margin-right: 8px;">➕</span> Add your own gifts to the list
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 6px 0; font-size: 14px; color: #52525b;">
+            <span style="margin-right: 8px;">🔔</span> Get notified of updates
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td align="center">
+      <a href="<%= @frontend_url %>/holidays/<%= @holiday.id %>" class="button" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #a855f7, #ec4899); color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">
+        View <%= @holiday.name %>
+      </a>
+      <!--[if mso]>
+      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="<%= @frontend_url %>/holidays/<%= @holiday.id %>" style="height:48px;v-text-anchor:middle;width:200px;" arcsize="20%" strokecolor="#a855f7" fillcolor="#a855f7">
+        <w:anchorlock/>
+        <center style="color:#ffffff;font-family:sans-serif;font-size:15px;font-weight:bold;">View <%= @holiday.name %></center>
+      </v:roundrect>
+      <![endif]-->
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 32px 0 0 0; font-size: 14px; color: #71717a; text-align: center;">
+  Questions? Just reply to this email — we're here to help!
+</p>

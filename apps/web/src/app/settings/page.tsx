@@ -125,7 +125,7 @@ export default function SettingsPage() {
             <div>
               <h1 className="text-3xl font-bold text-white">Settings</h1>
               <p className="text-slate-400">
-                Customize NiftyGifty to fit your workflow
+                Customize Listy Gifty to fit your workflow
               </p>
             </div>
           </div>

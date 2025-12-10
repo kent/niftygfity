@@ -3,6 +3,7 @@ class DigestMailer < ApplicationMailer
     @user = user
     @changes_by_holiday = changes_by_holiday
     @total_changes = changes_by_holiday.values.flatten.count
+    @frontend_url = ENV.fetch("FRONTEND_URL", "https://listygifty.com")
 
     mail(
       to: user.email,

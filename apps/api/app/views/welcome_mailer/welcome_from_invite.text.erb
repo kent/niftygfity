@@ -1,0 +1,17 @@
+Welcome<%= ", #{@user.first_name}" if @user.first_name.present? %>!
+
+You've joined "<%= @holiday.name %>" on Listy Gifty — now you can collaborate on gift planning together!
+
+<%= @holiday.icon.presence || '🎁' %> <%= @holiday.name %>
+<% if @holiday.date.present? %>
+<%= @holiday.date.strftime("%B %d, %Y") %>
+<% end %>
+
+As a collaborator you can:
+- See everyone's gift ideas
+- Add your own gifts to the list
+- Get notified of updates
+
+View the list: <%= @frontend_url %>/holidays/<%= @holiday.id %>
+
+Questions? Just reply to this email — we're here to help!
