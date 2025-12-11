@@ -115,7 +115,7 @@ class HolidaysController < ApplicationController
   end
 
   def holiday_params
-    params.require(:holiday).permit(:name, :date, :icon, :completed)
+    params.require(:holiday).permit(:name, :date, :icon, :completed, :archived)
   end
 
   def share_url(token)

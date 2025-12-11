@@ -1,5 +1,5 @@
 class HolidayBlueprint < ApplicationBlueprint
-  fields :name, :date, :icon, :is_template, :completed, :created_at, :updated_at
+  fields :name, :date, :icon, :is_template, :completed, :archived, :created_at, :updated_at
 
   field :share_token do |holiday, options|
     # Only show share_token to owners

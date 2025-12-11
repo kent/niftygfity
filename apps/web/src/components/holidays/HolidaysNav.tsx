@@ -1,19 +1,20 @@
 "use client";
 
-import { Sparkles, Clock, Plus } from "lucide-react";
+import { Sparkles, Clock, Plus, Archive } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type HolidaysSection = "active" | "past" | "new";
+export type HolidaysSection = "active" | "past" | "archived" | "new";
 
 interface HolidaysNavProps {
   activeSection: HolidaysSection;
   onSectionChange: (section: HolidaysSection) => void;
-  activeCounts?: { active: number; past: number };
+  activeCounts?: { active: number; past: number; archived: number };
 }
 
 const NAV_ITEMS: { id: HolidaysSection; label: string; icon: typeof Sparkles }[] = [
   { id: "active", label: "Active", icon: Sparkles },
   { id: "past", label: "Past", icon: Clock },
+  { id: "archived", label: "Archived", icon: Archive },
   { id: "new", label: "New Holiday", icon: Plus },
 ];
 
@@ -36,7 +37,7 @@ export function HolidaysNav({ activeSection, onSectionChange, activeCounts }: Ho
               <span className="flex-1">{label}</span>
               {activeCounts && id !== "new" && (
                 <span className="text-xs text-slate-500">
-                  {id === "active" ? activeCounts.active : activeCounts.past}
+                  {id === "active" ? activeCounts.active : id === "past" ? activeCounts.past : activeCounts.archived}
                 </span>
               )}
             </button>

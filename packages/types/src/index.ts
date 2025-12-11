@@ -117,6 +117,7 @@ export interface Holiday extends BaseEntity {
   icon: string | null; // Lucide icon name
   is_template: boolean;
   completed: boolean;
+  archived: boolean;
   share_token: string | null; // Only visible to owner
   is_owner: boolean;
   role: HolidayRole | null;

@@ -48,9 +48,11 @@ function getHolidayIcon(icon?: string | null) {
 function HolidayCard({
   holiday,
   onToggleComplete,
+  onToggleArchive,
 }: {
   holiday: Holiday;
   onToggleComplete?: (holiday: Holiday) => void;
+  onToggleArchive?: (holiday: Holiday) => void;
 }) {
   const icon = getHolidayIcon(holiday.icon);
   const date = holiday.date ? new Date(holiday.date) : null;
@@ -89,6 +91,21 @@ function HolidayCard({
       </Link>
       
       <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        {onToggleArchive && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleArchive(holiday);
+            }}
+            title="Archive"
+          >
+            <Archive className="h-4 w-4" />
+          </Button>
+        )}
         {onToggleComplete && (
           <Button
             size="icon"
@@ -237,9 +254,11 @@ function CreateHolidayForm({
 function ActiveSection({
   holidays,
   onToggleComplete,
+  onToggleArchive,
 }: {
   holidays: Holiday[];
   onToggleComplete: (holiday: Holiday) => void;
+  onToggleArchive?: (holiday: Holiday) => void;
 }) {
   if (holidays.length === 0) {
     return (
@@ -260,6 +279,7 @@ function ActiveSection({
           key={holiday.id}
           holiday={holiday}
           onToggleComplete={onToggleComplete}
+          onToggleArchive={onToggleArchive}
         />
       ))}
     </div>
@@ -269,9 +289,11 @@ function ActiveSection({
 function PastSection({
   holidays,
   onToggleComplete,
+  onToggleArchive,
 }: {
   holidays: Holiday[];
   onToggleComplete: (holiday: Holiday) => void;
+  onToggleArchive?: (holiday: Holiday) => void;
 }) {
   if (holidays.length === 0) {
     return (
@@ -292,7 +314,78 @@ function PastSection({
           key={holiday.id}
           holiday={holiday}
           onToggleComplete={onToggleComplete}
+          onToggleArchive={onToggleArchive}
         />
+      ))}
+    </div>
+  );
+}
+
+function ArchivedSection({
+  holidays,
+  onToggleArchive,
+}: {
+  holidays: Holiday[];
+  onToggleArchive: (holiday: Holiday) => void;
+}) {
+  if (holidays.length === 0) {
+    return (
+      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
+        <Archive className="h-12 w-12 mx-auto text-slate-600 mb-4" />
+        <h2 className="text-xl font-semibold text-white mb-2">No Archived Holidays</h2>
+        <p className="text-slate-400 max-w-md mx-auto">
+          Archived holidays will appear here.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {holidays.map((holiday) => (
+        <div key={holiday.id} className="relative group">
+          <Link href={`/holidays/${holiday.id}`}>
+            <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer opacity-60">
+              <CardContent className="p-5 flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
+                  {getHolidayIcon(holiday.icon)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
+                  </div>
+                  {holiday.date && (
+                    <p className="text-sm text-slate-400">
+                      {new Date(holiday.date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </p>
+                  )}
+                </div>
+                <div className="w-5" />
+              </CardContent>
+            </Card>
+          </Link>
+          
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8 text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleArchive(holiday);
+              }}
+              title="Unarchive"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+            <ChevronRight className="h-5 w-5 text-slate-600 group-hover:text-violet-400 transition-colors pointer-events-none" />
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -430,6 +523,22 @@ export default function HolidaysPage() {
     }
   };
 
+  const handleToggleArchive = async (holiday: Holiday) => {
+    try {
+      const updated = await holidaysService.update(holiday.id, {
+        archived: !holiday.archived,
+      });
+      setHolidays((prev) => prev.map((h) => (h.id === holiday.id ? updated : h)));
+      toast.success(
+        updated.archived
+          ? `Archived "${updated.name}"`
+          : `Unarchived "${updated.name}"`
+      );
+    } catch {
+      toast.error("Failed to update holiday");
+    }
+  };
+
   if (authLoading || dataLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -452,8 +561,9 @@ export default function HolidaysPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const activeHolidays = holidays.filter((h) => !h.completed);
-  const pastHolidays = holidays.filter((h) => h.completed);
+  const activeHolidays = holidays.filter((h) => !h.completed && !h.archived);
+  const pastHolidays = holidays.filter((h) => h.completed && !h.archived);
+  const archivedHolidays = holidays.filter((h) => h.archived);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
@@ -473,7 +583,7 @@ export default function HolidaysPage() {
           <HolidaysNav
             activeSection={activeSection}
             onSectionChange={setActiveSection}
-            activeCounts={{ active: activeHolidays.length, past: pastHolidays.length }}
+            activeCounts={{ active: activeHolidays.length, past: pastHolidays.length, archived: archivedHolidays.length }}
           />
 
           <div className="flex-1">
@@ -481,12 +591,20 @@ export default function HolidaysPage() {
               <ActiveSection
                 holidays={activeHolidays}
                 onToggleComplete={handleToggleComplete}
+                onToggleArchive={handleToggleArchive}
               />
             )}
             {activeSection === "past" && (
               <PastSection
                 holidays={pastHolidays}
                 onToggleComplete={handleToggleComplete}
+                onToggleArchive={handleToggleArchive}
+              />
+            )}
+            {activeSection === "archived" && (
+              <ArchivedSection
+                holidays={archivedHolidays}
+                onToggleArchive={handleToggleArchive}
               />
             )}
             {activeSection === "new" && (

@@ -14,7 +14,8 @@ import { CursorOverlay } from "@/components/cursors";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users, Scale } from "lucide-react";
+import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users, Scale, Archive, RotateCcw, Share2 } from "lucide-react";
+import { toast } from "sonner";
 import type { Holiday, Gift, Person, GiftStatus, HolidayCollaborator } from "@niftygifty/types";
 
 function getHolidayIcon(icon?: string | null) {
@@ -126,6 +127,23 @@ export default function HolidayDetailPage() {
     await signOut();
     router.push(AUTH_ROUTES.signIn);
   }, [signOut, router]);
+
+  const handleToggleArchive = useCallback(async () => {
+    if (!holiday) return;
+    try {
+      const updated = await holidaysService.update(holidayId, {
+        archived: !holiday.archived,
+      });
+      setHoliday(updated);
+      toast.success(
+        updated.archived
+          ? `Archived "${updated.name}"`
+          : `Unarchived "${updated.name}"`
+      );
+    } catch {
+      toast.error("Failed to update holiday");
+    }
+  }, [holiday, holidayId]);
 
   if (authLoading || dataLoading) {
     return (
@@ -246,13 +264,34 @@ export default function HolidayDetailPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Link href={`/match/${holidayId}`}>
-                <Button variant="outline" className="gap-2">
-                  <Scale className="h-4 w-4" />
-                  Match Gifts
+              {holiday.is_owner && (
+                <Button
+                  variant="outline"
+                  onClick={handleToggleArchive}
+                  className="gap-2"
+                >
+                  {holiday.archived ? (
+                    <>
+                      <RotateCcw className="h-4 w-4" />
+                      Unarchive
+                    </>
+                  ) : (
+                    <>
+                      <Archive className="h-4 w-4" />
+                      Archive
+                    </>
+                  )}
                 </Button>
-              </Link>
-              <ShareHolidayDialog holiday={holiday} />
+              )}
+              <ShareHolidayDialog
+                holiday={holiday}
+                trigger={
+                  <Button className="gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white border-0 shadow-lg shadow-violet-500/25">
+                    <Share2 className="h-5 w-5" />
+                    Share Holiday
+                  </Button>
+                }
+              />
             </div>
           </div>
         </div>
@@ -276,6 +315,14 @@ export default function HolidayDetailPage() {
                 <BarChart3 className="h-4 w-4" />
                 Reports
               </TabsTrigger>
+              <Link href={`/match/${holidayId}`}>
+                <button
+                  className="inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] text-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground focus-visible:ring-[3px] focus-visible:outline-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+                >
+                  <Scale className="h-4 w-4" />
+                  Match Gifts
+                </button>
+              </Link>
             </TabsList>
             <TabsContent value="gifts" className="space-y-4">
               <GiftFilters

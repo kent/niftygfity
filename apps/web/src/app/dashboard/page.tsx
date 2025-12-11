@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Gift, Plus, ArrowRight, Loader2 } from "lucide-react";
+import { Plus, ArrowRight, Loader2 } from "lucide-react";
 import type { Holiday, Person } from "@niftygifty/types";
 
 const HOLIDAY_ICONS: Record<string, string> = {
@@ -215,19 +215,6 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
-
-          {/* Gift Tracker */}
-          <Link href="/gifts" className="block">
-            <Card className="border-slate-800 bg-slate-900/50 hover:border-violet-500/50 transition-colors">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Gift className="h-5 w-5 text-emerald-400" />
-                  <span className="font-semibold text-white">Gift Tracker</span>
-                </div>
-                <ArrowRight className="h-4 w-4 text-slate-500" />
-              </CardContent>
-            </Card>
-          </Link>
         </div>
       </main>
     </div>

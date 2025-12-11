@@ -34,6 +34,8 @@ import {
   Save,
   Lightbulb,
   Trash2,
+  Pencil,
+  X,
 } from "lucide-react";
 import {
   Dialog,
@@ -487,6 +489,9 @@ export default function PersonDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<NavTab>("received");
   const [updatingRelationship, setUpdatingRelationship] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editingName, setEditingName] = useState("");
+  const [savingName, setSavingName] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -544,6 +549,56 @@ export default function PersonDetailPage() {
     };
     const updated = await peopleService.update(personId, apiUpdates);
     setPerson({ ...person, ...updated });
+    toast.success("Person updated successfully");
+  };
+
+  const handleStartEditName = () => {
+    if (!person) return;
+    setEditingName(person.name);
+    setIsEditingName(true);
+  };
+
+  const handleCancelEditName = () => {
+    setIsEditingName(false);
+    setEditingName("");
+  };
+
+  const handleSaveName = async () => {
+    if (!person || savingName) return;
+    
+    const trimmedName = editingName.trim();
+    if (!trimmedName) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+    
+    if (trimmedName === person.name) {
+      setIsEditingName(false);
+      return;
+    }
+
+    setSavingName(true);
+    try {
+      await handlePersonUpdate({ name: trimmedName });
+      setIsEditingName(false);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+      } else {
+        toast.error("Failed to update name");
+      }
+    } finally {
+      setSavingName(false);
+    }
+  };
+
+  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSaveName();
+    } else if (e.key === "Escape") {
+      handleCancelEditName();
+    }
   };
 
   const handlePersonDelete = useCallback(async () => {
@@ -636,8 +691,55 @@ export default function PersonDetailPage() {
             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-violet-500/20">
               <User className="h-7 w-7 text-fuchsia-400" />
             </div>
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-white">{person.name}</h1>
+            <div className="flex-1 flex items-center gap-3">
+              {isEditingName ? (
+                <div className="flex items-center gap-2 flex-1">
+                  <Input
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    onBlur={handleSaveName}
+                    onKeyDown={handleNameKeyDown}
+                    disabled={savingName}
+                    autoFocus
+                    className="text-3xl font-bold h-auto py-1 bg-slate-800/50 border-slate-700 text-white focus:border-violet-500"
+                  />
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleSaveName}
+                    disabled={savingName}
+                    className="h-8 w-8 p-0 text-slate-400 hover:text-white"
+                  >
+                    {savingName ? (
+                      <div className="animate-spin h-4 w-4 border-2 border-violet-500 border-t-transparent rounded-full" />
+                    ) : (
+                      <Save className="h-4 w-4" />
+                    )}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleCancelEditName}
+                    disabled={savingName}
+                    className="h-8 w-8 p-0 text-slate-400 hover:text-white"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <h1 className="text-3xl font-bold text-white">{person.name}</h1>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleStartEditName}
+                    className="h-8 w-8 p-0 text-slate-500 hover:text-slate-300 transition-colors"
+                    title="Edit name"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
             </div>
             <Select
               value={person.relationship ?? ""}
