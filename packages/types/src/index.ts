@@ -51,7 +51,6 @@ export const RELATIONSHIP_CATEGORIES = [
   "vendors",
   "partners",
   "investors",
-  "lovers",
 ] as const;
 
 export type RelationshipCategory = (typeof RELATIONSHIP_CATEGORIES)[number];
