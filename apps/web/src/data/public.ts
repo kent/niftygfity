@@ -49,9 +49,10 @@ export async function getCharityStats(): Promise<CharityStats | null> {
 
 // Default fallback for charity stats
 export const DEFAULT_CHARITY_STATS: CharityStats = {
-  fuzzy_raised_amount: "$0",
-  milestone_description: "Every subscription helps us give back.",
-  charity_percentage: 10,
+  raised_amount: 0,
+  goal_amount: 1000,
+  premium_count: 0,
   currency: "CAD",
+  year: 2025,
 };
 

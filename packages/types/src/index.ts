@@ -391,10 +391,11 @@ export interface CouponRedemptionResponse {
 }
 
 export interface CharityStats {
-  fuzzy_raised_amount: string;
-  milestone_description: string;
-  charity_percentage: number;
+  raised_amount: number;
+  goal_amount: number;
+  premium_count: number;
   currency: string;
+  year: number;
 }
 
 export const BILLING_PLANS = {
