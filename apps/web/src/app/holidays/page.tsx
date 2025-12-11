@@ -579,14 +579,14 @@ export default function HolidaysPage() {
           </p>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-col md:flex-row md:gap-8">
           <HolidaysNav
             activeSection={activeSection}
             onSectionChange={setActiveSection}
             activeCounts={{ active: activeHolidays.length, past: pastHolidays.length, archived: archivedHolidays.length }}
           />
 
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             {activeSection === "active" && (
               <ActiveSection
                 holidays={activeHolidays}

@@ -194,14 +194,14 @@ export default function HolidayDetailPage() {
             Back to Holidays
           </Link>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-3xl">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div className="flex items-start gap-3 md:gap-4">
+              <div className="flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl md:text-3xl shrink-0">
                 {icon}
               </div>
-              <div>
-                <div className="flex items-center gap-3">
-                  <h1 className="text-3xl font-bold text-white">{holiday.name}</h1>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                  <h1 className="text-2xl md:text-3xl font-bold text-white">{holiday.name}</h1>
                   {holiday.collaborator_count > 1 && (
                     <Badge variant="secondary" className="gap-1">
                       <Users className="h-3 w-3" />
@@ -210,15 +210,16 @@ export default function HolidayDetailPage() {
                   )}
                   {!holiday.is_owner && holiday.role === "collaborator" && (
                     <Badge variant="outline" className="text-slate-400 border-slate-600">
-                      Shared with you
+                      Shared
                     </Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-2 text-slate-400">
-                  <Calendar className="h-4 w-4" />
-                  <span>{formattedDate}</span>
+                <div className="flex items-center gap-2 text-slate-400 text-sm md:text-base mt-1">
+                  <Calendar className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{formattedDate}</span>
                 </div>
-                <div className="mt-2 text-sm text-slate-300">
+                {/* Collaborators - hidden on mobile, shown on desktop */}
+                <div className="hidden md:block mt-2 text-sm text-slate-300">
                   {collaboratorsLoading ? (
                     <div className="h-4 w-32 animate-pulse rounded bg-slate-800" />
                   ) : collaboratorJoinCount > 0 ? (
@@ -263,22 +264,24 @@ export default function HolidayDetailPage() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            {/* Action buttons - full width on mobile */}
+            <div className="flex items-center gap-2 md:shrink-0">
               {holiday.is_owner && (
                 <Button
                   variant="outline"
+                  size="sm"
                   onClick={handleToggleArchive}
-                  className="gap-2"
+                  className="gap-1.5 md:gap-2 flex-1 md:flex-none"
                 >
                   {holiday.archived ? (
                     <>
                       <RotateCcw className="h-4 w-4" />
-                      Unarchive
+                      <span className="hidden sm:inline">Unarchive</span>
                     </>
                   ) : (
                     <>
                       <Archive className="h-4 w-4" />
-                      Archive
+                      <span className="hidden sm:inline">Archive</span>
                     </>
                   )}
                 </Button>
@@ -286,9 +289,9 @@ export default function HolidayDetailPage() {
               <ShareHolidayDialog
                 holiday={holiday}
                 trigger={
-                  <Button className="gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white border-0 shadow-lg shadow-violet-500/25">
-                    <Share2 className="h-5 w-5" />
-                    Share Holiday
+                  <Button className="gap-1.5 md:gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white border-0 shadow-lg shadow-violet-500/25 flex-1 md:flex-none" size="sm">
+                    <Share2 className="h-4 w-4 md:h-5 md:w-5" />
+                    Share
                   </Button>
                 }
               />
@@ -306,21 +309,21 @@ export default function HolidayDetailPage() {
           </div>
         ) : (
           <Tabs defaultValue="gifts" className="w-full">
-            <TabsList className="mb-6">
-              <TabsTrigger value="gifts" className="gap-2">
+            <TabsList className="mb-6 w-full md:w-auto">
+              <TabsTrigger value="gifts" className="gap-1.5 md:gap-2 flex-1 md:flex-none">
                 <GiftIcon className="h-4 w-4" />
-                Gifts
+                <span>Gifts</span>
               </TabsTrigger>
-              <TabsTrigger value="reports" className="gap-2">
+              <TabsTrigger value="reports" className="gap-1.5 md:gap-2 flex-1 md:flex-none hidden md:inline-flex">
                 <BarChart3 className="h-4 w-4" />
-                Reports
+                <span>Reports</span>
               </TabsTrigger>
-              <Link href={`/match/${holidayId}`}>
+              <Link href={`/match/${holidayId}`} className="flex-1 md:flex-none">
                 <button
-                  className="inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] text-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground focus-visible:ring-[3px] focus-visible:outline-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+                  className="inline-flex h-[calc(100%-1px)] w-full items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] text-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground focus-visible:ring-[3px] focus-visible:outline-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
                 >
                   <Scale className="h-4 w-4" />
-                  Match Gifts
+                  <span>Match</span>
                 </button>
               </Link>
             </TabsList>

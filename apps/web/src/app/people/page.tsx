@@ -112,14 +112,14 @@ export default function PeoplePage() {
           </p>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-col md:flex-row md:gap-8">
           <PeopleNav
             activeSection={activeSection}
             onSectionChange={handleSectionChange}
             counts={counts}
           />
 
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             {activeSection === "all" && <AllSection people={people} />}
             {activeSection === "favourites" && <FavouritesSection people={people} />}
             {activeSection === "recent" && <RecentSection people={people} />}

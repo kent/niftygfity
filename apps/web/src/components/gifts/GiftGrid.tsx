@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { SortableGiftRow } from "./SortableGiftRow";
+import { MobileGiftCard } from "./MobileGiftCard";
 import { UpgradePrompt } from "@/components/upgrade-prompt";
 import { useAuth } from "@/contexts/auth-context";
 import { giftsService } from "@/services";
@@ -334,12 +335,13 @@ export function GiftGrid({
         )}
       </div>
 
+      {/* Desktop table view */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <div className="rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden">
+        <div className="hidden md:block rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -381,6 +383,46 @@ export function GiftGrid({
           </Table>
         </div>
       </DndContext>
+
+      {/* Mobile card view */}
+      <div className="md:hidden space-y-3 pb-20">
+        {gifts.length === 0 ? (
+          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-8 text-center">
+            <p className="text-slate-400">No gifts yet. Tap + to add one.</p>
+          </div>
+        ) : (
+          gifts.map((gift) => (
+            <MobileGiftCard
+              key={gift.id}
+              gift={gift}
+              people={people}
+              statuses={statuses}
+              isDeleting={deletingId === gift.id}
+              onUpdateGift={updateGift}
+              onUpdateRecipients={updateRecipients}
+              onUpdateGivers={updateGivers}
+              onDeleteGift={deleteGift}
+              onPersonCreated={handlePersonCreated}
+            />
+          ))
+        )}
+      </div>
+
+      {/* Mobile FAB for quick add */}
+      {!atLimit && (
+        <button
+          onClick={() => addGift()}
+          disabled={isPending}
+          className="md:hidden fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-500/30 hover:from-violet-600 hover:to-fuchsia-600 active:scale-95 transition-all disabled:opacity-50"
+          aria-label="Add gift"
+        >
+          {isPending ? (
+            <Loader2 className="h-6 w-6 animate-spin" />
+          ) : (
+            <Plus className="h-6 w-6" />
+          )}
+        </button>
+      )}
     </div>
   );
 }

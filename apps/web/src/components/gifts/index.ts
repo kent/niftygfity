@@ -4,5 +4,6 @@ export { StatusCell } from "./StatusCell";
 export { PeopleCell } from "./PeopleCell";
 export { GiftGrid } from "./GiftGrid";
 export { SortableGiftRow } from "./SortableGiftRow";
+export { MobileGiftCard } from "./MobileGiftCard";
 export { HolidayReports } from "./HolidayReports";
 
