@@ -91,6 +91,7 @@ export interface UpdatePersonRequest {
 export interface GiftStatus extends BaseEntity {
   name: string;
   position: number;
+  color?: string | null;
 }
 
 export interface CreateGiftStatusRequest {
@@ -146,6 +147,7 @@ export interface CreateHolidayRequest {
     date: string;
     icon?: string;
     completed?: boolean;
+    archived?: boolean;
   };
 }
 
