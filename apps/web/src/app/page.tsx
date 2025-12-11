@@ -173,9 +173,9 @@ export default function HomePage() {
             </Link>
 
             {/* Main headline */}
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
               Never Stress About{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 tracking-normal whitespace-nowrap">
                 Gifts Again
               </span>
             </h1>
