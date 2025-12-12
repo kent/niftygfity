@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@/components/analytics";
 import { Providers } from "@/components/providers";
 import { JsonLd } from "@/components/json-ld";
+import { Footer } from "@/components/layout";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-sans",
@@ -134,7 +135,10 @@ export default function RootLayout({
           }}
         />
         <Providers>
-          {children}
+          <div className="flex min-h-screen flex-col">
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
           <Toaster />
         </Providers>
         <Analytics />

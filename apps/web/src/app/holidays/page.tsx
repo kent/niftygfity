@@ -251,24 +251,168 @@ function CreateHolidayForm({
   );
 }
 
+interface UpcomingHoliday {
+  name: string;
+  date: string; // ISO date
+  icon: string;
+  displayDate: string;
+}
+
+function getUpcomingHolidays(): UpcomingHoliday[] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const currentYear = today.getFullYear();
+  const nextYear = currentYear + 1;
+
+  // Define known holidays with their typical dates
+  const holidayDefs = [
+    { name: "Valentine's Day", month: 2, day: 14, icon: "heart" },
+    { name: "Easter", month: 4, day: 20, icon: "egg" }, // Approximate
+    { name: "Mother's Day", month: 5, day: 11, icon: "heart-handshake" }, // 2nd Sunday
+    { name: "Father's Day", month: 6, day: 15, icon: "user" }, // 3rd Sunday
+    { name: "Diwali", month: 10, day: 20, icon: "flame" }, // Approximate
+    { name: "Hanukkah", month: 12, day: 14, icon: "candle" }, // Approximate
+    { name: "Christmas", month: 12, day: 25, icon: "christmas" },
+    { name: "New Year", month: 1, day: 1, icon: "party-popper" },
+  ];
+
+  const upcoming: UpcomingHoliday[] = [];
+
+  // Check this year and next year
+  for (const year of [currentYear, nextYear]) {
+    for (const def of holidayDefs) {
+      const date = new Date(year, def.month - 1, def.day);
+      if (date > today) {
+        upcoming.push({
+          name: def.name,
+          date: date.toISOString().split("T")[0],
+          icon: def.icon,
+          displayDate: date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        });
+      }
+    }
+  }
+
+  // Sort by date and take first 6
+  return upcoming.sort((a, b) => a.date.localeCompare(b.date)).slice(0, 6);
+}
+
+function QuickHolidayCard({
+  holiday,
+  onClick,
+  isCreating,
+}: {
+  holiday: UpcomingHoliday;
+  onClick: () => void;
+  isCreating: boolean;
+}) {
+  const icon = getHolidayIcon(holiday.icon);
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={isCreating}
+      className="w-full text-left"
+    >
+      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
+        <CardContent className="p-4 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-xl shrink-0">
+            {icon}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-white truncate text-sm sm:text-base">
+              {holiday.name}
+            </h3>
+            <p className="text-xs text-slate-500">{holiday.displayDate}</p>
+          </div>
+          {isCreating ? (
+            <div className="animate-spin h-4 w-4 border-2 border-violet-500 border-t-transparent rounded-full shrink-0" />
+          ) : (
+            <Plus className="h-4 w-4 text-slate-600 group-hover:text-violet-400 transition-colors shrink-0" />
+          )}
+        </CardContent>
+      </Card>
+    </button>
+  );
+}
+
+function EmptyHolidaysState({
+  onCreateHoliday,
+  onShowCustomForm,
+}: {
+  onCreateHoliday: (name: string, date: string, icon?: string) => Promise<void>;
+  onShowCustomForm: () => void;
+}) {
+  const [creatingHoliday, setCreatingHoliday] = useState<string | null>(null);
+  const upcomingHolidays = getUpcomingHolidays();
+
+  const handleQuickCreate = async (holiday: UpcomingHoliday) => {
+    setCreatingHoliday(holiday.date);
+    try {
+      await onCreateHoliday(holiday.name, holiday.date, holiday.icon);
+    } finally {
+      setCreatingHoliday(null);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center mb-6">
+        <Calendar className="h-10 w-10 mx-auto text-violet-400 mb-3" />
+        <h2 className="text-lg font-semibold text-white mb-1">Start Planning</h2>
+        <p className="text-sm text-slate-400">
+          Pick an upcoming holiday to start your gift list
+        </p>
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        {upcomingHolidays.map((holiday) => (
+          <QuickHolidayCard
+            key={`${holiday.name}-${holiday.date}`}
+            holiday={holiday}
+            onClick={() => handleQuickCreate(holiday)}
+            isCreating={creatingHoliday === holiday.date}
+          />
+        ))}
+      </div>
+
+      <button onClick={onShowCustomForm} className="w-full">
+        <Card className="border-slate-800 border-dashed bg-slate-900/30 hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
+          <CardContent className="p-4 flex items-center justify-center gap-2">
+            <Plus className="h-4 w-4 text-slate-500 group-hover:text-violet-400 transition-colors" />
+            <span className="text-sm font-medium text-slate-400 group-hover:text-white transition-colors">
+              Create Custom Holiday
+            </span>
+          </CardContent>
+        </Card>
+      </button>
+    </div>
+  );
+}
+
 function ActiveSection({
   holidays,
   onToggleComplete,
   onToggleArchive,
+  onCreateHoliday,
+  onShowNewSection,
 }: {
   holidays: Holiday[];
   onToggleComplete: (holiday: Holiday) => void;
   onToggleArchive?: (holiday: Holiday) => void;
+  onCreateHoliday: (name: string, date: string, icon?: string) => Promise<void>;
+  onShowNewSection: () => void;
 }) {
   if (holidays.length === 0) {
     return (
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
-        <Calendar className="h-12 w-12 mx-auto text-slate-600 mb-4" />
-        <h2 className="text-xl font-semibold text-white mb-2">No Active Holidays</h2>
-        <p className="text-slate-400 max-w-md mx-auto">
-          Create a new holiday to start planning gifts.
-        </p>
-      </div>
+      <EmptyHolidaysState
+        onCreateHoliday={onCreateHoliday}
+        onShowCustomForm={onShowNewSection}
+      />
     );
   }
 
@@ -592,6 +736,8 @@ export default function HolidaysPage() {
                 holidays={activeHolidays}
                 onToggleComplete={handleToggleComplete}
                 onToggleArchive={handleToggleArchive}
+                onCreateHoliday={handleCreateHoliday}
+                onShowNewSection={() => setActiveSection("new")}
               />
             )}
             {activeSection === "past" && (
