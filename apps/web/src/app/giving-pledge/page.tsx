@@ -59,7 +59,7 @@ export default async function GivingPledgePage() {
           </h1>
 
           <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
-            We donate <span className="text-emerald-400 font-bold">$5 per premium user</span> to{" "}
+            We donate <span className="text-violet-400 font-bold">$5 per premium user</span> to{" "}
             <span className="text-white font-semibold">SickKids Hospital</span> each December.
           </p>
 
@@ -67,14 +67,14 @@ export default async function GivingPledgePage() {
           <div className="mb-10 p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
             <div className="text-sm text-slate-400 mb-2">{stats.year} Goal</div>
             <div className="flex items-baseline justify-center gap-1 mb-4">
-              <span className="text-5xl md:text-6xl font-bold text-emerald-400">${stats.raised_amount}</span>
+              <span className="text-5xl md:text-6xl font-bold text-violet-400">${stats.raised_amount}</span>
               <span className="text-2xl text-slate-500">/ ${stats.goal_amount}</span>
             </div>
             
             {/* Progress Bar */}
             <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -102,7 +102,7 @@ export default async function GivingPledgePage() {
           <Button
             asChild
             size="lg"
-            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-lg px-8"
+            className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-lg px-8"
           >
             <Link href={AUTH_ROUTES.signUp}>
               Get Started

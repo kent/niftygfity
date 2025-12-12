@@ -49,10 +49,6 @@ export default function SettingsPage() {
     loadData();
   }, [isAuthenticated]);
 
-  const handleSignOut = useCallback(async () => {
-    await signOut();
-    router.push(AUTH_ROUTES.signIn);
-  }, [signOut, router]);
 
   const handleAddStatus = useCallback(async (name: string) => {
     const nextPosition = statuses.length > 0
@@ -113,7 +109,7 @@ export default function SettingsPage() {
         <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-violet-900/5 via-transparent to-transparent" />
       </div>
 
-      <AppHeader user={user} onSignOut={handleSignOut} />
+      <AppHeader user={user} onSignOut={signOut} />
 
       <main className="relative z-10 container mx-auto px-4 py-8">
         {/* Page Header */}

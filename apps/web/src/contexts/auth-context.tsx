@@ -9,6 +9,8 @@ import {
   useMemo,
   ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type { User, BillingStatus } from "@niftygifty/types";
 import { FREE_GIFT_LIMIT } from "@niftygifty/types";
 import {
@@ -39,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { getToken, isLoaded: isAuthLoaded } = useClerkAuth();
   const { user: clerkUser, isLoaded: isUserLoaded } = useClerkUser();
   const clerk = useClerk();
+  const router = useRouter();
 
   const [billingStatus, setBillingStatus] = useState<BillingStatus | null>(null);
 
@@ -69,11 +72,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated]);
 
-  // Sign out via Clerk
+  // Sign out via Clerk and redirect to homepage
   const signOut = useCallback(async () => {
     setBillingStatus(null);
     await clerk.signOut();
-  }, [clerk]);
+    toast.success("Signed out");
+    router.push("/");
+  }, [clerk, router]);
 
   // Fetch billing status and sync profile when authenticated
   // This is a valid data fetching pattern - setState in callback is intentional

@@ -71,12 +71,6 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, loadData]);
 
-  const handleSignOut = useCallback(async () => {
-    await signOut();
-    toast.success("Signed out");
-    router.push(AUTH_ROUTES.signIn);
-  }, [signOut, router]);
-
   const handleStartPlanning = async (template: Holiday) => {
     setCreatingHolidayId(template.id);
     try {
@@ -129,7 +123,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <AppHeader user={user} onSignOut={handleSignOut} />
+      <AppHeader user={user} onSignOut={signOut} />
 
       <main className="container max-w-2xl mx-auto px-4 py-8">
         {/* New Gift List Button - Always Prominent */}

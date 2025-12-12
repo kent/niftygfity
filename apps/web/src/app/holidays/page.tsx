@@ -644,10 +644,6 @@ export default function HolidaysPage() {
     loadData();
   }, [isAuthenticated]);
 
-  const handleSignOut = useCallback(async () => {
-    await signOut();
-    router.push(AUTH_ROUTES.signIn);
-  }, [signOut, router]);
 
   const handleCreateHoliday = async (name: string, date: string, icon?: string) => {
     const holiday = await holidaysService.create({ name, date, icon });
@@ -718,7 +714,7 @@ export default function HolidaysPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
 
-      <AppHeader user={user} onSignOut={handleSignOut} />
+      <AppHeader user={user} onSignOut={signOut} />
 
       <main className="relative z-10 container mx-auto px-4 py-8">
         <div className="mb-8">

@@ -24,7 +24,7 @@ const features = [
     ),
     title: "Track Gifts by Gift List",
     description: "Stay organized across Christmas, birthdays, anniversaries, and more. Get status updates and email notifications so nothing falls through the cracks.",
-    gradient: "from-emerald-500 to-teal-500",
+    gradient: "from-violet-500 to-fuchsia-500",
   },
   {
     icon: (
@@ -119,7 +119,7 @@ export default function HomePage() {
 
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute top-1/2 -left-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
         <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-500" />
       </div>
@@ -148,7 +148,7 @@ export default function HomePage() {
             </Button>
             <Button
               asChild
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-500/25"
+              className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-lg shadow-violet-500/25"
             >
               <Link href={AUTH_ROUTES.signUp}>Get Started Free</Link>
             </Button>
@@ -175,7 +175,7 @@ export default function HomePage() {
             {/* Main headline */}
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
               Never Stress About{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 tracking-normal whitespace-nowrap">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 tracking-normal whitespace-nowrap">
                 Gifts Again
               </span>
             </h1>
@@ -189,7 +189,7 @@ export default function HomePage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-lg px-8 py-6 h-auto shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300"
+                className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-lg px-8 py-6 h-auto shadow-xl shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300"
               >
                 <Link href={AUTH_ROUTES.signUp}>
                   Start Planning for Free
@@ -222,7 +222,7 @@ export default function HomePage() {
               </div>
               <div className="hidden sm:block w-px h-4 bg-slate-700" />
               <div className="text-sm">
-                <span className="text-emerald-400 font-semibold">10%</span> of profits support charity
+                <span className="text-violet-400 font-semibold">10%</span> of profits support charity
               </div>
             </div>
           </div>
@@ -233,7 +233,7 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
               Everything You Need for{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
                 Perfect Gifting
               </span>
             </h2>
@@ -246,7 +246,7 @@ export default function HomePage() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group relative p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/5"
+                className="group relative p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/5"
               >
                 {/* Icon */}
                 <div className={`w-14 h-14 mb-6 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-white shadow-lg`}>
@@ -388,15 +388,15 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto">
             {/* Circles with connectors */}
             <div className="flex items-center justify-center mb-8">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/25 flex-shrink-0">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-xl shadow-violet-500/25 flex-shrink-0">
                 <span className="text-3xl font-bold text-white">1</span>
               </div>
-              <div className="hidden md:block w-24 lg:w-32 h-0.5 bg-gradient-to-r from-emerald-500 to-emerald-500/30" />
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/25 flex-shrink-0">
+              <div className="hidden md:block w-24 lg:w-32 h-0.5 bg-gradient-to-r from-violet-500 to-violet-500/30" />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-xl shadow-violet-500/25 flex-shrink-0">
                 <span className="text-3xl font-bold text-white">2</span>
               </div>
-              <div className="hidden md:block w-24 lg:w-32 h-0.5 bg-gradient-to-r from-emerald-500/30 to-emerald-500" />
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/25 flex-shrink-0">
+              <div className="hidden md:block w-24 lg:w-32 h-0.5 bg-gradient-to-r from-violet-500/30 to-violet-500" />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-xl shadow-violet-500/25 flex-shrink-0">
                 <span className="text-3xl font-bold text-white">3</span>
               </div>
             </div>
@@ -444,7 +444,7 @@ export default function HomePage() {
                   &ldquo;{testimonial.quote}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold">
                     {testimonial.author.charAt(0)}
                   </div>
                   <span className="text-slate-300 font-medium">- {testimonial.author}</span>
@@ -456,11 +456,11 @@ export default function HomePage() {
 
         {/* Final CTA Section */}
         <section className="container mx-auto px-4 py-20">
-          <div className="relative max-w-4xl mx-auto text-center p-12 md:p-16 rounded-3xl bg-gradient-to-br from-emerald-600/20 to-teal-600/20 border border-emerald-500/20 overflow-hidden">
+          <div className="relative max-w-4xl mx-auto text-center p-12 md:p-16 rounded-3xl bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-violet-500/20 overflow-hidden">
             {/* Background decoration */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -top-20 -right-20 w-60 h-60 bg-emerald-500/20 rounded-full blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-teal-500/20 rounded-full blur-3xl" />
+              <div className="absolute -top-20 -right-20 w-60 h-60 bg-violet-500/20 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-fuchsia-500/20 rounded-full blur-3xl" />
             </div>
 
             <div className="relative z-10">
@@ -474,7 +474,7 @@ export default function HomePage() {
                 <Button
                   asChild
                   size="lg"
-                  className="bg-white text-emerald-700 hover:bg-slate-100 text-lg px-8 py-6 h-auto shadow-xl font-semibold"
+                  className="bg-white text-violet-700 hover:bg-slate-100 text-lg px-8 py-6 h-auto shadow-xl font-semibold"
                 >
                   <Link href={AUTH_ROUTES.signUp}>
                     Get Started Free
@@ -508,7 +508,7 @@ export default function HomePage() {
             </div>
 
             <div className="flex items-center gap-6">
-              <Link href="/giving-pledge" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">
+              <Link href="/giving-pledge" className="text-sm text-slate-400 hover:text-violet-400 transition-colors">
                 Our Giving Pledge
               </Link>
             </div>

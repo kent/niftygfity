@@ -12,13 +12,12 @@ interface SettingsNavProps {
 
 const NAV_ITEMS: { id: SettingsSection; label: string; icon: typeof User; disabled?: boolean; color: string }[] = [
   { id: "profile", label: "Profile", icon: User, color: "violet" },
-  { id: "statuses", label: "Gift Statuses", icon: Tags, color: "emerald" },
+  { id: "statuses", label: "Gift Statuses", icon: Tags, color: "violet" },
   { id: "billing", label: "Billing", icon: CreditCard, disabled: true, color: "amber" },
 ];
 
 const colorMap = {
   violet: "from-violet-500 to-fuchsia-500 text-violet-300 shadow-violet-500/20",
-  emerald: "from-emerald-500 to-teal-500 text-emerald-300 shadow-emerald-500/20",
   amber: "from-amber-500 to-orange-500 text-amber-300 shadow-amber-500/20",
 };
 

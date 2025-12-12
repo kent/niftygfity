@@ -32,8 +32,8 @@ function AddStatusForm({ onAdd }: { onAdd: (name: string) => Promise<void> }) {
   };
 
   return (
-    <div className="group relative rounded-2xl border border-dashed border-slate-700/50 bg-slate-900/20 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-emerald-500/30 hover:bg-slate-900/30">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <div className="group relative rounded-2xl border border-dashed border-slate-700/50 bg-slate-900/20 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-violet-500/30 hover:bg-slate-900/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative p-4">
         <form onSubmit={handleSubmit} className="flex gap-3">
           <div className="flex-1 relative">
@@ -41,13 +41,13 @@ function AddStatusForm({ onAdd }: { onAdd: (name: string) => Promise<void> }) {
               placeholder="New status name (e.g. Shipped, Wrapped)"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20 pr-4 transition-all"
+              className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-violet-500 focus:ring-violet-500/20 pr-4 transition-all"
             />
           </div>
           <Button
             type="submit"
             disabled={!name.trim() || isAdding}
-            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-500/25 disabled:shadow-none disabled:opacity-50 shrink-0 transition-all duration-200"
+            className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 shadow-lg shadow-violet-500/25 disabled:shadow-none disabled:opacity-50 shrink-0 transition-all duration-200"
           >
             <Plus className="mr-2 h-4 w-4" />
             {isAdding ? "Adding..." : "Add Status"}
@@ -155,10 +155,10 @@ export function GiftStatusSection({
     <section className="space-y-8">
       {/* Header */}
       <div className="relative">
-        <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full" />
+        <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-violet-500 to-fuchsia-500 rounded-full" />
         <div className="flex items-center gap-3 mb-2">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30">
-            <Tags className="h-5 w-5 text-emerald-400" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 border border-violet-500/30">
+            <Tags className="h-5 w-5 text-violet-400" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white">Gift Statuses</h2>
@@ -180,7 +180,7 @@ export function GiftStatusSection({
             key={suggestion}
             onClick={() => onAdd(suggestion)}
             disabled={statuses.some(s => s.name.toLowerCase() === suggestion.toLowerCase())}
-            className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:border-emerald-500/30 hover:text-emerald-400 hover:bg-emerald-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+            className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:border-violet-500/30 hover:text-violet-400 hover:bg-violet-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
           >
             {suggestion}
           </button>
