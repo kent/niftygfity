@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Plus, ArrowRight, Loader2 } from "lucide-react";
+import { Plus, ArrowRight, Loader2, Calendar } from "lucide-react";
 import type { Holiday, Person } from "@niftygifty/types";
 
 const HOLIDAY_ICONS: Record<string, string> = {
@@ -35,6 +35,12 @@ export default function DashboardPage() {
   const [creatingHolidayId, setCreatingHolidayId] = useState<number | null>(null);
   const [newPersonName, setNewPersonName] = useState("");
   const [addingPerson, setAddingPerson] = useState(false);
+
+  // Only show active holidays (not completed or archived)
+  const activeHolidays = useMemo(
+    () => userHolidays.filter((h) => !h.completed && !h.archived),
+    [userHolidays]
+  );
 
   const loadData = useCallback(async () => {
     try {
@@ -126,12 +132,26 @@ export default function DashboardPage() {
       <AppHeader user={user} onSignOut={handleSignOut} />
 
       <main className="container max-w-2xl mx-auto px-4 py-8">
-        {/* Active Holidays */}
-        {userHolidays.length > 0 && (
+        {/* New Holiday Button - Always Prominent */}
+        <section className="mb-6">
+          <Link href="/holidays?section=new">
+            <Button
+              size="lg"
+              className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-semibold shadow-lg shadow-violet-500/25 h-14 text-base"
+            >
+              <Calendar className="mr-2 h-5 w-5" />
+              New Holiday
+              <Plus className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+        </section>
+
+        {/* Active Holidays Only */}
+        {activeHolidays.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-sm font-medium text-slate-400 mb-3">Your Holidays</h2>
+            <h2 className="text-sm font-medium text-slate-400 mb-3">Active Holidays</h2>
             <div className="flex flex-wrap gap-2">
-              {userHolidays.map((holiday) => (
+              {activeHolidays.map((holiday) => (
                 <Link key={holiday.id} href={`/holidays/${holiday.id}`}>
                   <Button
                     variant="outline"

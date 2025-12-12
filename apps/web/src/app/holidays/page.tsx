@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { holidaysService, AUTH_ROUTES } from "@/services";
@@ -605,8 +605,13 @@ function NewHolidaySection({
 export default function HolidaysPage() {
   const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [activeSection, setActiveSection] = useState<HolidaysSection>("active");
+  // Initialize section from URL param if present
+  const initialSection = (searchParams.get("section") as HolidaysSection) || "active";
+  const [activeSection, setActiveSection] = useState<HolidaysSection>(
+    ["active", "past", "archived", "new"].includes(initialSection) ? initialSection : "active"
+  );
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [templates, setTemplates] = useState<Holiday[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
