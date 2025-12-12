@@ -439,7 +439,7 @@ function VerticalNav({
   const tabs: { id: NavTab; label: string; icon: typeof Package; count?: number }[] = [
     { id: "received", label: "Received", icon: Package, count: receivedCount },
     { id: "giving", label: "Giving", icon: Heart, count: givingCount },
-    { id: "holidays", label: "Holidays", icon: Sparkles, count: holidaysCount },
+    { id: "holidays", label: "Gift Lists", icon: Sparkles, count: holidaysCount },
     { id: "suggestions", label: "Suggestions", icon: Lightbulb, count: suggestionsCount },
     { id: "stats", label: "Stats", icon: BarChart3 },
     { id: "about", label: "About", icon: UserCog },

@@ -40,7 +40,7 @@ export default function JoinHolidayPage() {
         setHoliday(result);
         setStatus("success");
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to join holiday";
+        const errorMessage = err instanceof Error ? err.message : "Failed to join gift list";
         if (errorMessage.includes("already a member")) {
           setStatus("already_member");
         } else {
@@ -124,7 +124,7 @@ export default function JoinHolidayPage() {
                 </div>
               </div>
               <p className="text-xs text-slate-500">
-                You can now add gifts and people to this holiday. The owner and other collaborators will see your contributions.
+                You can now add gifts and people to this gift list. The owner and other collaborators will see your contributions.
               </p>
             </div>
           )}
@@ -133,7 +133,7 @@ export default function JoinHolidayPage() {
             {(status === "success" || status === "already_member") && (
               <Link href="/holidays" className="w-full">
                 <Button className="w-full bg-violet-600 hover:bg-violet-700">
-                  Go to Holidays
+                  Go to Gift Lists
                 </Button>
               </Link>
             )}

@@ -115,7 +115,7 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
         <DialogHeader>
           <DialogTitle className="text-white">Share {holiday.name}</DialogTitle>
           <DialogDescription>
-            Share this holiday with family or friends so they can add gifts and people.
+            Share this gift list with family or friends so they can add gifts and people.
           </DialogDescription>
         </DialogHeader>
 
@@ -158,7 +158,7 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
                 </Button>
               </div>
               <p className="text-xs text-slate-500">
-                Anyone with this link can join this holiday as a collaborator.
+                Anyone with this link can join this gift list as a collaborator.
               </p>
             </div>
 

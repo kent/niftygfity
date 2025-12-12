@@ -63,7 +63,7 @@ export function HolidayTemplateCard({
             </div>
             <div>
               <h3 className="font-medium text-white">{holiday.name}</h3>
-              <p className="text-xs text-slate-500">Gift-giving holiday</p>
+              <p className="text-xs text-slate-500">Gift-giving occasion</p>
             </div>
           </div>
         </div>

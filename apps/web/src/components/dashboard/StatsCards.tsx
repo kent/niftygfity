@@ -16,14 +16,14 @@ export function StatsCards({ holidayCount, peopleCount }: StatsCardsProps) {
       <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium text-slate-400">
-            Active Holidays
+            Active Gift Lists
           </CardTitle>
           <Calendar className="h-4 w-4 text-violet-400" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-white">{holidayCount}</div>
           <p className="text-xs text-slate-500">
-            {holidayCount === 0 ? "Choose a holiday below" : "Planning in progress"}
+            {holidayCount === 0 ? "Choose a gift list below" : "Planning in progress"}
           </p>
         </CardContent>
       </Card>

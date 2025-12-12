@@ -74,16 +74,18 @@ class Gift < ApplicationRecord
   end
 
   def set_position
-    if position.present? && position > 0
-      # Inserting at specific position - shift existing items down
-      Gift.unscoped.where(holiday_id: holiday_id)
-          .where("position >= ?", position)
-          .update_all("position = position + 1")
-    else
-      # Append to end
-      max_pos = Gift.unscoped.where(holiday_id: holiday_id).maximum(:position) || 0
-      self.position = max_pos + 1
-    end
+    # Default behavior: new gifts appear at the top (position 0).
+    # If a position is provided, insert at that position (clamped to >= 0).
+    desired_position = position.nil? ? 0 : position.to_i
+    desired_position = 0 if desired_position.negative?
+
+    self.position = desired_position
+
+    # Shift existing items down to make room (including current top at 0).
+    Gift.unscoped
+        .where(holiday_id: holiday_id)
+        .where("position >= ?", desired_position)
+        .update_all("position = position + 1")
   end
 
   def set_created_by

@@ -716,7 +716,8 @@ export function MatchWorkspace({
   }, [gifts, onGiftsChange]);
 
   const handleGiftCreated = useCallback((newGift: Gift) => {
-    onGiftsChange?.([...gifts, newGift]);
+    // New gifts should appear at the top.
+    onGiftsChange?.([newGift, ...gifts.filter((g) => g.id !== newGift.id)]);
   }, [gifts, onGiftsChange]);
 
   const handlePersonCreated = useCallback((newPerson: Person) => {

@@ -19,7 +19,7 @@ export function SharedSection({ people }: SharedSectionProps) {
     <PeopleList
       people={sharedPeople}
       emptyTitle="No Shared People"
-      emptyDescription="People shared with you through holidays will appear here"
+      emptyDescription="People shared with you through gift lists will appear here"
     />
   );
 }

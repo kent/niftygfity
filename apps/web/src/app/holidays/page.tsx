@@ -196,7 +196,7 @@ function CreateHolidayForm({
               {icon}
             </div>
             <h3 className="text-lg font-semibold text-white">
-              {template ? `Add ${template.name}` : "Create Custom Holiday"}
+              {template ? `Add ${template.name}` : "Create Custom Gift List"}
             </h3>
           </div>
 
@@ -208,7 +208,7 @@ function CreateHolidayForm({
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Holiday name"
+              placeholder="Gift list name"
               className="bg-slate-800 border-slate-700 text-white"
               required
             />
@@ -443,9 +443,9 @@ function PastSection({
     return (
       <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
         <Archive className="h-12 w-12 mx-auto text-slate-600 mb-4" />
-        <h2 className="text-xl font-semibold text-white mb-2">No Past Holidays</h2>
+        <h2 className="text-xl font-semibold text-white mb-2">No Past Gift Lists</h2>
         <p className="text-slate-400 max-w-md mx-auto">
-          Holidays marked as complete will appear here.
+          Gift lists marked as complete will appear here.
         </p>
       </div>
     );
@@ -476,9 +476,9 @@ function ArchivedSection({
     return (
       <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
         <Archive className="h-12 w-12 mx-auto text-slate-600 mb-4" />
-        <h2 className="text-xl font-semibold text-white mb-2">No Archived Holidays</h2>
+        <h2 className="text-xl font-semibold text-white mb-2">No Archived Gift Lists</h2>
         <p className="text-slate-400 max-w-md mx-auto">
-          Archived holidays will appear here.
+          Archived gift lists will appear here.
         </p>
       </div>
     );
@@ -635,7 +635,7 @@ export default function HolidaysPage() {
         setHolidays(holidaysData);
         setTemplates(templatesData);
       } catch {
-        setError("Failed to load holidays. Please try again.");
+        setError("Failed to load gift lists. Please try again.");
       } finally {
         setDataLoading(false);
       }
@@ -668,7 +668,7 @@ export default function HolidaysPage() {
           : `Marked "${updated.name}" as active`
       );
     } catch {
-      toast.error("Failed to update holiday");
+      toast.error("Failed to update gift list");
     }
   };
 
@@ -684,7 +684,7 @@ export default function HolidaysPage() {
           : `Unarchived "${updated.name}"`
       );
     } catch {
-      toast.error("Failed to update holiday");
+      toast.error("Failed to update gift list");
     }
   };
 
@@ -722,9 +722,9 @@ export default function HolidaysPage() {
 
       <main className="relative z-10 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Holidays</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Gift Lists</h1>
           <p className="text-slate-400">
-            Plan gifts for upcoming holidays or review past ones.
+            Plan gifts for upcoming occasions or review past ones.
           </p>
         </div>
 

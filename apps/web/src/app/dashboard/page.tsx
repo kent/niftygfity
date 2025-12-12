@@ -89,7 +89,7 @@ export default function DashboardPage() {
       setUserHolidays((prev) => [...prev, newHoliday]);
       toast.success(`Started planning ${template.name} ${currentYear}!`);
     } catch {
-      toast.error("Failed to create holiday");
+      toast.error("Failed to create gift list");
     } finally {
       setCreatingHolidayId(null);
     }
@@ -132,7 +132,7 @@ export default function DashboardPage() {
       <AppHeader user={user} onSignOut={handleSignOut} />
 
       <main className="container max-w-2xl mx-auto px-4 py-8">
-        {/* New Holiday Button - Always Prominent */}
+        {/* New Gift List Button - Always Prominent */}
         <section className="mb-6">
           <Link href="/holidays?section=new">
             <Button
@@ -140,16 +140,16 @@ export default function DashboardPage() {
               className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-semibold shadow-lg shadow-violet-500/25 h-14 text-base"
             >
               <Calendar className="mr-2 h-5 w-5" />
-              New Holiday
+              New Gift List
               <Plus className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </section>
 
-        {/* Active Holidays Only */}
+        {/* Active Gift Lists Only */}
         {activeHolidays.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-sm font-medium text-slate-400 mb-3">Active Holidays</h2>
+            <h2 className="text-sm font-medium text-slate-400 mb-3">Active Gift Lists</h2>
             <div className="flex flex-wrap gap-2">
               {activeHolidays.map((holiday) => (
                 <Link key={holiday.id} href={`/holidays/${holiday.id}`}>
@@ -169,10 +169,10 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <div className="space-y-4">
-          {/* Start a Holiday */}
+          {/* Start a Gift List */}
           <Card className="border-slate-800 bg-slate-900/50">
             <CardContent className="p-4">
-              <h2 className="font-semibold text-white mb-3">Start a Holiday</h2>
+              <h2 className="font-semibold text-white mb-3">Start a Gift List</h2>
               {loadingData ? (
                 <div className="flex gap-2">
                   {[1, 2, 3, 4].map((i) => (

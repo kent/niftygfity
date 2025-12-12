@@ -24,7 +24,7 @@ interface AppHeaderProps {
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/holidays", label: "Holidays", icon: Calendar },
+  { href: "/holidays", label: "Gift Lists", icon: Calendar },
   { href: "/people", label: "People", icon: Users },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;

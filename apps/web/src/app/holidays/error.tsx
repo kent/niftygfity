@@ -27,7 +27,7 @@ export default function HolidaysError({
             Something went wrong
           </h1>
           <p className="text-slate-400 text-sm">
-            We couldn&apos;t load your holidays. Please try again.
+            We couldn&apos;t load your gift lists. Please try again.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

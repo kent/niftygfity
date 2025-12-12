@@ -216,7 +216,7 @@ function PersonView({
           </div>
           <h3 className="text-lg font-medium text-white mb-2">{selectedPerson.name}</h3>
           <p className="text-muted-foreground max-w-sm mx-auto">
-            No gifts assigned yet. Add gifts for this holiday and assign {selectedPerson.name} as a recipient to see their report.
+            No gifts assigned yet. Add gifts to this gift list and assign {selectedPerson.name} as a recipient to see their report.
           </p>
         </div>
       );

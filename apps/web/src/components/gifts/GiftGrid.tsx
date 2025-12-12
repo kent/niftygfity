@@ -191,21 +191,20 @@ export function GiftGrid({
 
     startTransition(async () => {
       try {
+        const desiredPosition = atPosition ?? 0;
         const created = await giftsService.create({
           name: "New Gift",
           holiday_id: holidayId,
           gift_status_id: statusId,
-          position: atPosition,
+          position: desiredPosition,
         });
         setLocalMeta(created.id, { _isNew: true });
         
-        if (atPosition !== undefined) {
-          const refreshed = await giftsService.getAll();
-          const holidayGifts = refreshed.filter((g) => g.holiday_id === holidayId);
-          onGiftsChangeRef.current(holidayGifts);
-        } else {
-          onGiftsChangeRef.current([...externalGiftsRef.current, created]);
-        }
+        // Always refresh so ordering/positions stay consistent (especially when inserting at top).
+        const refreshed = await giftsService.getAll();
+        const holidayGifts = refreshed.filter((g) => g.holiday_id === holidayId);
+        onGiftsChangeRef.current(holidayGifts);
+
         // Refresh billing status after creating gift
         await refreshBillingStatus();
       } catch (err) {

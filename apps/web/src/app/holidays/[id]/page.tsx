@@ -113,7 +113,7 @@ export default function HolidayDetailPage() {
         setStatuses(statusesData);
         setCollaborators(collaboratorsData);
       } catch {
-        setError("Failed to load holiday. Please try again.");
+        setError("Failed to load gift list. Please try again.");
       } finally {
         setDataLoading(false);
         setCollaboratorsLoading(false);
@@ -141,7 +141,7 @@ export default function HolidayDetailPage() {
           : `Unarchived "${updated.name}"`
       );
     } catch {
-      toast.error("Failed to update holiday");
+      toast.error("Failed to update gift list");
     }
   }, [holiday, holidayId]);
 
@@ -157,9 +157,9 @@ export default function HolidayDetailPage() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">{error || "Holiday not found"}</p>
+          <p className="text-red-400 mb-4">{error || "Gift list not found"}</p>
           <Link href="/holidays">
-            <Button>Back to Holidays</Button>
+            <Button>Back to Gift Lists</Button>
           </Link>
         </div>
       </div>
@@ -191,7 +191,7 @@ export default function HolidayDetailPage() {
             className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Holidays
+            Back to Gift Lists
           </Link>
 
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">

@@ -353,7 +353,7 @@ export default function BillingPage() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   "Unlimited gift tracking",
-                  "Multiple holidays & events",
+                  "Multiple gift lists & events",
                   "Gift status management",
                   "Cost tracking & budgets",
                   "Recipient organization",

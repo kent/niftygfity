@@ -43,11 +43,11 @@ export function HolidayTemplatesSection({
       <div className="flex items-center gap-2 mb-4">
         <Calendar className="h-5 w-5 text-violet-400" />
         <h2 className="text-xl font-semibold text-white">
-          Start Planning a Holiday
+          Start a Gift List
         </h2>
       </div>
       <p className="text-slate-400 text-sm mb-4">
-        Choose a holiday to start planning gifts for this year.
+        Choose an occasion to start planning gifts for this year.
       </p>
 
       {isLoading ? (
@@ -68,7 +68,7 @@ export function HolidayTemplatesSection({
       {userHolidays.length > 0 && (
         <div className="mt-6">
           <h3 className="text-sm font-medium text-slate-400 mb-3">
-            Your Active Holidays
+            Your Active Gift Lists
           </h3>
           <div className="flex flex-wrap gap-2">
             {userHolidays.map((holiday) => (

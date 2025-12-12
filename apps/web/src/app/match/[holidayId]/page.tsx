@@ -94,9 +94,9 @@ export default function MatchPage() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">{error || "Holiday not found"}</p>
+          <p className="text-red-400 mb-4">{error || "Gift list not found"}</p>
           <Link href="/holidays">
-            <Button>Back to Holidays</Button>
+            <Button>Back to Gift Lists</Button>
           </Link>
         </div>
       </div>

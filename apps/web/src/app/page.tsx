@@ -9,7 +9,7 @@ import { JsonLd } from "@/components/json-ld";
 export const metadata: Metadata = {
   title: "Listy Gifty: Never Stress About Gifts Again",
   description:
-    "The smartest way to manage holiday gifts. Track gifts across holidays, balance spending between loved ones, get AI suggestions, and stay organized with status notifications.",
+    "The smartest way to manage gift lists. Track gifts across occasions, balance spending between loved ones, get AI suggestions, and stay organized with status notifications.",
   alternates: {
     canonical: "/",
   },
@@ -22,7 +22,7 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
       </svg>
     ),
-    title: "Track Gifts by Holiday",
+    title: "Track Gifts by Gift List",
     description: "Stay organized across Christmas, birthdays, anniversaries, and more. Get status updates and email notifications so nothing falls through the cracks.",
     gradient: "from-emerald-500 to-teal-500",
   },
@@ -100,13 +100,13 @@ export default function HomePage() {
           name: "Listy Gifty: Never Stress About Gifts Again",
           url: baseUrl,
           description:
-            "The smartest way to manage holiday gifts. Track gifts across holidays, balance spending, and get AI suggestions.",
+            "The smartest way to manage gift lists. Track gifts across occasions, balance spending, and get AI suggestions.",
           mainEntity: {
             "@type": "SoftwareApplication",
             name: "Listy Gifty",
             applicationCategory: "LifestyleApplication",
             description:
-              "A holiday gift list management app that helps you organize presents for family and friends, track your budget, and coordinate with others.",
+              "A gift list management app that helps you organize presents for family and friends, track your budget, and coordinate with others.",
             author: {
               "@type": "Organization",
               name: "Listy Gifty",
@@ -303,6 +303,71 @@ export default function HomePage() {
                 <span className="text-sm font-medium">{holiday.name}</span>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Sharing & Privacy Section */}
+        <section id="sharing" className="container mx-auto px-4 py-20">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative p-10 md:p-14 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-fuchsia-500/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-500/10 rounded-full blur-3xl" />
+              </div>
+
+              <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10">
+                {/* Icon */}
+                <div className="shrink-0">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-violet-600 flex items-center justify-center shadow-xl shadow-fuchsia-500/25">
+                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 text-center lg:text-left">
+                  <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+                    Share Lists,{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-violet-400">
+                      Keep Control
+                    </span>
+                  </h2>
+                  <p className="text-slate-400 mb-6 leading-relaxed">
+                    Invite family, friends, or coworkers to collaborate on a holiday list with a simple link. They can add gifts and people too. Your other lists stay private by default.
+                  </p>
+
+                  <ul className="space-y-3 mb-8 text-left max-w-md mx-auto lg:mx-0">
+                    {[
+                      "Share a link to invite collaborators instantly",
+                      "Work together on gifts and people in real-time",
+                      "Regenerate your link anytime to revoke access",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-start gap-3 text-slate-300">
+                        <svg className="w-5 h-5 text-fuchsia-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    asChild
+                    size="lg"
+                    className="bg-gradient-to-r from-fuchsia-600 to-violet-600 hover:from-fuchsia-500 hover:to-violet-500 text-white shadow-lg shadow-fuchsia-500/25"
+                  >
+                    <Link href={AUTH_ROUTES.signUp}>
+                      Start Sharing for Free
+                      <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
