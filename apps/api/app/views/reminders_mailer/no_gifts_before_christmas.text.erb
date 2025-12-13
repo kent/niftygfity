@@ -1,0 +1,13 @@
+🎄 Christmas is coming!
+
+Hey <%= @user.safe_name %>, you have your <%= @holiday.name %> list ready, but you haven't added any gifts yet.
+
+Only <%= @days_until %> days until Christmas!
+
+Start adding gifts now to stay organized and avoid last-minute stress. Track purchases, wrap status, and spending all in one place!
+
+Add your first gift: <%= @frontend_url %>/holidays/<%= @holiday.id %>
+
+---
+Turn off Christmas reminders: <%= @unsubscribe_url %>
+

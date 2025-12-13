@@ -9,6 +9,7 @@ import {
   GiftStatusSection,
   ProfileSection,
   BillingSection,
+  NotificationsSection,
   SettingsNav,
   type SettingsSection,
 } from "@/components/settings";
@@ -137,6 +138,9 @@ export default function SettingsPage() {
           <div className="flex-1 max-w-2xl pl-4">
             {activeSection === "profile" && (
               <ProfileSection user={user} />
+            )}
+            {activeSection === "notifications" && (
+              <NotificationsSection />
             )}
             {activeSection === "statuses" && (
               <GiftStatusSection

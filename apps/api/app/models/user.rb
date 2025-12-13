@@ -2,10 +2,14 @@ class User < ApplicationRecord
   FREE_GIFT_LIMIT = 10
   SUBSCRIPTION_PLANS = %w[free premium].freeze
 
+  has_secure_token :email_preferences_token
+
   has_many :people, dependent: :destroy
   has_many :holiday_users, dependent: :destroy
   has_many :holidays, through: :holiday_users
   has_many :gift_changes, dependent: :nullify
+  has_one :notification_preference, dependent: :destroy
+  has_many :email_deliveries, dependent: :destroy
 
   validates :subscription_plan, inclusion: { in: SUBSCRIPTION_PLANS }
   validates :clerk_user_id, presence: true, uniqueness: true
@@ -72,5 +76,10 @@ class User < ApplicationRecord
   # Display name: first_name if present, otherwise email
   def safe_name
     first_name.presence || email
+  end
+
+  # Returns (and creates if missing) notification preferences
+  def notification_prefs
+    notification_preference || create_notification_preference!
   end
 end

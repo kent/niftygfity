@@ -1,0 +1,20 @@
+Hey <%= @user.safe_name %>!
+
+You have <%= @total_pending %> gift<%= 's' if @total_pending != 1 %> that still need<%= 's' if @total_pending == 1 %> attention. Don't let the holidays sneak up on you!
+
+<% @pending_by_holiday.each do |holiday, gifts| %>
+<%= holiday.name %><%= " • #{holiday.date.strftime('%b %d')}" if holiday.date %>
+<%= "-" * holiday.name.length %>
+<% gifts.first(5).each do |gift| %>
+• <%= gift.name %><%= " for #{gift.recipients.map(&:name).join(', ')}" if gift.recipients.any? %> (<%= gift.gift_status.name %>)
+<% end %>
+<% if gifts.count > 5 %>
++ <%= gifts.count - 5 %> more gifts
+<% end %>
+
+<% end %>
+View your gifts: <%= @frontend_url %>/holidays
+
+---
+Turn off these reminders: <%= @unsubscribe_url %>
+

@@ -7,4 +7,5 @@ export { billingService } from "./billing.service";
 export { giftSuggestionsService } from "./gift-suggestions.service";
 export { usersService } from "./users.service";
 export { matchArrangementsService } from "./match-arrangements.service";
+export { notificationPreferencesService } from "./notification-preferences.service";
 

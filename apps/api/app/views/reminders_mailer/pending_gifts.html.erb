@@ -1,0 +1,65 @@
+<% content_for :preview_text do %><%= @total_pending %> gift<%= 's' if @total_pending != 1 %> still need attention before the big day!</% end %>
+
+<h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #18181b;">
+  Hey <%= @user.safe_name %>! 👋
+</h1>
+
+<p style="margin: 0 0 24px 0; font-size: 16px; color: #52525b;">
+  You have <strong><%= @total_pending %> gift<%= 's' if @total_pending != 1 %></strong> that still need<%= 's' if @total_pending == 1 %> attention. Don't let the holidays sneak up on you!
+</p>
+
+<% @pending_by_holiday.each do |holiday, gifts| %>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="background: linear-gradient(135deg, #faf5ff, #fdf2f8); border-radius: 12px; padding: 20px;">
+      <p style="margin: 0 0 16px 0; font-size: 14px; font-weight: 600; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">
+        🎁 <%= holiday.name %><%= " • #{holiday.date.strftime('%b %d')}" if holiday.date %>
+      </p>
+
+      <% gifts.first(5).each do |gift| %>
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 8px;">
+        <tr>
+          <td style="background-color: #ffffff; border-radius: 8px; padding: 12px 16px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td>
+                  <strong style="color: #18181b;"><%= gift.name %></strong>
+                  <% if gift.recipients.any? %>
+                  <span style="color: #71717a; font-size: 13px;"> for <%= gift.recipients.map(&:name).join(', ') %></span>
+                  <% end %>
+                </td>
+                <td align="right">
+                  <span style="display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 600; background-color: #fef3c7; color: #92400e; border-radius: 4px;">
+                    <%= gift.gift_status.name.upcase %>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <% end %>
+      <% if gifts.count > 5 %>
+      <p style="margin: 8px 0 0 0; font-size: 13px; color: #71717a; text-align: center;">
+        + <%= gifts.count - 5 %> more gifts
+      </p>
+      <% end %>
+    </td>
+  </tr>
+</table>
+<% end %>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td align="center">
+      <a href="<%= @frontend_url %>/holidays" class="button" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #a855f7, #ec4899); color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">
+        View Your Gifts
+      </a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 24px 0 0 0; font-size: 13px; color: #a1a1aa; text-align: center;">
+  <a href="<%= @unsubscribe_url %>" style="color: #a1a1aa;">Turn off these reminders</a>
+</p>
+

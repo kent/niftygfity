@@ -45,6 +45,15 @@ Rails.application.routes.draw do
   # Profile
   post "profile/sync" => "profile#sync"
 
+  # Notification preferences (authenticated)
+  resource :notification_preferences, only: %i[show update] do
+    get :email_history, on: :collection
+  end
+
+  # Email preferences (token-based, no auth)
+  get "email_preferences/:token" => "email_preferences#show"
+  patch "email_preferences/:token" => "email_preferences#update"
+
   # Health check endpoints
   get "up" => "rails/health#show", as: :rails_health_check
   get "/" => "health#show", as: :api_health

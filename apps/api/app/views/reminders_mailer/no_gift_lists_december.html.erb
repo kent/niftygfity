@@ -1,0 +1,52 @@
+<% content_for :preview_text do %>December is here! Create your gift list and stay organized this holiday season.<% end %>
+
+<h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #18181b;">
+  🎁 Happy December!
+</h1>
+
+<p style="margin: 0 0 16px 0; font-size: 16px; color: #52525b;">
+  Hey <%= @user.safe_name %>, the holiday season is here! We noticed you don't have any gift lists set up yet.
+</p>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 24px; text-align: center;">
+      <p style="margin: 0 0 8px 0; font-size: 48px; font-weight: 700; color: #92400e;">
+        <%= @days_until_christmas %>
+      </p>
+      <p style="margin: 0; font-size: 14px; font-weight: 600; color: #92400e; text-transform: uppercase; letter-spacing: 1px;">
+        days until Christmas
+      </p>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 0 0 24px 0; font-size: 15px; color: #52525b;">
+  Create a gift list to:
+</p>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="padding-left: 16px;">
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #52525b;">✓ Keep track of gift ideas for everyone</p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #52525b;">✓ Track what's purchased, shipped, and wrapped</p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #52525b;">✓ Balance spending across recipients</p>
+      <p style="margin: 0; font-size: 14px; color: #52525b;">✓ Share lists with family members</p>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td align="center">
+      <a href="<%= @frontend_url %>/holidays" class="button" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #a855f7, #ec4899); color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">
+        Create Your First List
+      </a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 24px 0 0 0; font-size: 13px; color: #a1a1aa; text-align: center;">
+  <a href="<%= @unsubscribe_url %>" style="color: #a1a1aa;">Turn off December reminders</a>
+</p>
+

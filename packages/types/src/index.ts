@@ -511,3 +511,37 @@ export interface UpdateMatchArrangementRequest {
 }
 
 export type MatchArrangementsResponse = MatchArrangement[];
+
+// =============================================================================
+// Notification Preferences
+// =============================================================================
+
+export interface NotificationPreferences {
+  pending_gifts_reminder_enabled: boolean;
+  no_gifts_before_christmas_enabled: boolean;
+  no_gift_lists_december_enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpdateNotificationPreferencesRequest {
+  pending_gifts_reminder_enabled?: boolean;
+  no_gifts_before_christmas_enabled?: boolean;
+  no_gift_lists_december_enabled?: boolean;
+}
+
+export interface EmailDeliverySummary {
+  kind: string;
+  subject: string;
+  sent_at: string;
+  status: "sent" | "failed";
+}
+
+// Response for token-based email preferences
+export interface EmailPreferencesResponse {
+  user: {
+    email: string;
+    name: string;
+  };
+  preferences: NotificationPreferences;
+}

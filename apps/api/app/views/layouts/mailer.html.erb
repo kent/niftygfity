@@ -83,7 +83,11 @@
                   <td align="center" style="font-size: 12px; color: #a1a1aa;">
                     <a href="<%= ENV.fetch('FRONTEND_URL', 'https://listygifty.com') %>" style="color: #a855f7; text-decoration: none;">Visit Listy Gifty</a>
                     <span style="padding: 0 8px;">•</span>
-                    <a href="<%= ENV.fetch('FRONTEND_URL', 'https://listygifty.com') %>/settings" style="color: #a1a1aa; text-decoration: none;">Unsubscribe</a>
+                    <% if @unsubscribe_url.present? %>
+                    <a href="<%= @unsubscribe_url %>" style="color: #a1a1aa; text-decoration: none;">Manage Notifications</a>
+                    <% else %>
+                    <a href="<%= ENV.fetch('FRONTEND_URL', 'https://listygifty.com') %>/settings" style="color: #a1a1aa; text-decoration: none;">Manage Notifications</a>
+                    <% end %>
                   </td>
                 </tr>
               </table>

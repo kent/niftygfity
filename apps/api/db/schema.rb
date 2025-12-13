@@ -10,9 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_11_151946) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_12_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "email_deliveries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "dedupe_key", null: false
+    t.text "error"
+    t.bigint "holiday_id"
+    t.string "kind", null: false
+    t.jsonb "metadata", default: {}
+    t.datetime "sent_at", null: false
+    t.string "status", default: "sent", null: false
+    t.string "subject", null: false
+    t.string "to_email", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["holiday_id"], name: "index_email_deliveries_on_holiday_id"
+    t.index ["kind"], name: "index_email_deliveries_on_kind"
+    t.index ["user_id", "kind", "dedupe_key"], name: "idx_email_deliveries_dedupe", unique: true
+    t.index ["user_id", "kind", "sent_at"], name: "index_email_deliveries_on_user_id_and_kind_and_sent_at"
+    t.index ["user_id"], name: "index_email_deliveries_on_user_id"
+  end
 
   create_table "gift_changes", force: :cascade do |t|
     t.string "change_type", null: false
@@ -139,6 +159,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_151946) do
     t.index ["match_arrangement_id", "person_id", "row_index"], name: "idx_match_slots_unique", unique: true
     t.index ["match_arrangement_id"], name: "index_match_slots_on_match_arrangement_id"
     t.index ["person_id"], name: "index_match_slots_on_person_id"
+  end
+
+  create_table "notification_preferences", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "no_gift_lists_december_enabled", default: true, null: false
+    t.boolean "no_gifts_before_christmas_enabled", default: true, null: false
+    t.boolean "pending_gifts_reminder_enabled", default: true, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_notification_preferences_on_user_id", unique: true
   end
 
   create_table "people", force: :cascade do |t|
@@ -278,6 +308,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_151946) do
     t.datetime "created_at", null: false
     t.boolean "digest_enabled", default: true, null: false
     t.string "email", null: false
+    t.string "email_preferences_token"
     t.string "first_name"
     t.string "image_url"
     t.datetime "last_digest_sent_at"
@@ -291,9 +322,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_151946) do
     t.datetime "welcomed_at"
     t.index ["clerk_user_id"], name: "index_users_on_clerk_user_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email_preferences_token"], name: "index_users_on_email_preferences_token", unique: true
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
   end
 
+  add_foreign_key "email_deliveries", "holidays"
+  add_foreign_key "email_deliveries", "users"
   add_foreign_key "gift_changes", "gifts"
   add_foreign_key "gift_changes", "holidays"
   add_foreign_key "gift_changes", "users"
@@ -314,6 +348,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_11_151946) do
   add_foreign_key "match_slots", "gifts"
   add_foreign_key "match_slots", "match_arrangements"
   add_foreign_key "match_slots", "people"
+  add_foreign_key "notification_preferences", "users"
   add_foreign_key "people", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

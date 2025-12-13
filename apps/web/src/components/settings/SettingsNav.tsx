@@ -1,9 +1,9 @@
 "use client";
 
-import { Tags, User, CreditCard, ChevronRight } from "lucide-react";
+import { Tags, User, CreditCard, ChevronRight, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type SettingsSection = "profile" | "statuses" | "billing";
+export type SettingsSection = "profile" | "notifications" | "statuses" | "billing";
 
 interface SettingsNavProps {
   activeSection: SettingsSection;
@@ -12,6 +12,7 @@ interface SettingsNavProps {
 
 const NAV_ITEMS: { id: SettingsSection; label: string; icon: typeof User; disabled?: boolean; color: string }[] = [
   { id: "profile", label: "Profile", icon: User, color: "violet" },
+  { id: "notifications", label: "Notifications", icon: Bell, color: "violet" },
   { id: "statuses", label: "Gift Statuses", icon: Tags, color: "violet" },
   { id: "billing", label: "Billing", icon: CreditCard, disabled: true, color: "amber" },
 ];
