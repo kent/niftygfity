@@ -74,6 +74,11 @@ const testimonials = [
     author: "Kent's Children",
     rating: 5,
   },
+  {
+    quote: "These are great reviews",
+    author: "Kyle F.",
+    rating: 5,
+  },
 ];
 
 function StarRating({ rating }: { rating: number }) {
