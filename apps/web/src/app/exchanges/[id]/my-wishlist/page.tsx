@@ -244,6 +244,7 @@ export default function MyWishlistPage({
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
                     {item.photo_url ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={item.photo_url}
                         alt={item.name}
@@ -251,6 +252,7 @@ export default function MyWishlistPage({
                       />
                     ) : (
                       <div className="w-16 h-16 rounded-lg bg-slate-800 flex items-center justify-center">
+                        {/* eslint-disable-next-line jsx-a11y/alt-text */}
                         <Image className="h-6 w-6 text-slate-600" />
                       </div>
                     )}

@@ -77,6 +77,7 @@ function Cursor({ cursor, colorIndex }: { cursor: CursorPosition; colorIndex: nu
         className={`absolute left-4 top-4 flex items-center gap-1.5 rounded-full ${color} px-2 py-1 shadow-lg`}
       >
         {cursor.image_url ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={cursor.image_url}
             alt={name}

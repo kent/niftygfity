@@ -17,6 +17,7 @@ export function WishlistItemCard({ item, onDelete, readOnly = false }: WishlistI
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
           {item.photo_url ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={item.photo_url}
               alt={item.name}
@@ -24,6 +25,7 @@ export function WishlistItemCard({ item, onDelete, readOnly = false }: WishlistI
             />
           ) : (
             <div className="w-16 h-16 rounded-lg bg-slate-800 flex items-center justify-center shrink-0">
+              {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <Image className="h-6 w-6 text-slate-600" />
             </div>
           )}

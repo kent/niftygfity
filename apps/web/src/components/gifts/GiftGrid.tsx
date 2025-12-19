@@ -94,7 +94,8 @@ export function GiftGrid({
   const setLocalMeta = (id: number, meta: { _isNew?: boolean; _isSaving?: boolean } | null) => {
     setLocalState((prev) => {
       if (meta === null) {
-        const { [id]: _, ...rest } = prev;
+        const { [id]: _removed, ...rest } = prev;
+        void _removed;
         return rest;
       }
       return { ...prev, [id]: { ...prev[id], ...meta } };

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { giftSuggestionsService } from "@/services";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Sparkles,
@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { ApiError } from "@/lib/api-client";
 import type { GiftSuggestion } from "@niftygifty/types";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 interface GiftSuggestionsTabProps {

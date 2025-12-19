@@ -40,7 +40,7 @@ export async function getCharityStats(): Promise<CharityStats | null> {
     }
 
     return res.json();
-  } catch (error) {
+  } catch {
     // Silently return null - default stats will be used
     // Never throw errors to prevent build failures
     return null;

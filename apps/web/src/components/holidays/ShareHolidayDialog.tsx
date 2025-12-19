@@ -181,6 +181,7 @@ export function ShareHolidayDialog({ holiday, trigger }: ShareHolidayDialogProps
                     >
                       <div className="flex items-center gap-3">
                         {collab.image_url ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
                           <img
                             src={collab.image_url}
                             alt={getDisplayName(collab)}

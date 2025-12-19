@@ -1,0 +1,15 @@
+import { ApiClient } from "@niftygifty/api-client";
+import { createHolidaysService, createGiftsService, createGiftStatusesService } from "@niftygifty/services";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3001";
+
+// Create the API client instance
+export const apiClient = new ApiClient({
+  baseUrl: API_URL,
+  debug: __DEV__,
+});
+
+// Create service instances
+export const holidaysService = createHolidaysService(apiClient);
+export const giftsService = createGiftsService(apiClient);
+export const giftStatusesService = createGiftStatusesService(apiClient);

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AUTH_ROUTES } from "@/services";
 import { AuthRedirect } from "@/components/auth-redirect";
 import { JsonLd } from "@/components/json-ld";
-import { InteractiveDemo } from "@/components/interactive-demo";
+// InteractiveDemo available for future use
 import { HeroPreview } from "@/components/hero-preview";
 
 export const metadata: Metadata = {

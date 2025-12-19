@@ -707,7 +707,7 @@ export function MatchWorkspace({
     } finally {
       setSaving(false);
     }
-  }, [arrangement?.id, holidayId, onArrangementChange, selectedPersonIds, slots]);
+  }, [arrangement?.id, groupings, holidayId, onArrangementChange, selectedPersonIds, slots]);
 
   const availablePeopleToAdd = people.filter(p => !selectedPersonIds.includes(p.id));
 

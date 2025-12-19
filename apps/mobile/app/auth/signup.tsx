@@ -1,0 +1,207 @@
+import { useSignUp } from "@clerk/clerk-expo";
+import { Link, useRouter } from "expo-router";
+import { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
+
+export default function SignUpScreen() {
+  const { signUp, setActive, isLoaded } = useSignUp();
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState("");
+
+  const handleSignUp = async () => {
+    if (!isLoaded) return;
+
+    setError("");
+    setLoading(true);
+
+    try {
+      await signUp.create({
+        emailAddress: email,
+        password,
+      });
+
+      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+      setPendingVerification(true);
+    } catch (err: unknown) {
+      const clerkError = err as { errors?: Array<{ message: string }> };
+      setError(clerkError.errors?.[0]?.message || "Failed to sign up");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    if (!isLoaded) return;
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await signUp.attemptEmailAddressVerification({ code });
+
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        router.replace("/(app)");
+      }
+    } catch (err: unknown) {
+      const clerkError = err as { errors?: Array<{ message: string }> };
+      setError(clerkError.errors?.[0]?.message || "Verification failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (pendingVerification) {
+    return (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1, backgroundColor: "#0f172a" }}
+      >
+        <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+          <Text style={{ fontSize: 24, fontWeight: "bold", color: "#fff", textAlign: "center", marginBottom: 8 }}>
+            Verify Email
+          </Text>
+          <Text style={{ fontSize: 16, color: "#94a3b8", textAlign: "center", marginBottom: 32 }}>
+            We sent a code to {email}
+          </Text>
+
+          {error ? (
+            <View style={{ backgroundColor: "#7f1d1d", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+              <Text style={{ color: "#fca5a5" }}>{error}</Text>
+            </View>
+          ) : null}
+
+          <TextInput
+            placeholder="Verification code"
+            placeholderTextColor="#64748b"
+            value={code}
+            onChangeText={setCode}
+            keyboardType="number-pad"
+            style={{
+              backgroundColor: "#1e293b",
+              color: "#fff",
+              padding: 16,
+              borderRadius: 8,
+              marginBottom: 24,
+              fontSize: 16,
+              textAlign: "center",
+              letterSpacing: 4,
+            }}
+          />
+
+          <TouchableOpacity
+            onPress={handleVerify}
+            disabled={loading}
+            style={{
+              backgroundColor: "#8b5cf6",
+              padding: 16,
+              borderRadius: 8,
+              alignItems: "center",
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Verify</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    );
+  }
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1, backgroundColor: "#0f172a" }}
+    >
+      <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+        <Text style={{ fontSize: 32, fontWeight: "bold", color: "#fff", textAlign: "center", marginBottom: 8 }}>
+          NiftyGifty
+        </Text>
+        <Text style={{ fontSize: 16, color: "#94a3b8", textAlign: "center", marginBottom: 32 }}>
+          Create your account
+        </Text>
+
+        {error ? (
+          <View style={{ backgroundColor: "#7f1d1d", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+            <Text style={{ color: "#fca5a5" }}>{error}</Text>
+          </View>
+        ) : null}
+
+        <TextInput
+          placeholder="Email"
+          placeholderTextColor="#64748b"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          style={{
+            backgroundColor: "#1e293b",
+            color: "#fff",
+            padding: 16,
+            borderRadius: 8,
+            marginBottom: 12,
+            fontSize: 16,
+          }}
+        />
+
+        <TextInput
+          placeholder="Password"
+          placeholderTextColor="#64748b"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={{
+            backgroundColor: "#1e293b",
+            color: "#fff",
+            padding: 16,
+            borderRadius: 8,
+            marginBottom: 24,
+            fontSize: 16,
+          }}
+        />
+
+        <TouchableOpacity
+          onPress={handleSignUp}
+          disabled={loading}
+          style={{
+            backgroundColor: "#8b5cf6",
+            padding: 16,
+            borderRadius: 8,
+            alignItems: "center",
+          }}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Sign Up</Text>
+          )}
+        </TouchableOpacity>
+
+        <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 24 }}>
+          <Text style={{ color: "#94a3b8" }}>Already have an account? </Text>
+          <Link href="/auth/login" asChild>
+            <TouchableOpacity>
+              <Text style={{ color: "#8b5cf6", fontWeight: "600" }}>Sign In</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}

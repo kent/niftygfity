@@ -36,9 +36,10 @@ export function FilterDropdown({
   selectedIds,
   onChange,
   showCount = true,
-  emptyLabel = "Any",
+  emptyLabel: _emptyLabel = "Any",
   className,
 }: FilterDropdownProps) {
+  void _emptyLabel; // Reserved for future use
   const [open, setOpen] = useState(false);
 
   const toggleOption = (id: number | string) => {

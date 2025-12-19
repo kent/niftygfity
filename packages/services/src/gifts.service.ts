@@ -1,0 +1,39 @@
+import type { ApiClient } from "@niftygifty/api-client";
+import type { Gift, CreateGiftRequest } from "@niftygifty/types";
+
+export interface GiftsService {
+  getAll(): Promise<Gift[]>;
+  getById(id: number): Promise<Gift>;
+  create(data: CreateGiftRequest["gift"]): Promise<Gift>;
+  update(id: number, data: Partial<CreateGiftRequest["gift"]>): Promise<Gift>;
+  delete(id: number): Promise<void>;
+  reorder(id: number, newPosition: number): Promise<Gift[]>;
+}
+
+export function createGiftsService(client: ApiClient): GiftsService {
+  return {
+    getAll() {
+      return client.get<Gift[]>("/gifts");
+    },
+
+    getById(id: number) {
+      return client.get<Gift>(`/gifts/${id}`);
+    },
+
+    create(data: CreateGiftRequest["gift"]) {
+      return client.post<Gift>("/gifts", { gift: data });
+    },
+
+    update(id: number, data: Partial<CreateGiftRequest["gift"]>) {
+      return client.patch<Gift>(`/gifts/${id}`, { gift: data });
+    },
+
+    delete(id: number) {
+      return client.delete(`/gifts/${id}`);
+    },
+
+    reorder(id: number, newPosition: number) {
+      return client.patch<Gift[]>(`/gifts/${id}/reorder`, { position: newPosition });
+    },
+  };
+}

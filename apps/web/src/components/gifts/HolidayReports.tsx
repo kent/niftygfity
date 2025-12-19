@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LayoutList, User, Scale, Plus, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { Gift, Person, GiftStatus } from "@niftygifty/types";
 
 interface HolidayReportsProps {

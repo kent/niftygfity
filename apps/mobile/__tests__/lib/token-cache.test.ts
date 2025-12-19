@@ -1,0 +1,63 @@
+import * as SecureStore from "expo-secure-store";
+import { tokenCache } from "@/lib/token-cache";
+
+jest.mock("expo-secure-store");
+
+describe("tokenCache", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("getToken", () => {
+    it("returns token from SecureStore", async () => {
+      (SecureStore.getItemAsync as jest.Mock).mockResolvedValue("test-token");
+
+      const result = await tokenCache.getToken("clerk-token");
+
+      expect(SecureStore.getItemAsync).toHaveBeenCalledWith("clerk-token");
+      expect(result).toBe("test-token");
+    });
+
+    it("returns null when SecureStore throws", async () => {
+      (SecureStore.getItemAsync as jest.Mock).mockRejectedValue(new Error("Failed"));
+
+      const result = await tokenCache.getToken("clerk-token");
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("saveToken", () => {
+    it("saves token to SecureStore", async () => {
+      (SecureStore.setItemAsync as jest.Mock).mockResolvedValue(undefined);
+
+      await tokenCache.saveToken("clerk-token", "new-token");
+
+      expect(SecureStore.setItemAsync).toHaveBeenCalledWith("clerk-token", "new-token");
+    });
+
+    it("does not throw when SecureStore fails", async () => {
+      (SecureStore.setItemAsync as jest.Mock).mockRejectedValue(new Error("Failed"));
+
+      // Should not throw
+      await expect(tokenCache.saveToken("clerk-token", "new-token")).resolves.toBeUndefined();
+    });
+  });
+
+  describe("clearToken", () => {
+    it("deletes token from SecureStore", async () => {
+      (SecureStore.deleteItemAsync as jest.Mock).mockResolvedValue(undefined);
+
+      await tokenCache.clearToken("clerk-token");
+
+      expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith("clerk-token");
+    });
+
+    it("does not throw when SecureStore fails", async () => {
+      (SecureStore.deleteItemAsync as jest.Mock).mockRejectedValue(new Error("Failed"));
+
+      // Should not throw
+      await expect(tokenCache.clearToken("clerk-token")).resolves.toBeUndefined();
+    });
+  });
+});

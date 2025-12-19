@@ -180,6 +180,7 @@ export default function MyMatchPage({
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
                     {item.photo_url ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={item.photo_url}
                         alt={item.name}
@@ -187,6 +188,7 @@ export default function MyMatchPage({
                       />
                     ) : (
                       <div className="w-20 h-20 rounded-lg bg-slate-800 flex items-center justify-center shrink-0">
+                        {/* eslint-disable-next-line jsx-a11y/alt-text */}
                         <Image className="h-8 w-8 text-slate-600" />
                       </div>
                     )}

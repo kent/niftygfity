@@ -229,6 +229,7 @@ export default function HolidayDetailPage() {
                       <div className="flex -space-x-2">
                         {collaboratorPeers.slice(0, 3).map((collab) =>
                           collab.image_url ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
                             <img
                               key={collab.user_id}
                               src={collab.image_url}
