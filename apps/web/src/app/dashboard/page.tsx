@@ -4,14 +4,15 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
-import { holidaysService, peopleService, AUTH_ROUTES } from "@/services";
+import { holidaysService, peopleService, giftsService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
+import { GiftTodoList } from "@/components/dashboard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Plus, ArrowRight, Loader2, Calendar } from "lucide-react";
-import type { Holiday, Person } from "@niftygifty/types";
+import type { Holiday, Person, Gift } from "@niftygifty/types";
 
 const HOLIDAY_ICONS: Record<string, string> = {
   Christmas: "🎄",
@@ -31,6 +32,7 @@ export default function DashboardPage() {
   const [templates, setTemplates] = useState<Holiday[]>([]);
   const [userHolidays, setUserHolidays] = useState<Holiday[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
+  const [gifts, setGifts] = useState<Gift[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [creatingHolidayId, setCreatingHolidayId] = useState<number | null>(null);
   const [newPersonName, setNewPersonName] = useState("");
@@ -44,14 +46,16 @@ export default function DashboardPage() {
 
   const loadData = useCallback(async () => {
     try {
-      const [templatesData, holidaysData, peopleData] = await Promise.all([
+      const [templatesData, holidaysData, peopleData, giftsData] = await Promise.all([
         holidaysService.getTemplates(),
         holidaysService.getAll(),
         peopleService.getAll(),
+        giftsService.getAll(),
       ]);
       setTemplates(templatesData);
       setUserHolidays(holidaysData);
       setPeople(peopleData);
+      setGifts(giftsData);
     } catch {
       toast.error("Failed to load data");
     } finally {
@@ -160,6 +164,11 @@ export default function DashboardPage() {
             </div>
           </section>
         )}
+
+        {/* Gift To-Do List */}
+        <section className="mb-6">
+          <GiftTodoList gifts={gifts} holidays={userHolidays} loading={loadingData} />
+        </section>
 
         {/* Quick Actions */}
         <div className="space-y-4">
