@@ -38,7 +38,7 @@ export default function NewExchangePage() {
       });
       toast.success(`Created "${exchange.name}"`);
       router.push(`/exchanges/${exchange.id}`);
-    } catch (err) {
+    } catch {
       toast.error("Failed to create exchange");
     } finally {
       setSubmitting(false);

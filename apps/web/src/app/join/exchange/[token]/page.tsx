@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { exchangeInvitesService, AUTH_ROUTES } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Gift, Calendar, DollarSign, User, Check, X, LogIn } from "lucide-react";
+import { Calendar, DollarSign, User, Check, X, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import type { ExchangeInviteDetails } from "@niftygifty/types";
 
@@ -30,8 +30,9 @@ export default function JoinExchangePage({
       try {
         const data = await exchangeInvitesService.getInviteDetails(token);
         setInvite(data);
-      } catch (err: any) {
-        setError(err.message || "Invalid or expired invite link");
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Invalid or expired invite link";
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -46,8 +47,9 @@ export default function JoinExchangePage({
       const response = await exchangeInvitesService.acceptInvite(token);
       toast.success(response.message);
       router.push(`/exchanges/${response.exchange.id}`);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to accept invite");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to accept invite";
+      toast.error(message);
     } finally {
       setAccepting(false);
     }
@@ -59,8 +61,9 @@ export default function JoinExchangePage({
       await exchangeInvitesService.declineInvite(token);
       toast.success("You have declined the invitation");
       router.push("/exchanges");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to decline invite");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to decline invite";
+      toast.error(message);
     } finally {
       setDeclining(false);
     }
@@ -103,7 +106,7 @@ export default function JoinExchangePage({
             </div>
             <h2 className="text-xl font-semibold text-white mb-2">Already Joined!</h2>
             <p className="text-slate-400 mb-6">
-              You've already joined {invite.exchange.name}.
+              You have already joined {invite.exchange.name}.
             </p>
             <Link href={`/exchanges/${invite.exchange.id}`}>
               <Button className="bg-gradient-to-r from-violet-500 to-fuchsia-500">
@@ -146,7 +149,7 @@ export default function JoinExchangePage({
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 mx-auto mb-4 text-4xl">
             🎁
           </div>
-          <CardTitle className="text-2xl text-white">You're Invited!</CardTitle>
+          <CardTitle className="text-2xl text-white">You Are Invited!</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">

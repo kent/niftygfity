@@ -4,7 +4,6 @@ import type {
   GiftExchangeWithParticipants,
   CreateGiftExchangeRequest,
   UpdateGiftExchangeRequest,
-  EXCHANGE_API_ENDPOINTS,
 } from "@niftygifty/types";
 
 class GiftExchangesService {

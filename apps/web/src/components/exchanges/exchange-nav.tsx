@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Gift, Users, Ban, List, Settings } from "lucide-react";
+import { Gift, Users, Ban, List } from "lucide-react";
 
 interface ExchangeNavProps {
   exchangeId: number;

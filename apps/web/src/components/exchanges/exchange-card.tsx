@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Calendar, Users, ChevronRight, Crown } from "lucide-react";
 import { ExchangeStatusBadge } from "./exchange-status-badge";
 import type { GiftExchange } from "@niftygifty/types";

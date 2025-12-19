@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { giftExchangesService, wishlistItemsService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,7 +19,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Link as LinkIcon, DollarSign, Trash2, Image, ExternalLink } from "lucide-react";
+import { ArrowLeft, Plus, DollarSign, Trash2, Image, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import type { GiftExchange, WishlistItem } from "@niftygifty/types";
 
@@ -92,7 +92,7 @@ export default function MyWishlistPage({
       setNewItem({ name: "", description: "", link: "", price: "" });
       setShowAddDialog(false);
       toast.success("Item added to wishlist");
-    } catch (err) {
+    } catch {
       toast.error("Failed to add item");
     } finally {
       setAdding(false);
@@ -106,7 +106,7 @@ export default function MyWishlistPage({
       await wishlistItemsService.delete(parseInt(id), exchange.my_participant.id, item.id);
       setItems((prev) => prev.filter((i) => i.id !== item.id));
       toast.success("Item removed");
-    } catch (err) {
+    } catch {
       toast.error("Failed to remove item");
     }
   };
@@ -151,7 +151,7 @@ export default function MyWishlistPage({
           <div>
             <h1 className="text-2xl font-bold text-white mb-1">My Wishlist</h1>
             <p className="text-slate-400">
-              Add items you'd like to receive for {exchange.name}
+              Add items you would like to receive for {exchange.name}
             </p>
           </div>
           <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>

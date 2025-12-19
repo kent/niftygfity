@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { giftExchangesService, exchangeParticipantsService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Gift, DollarSign, ExternalLink, Image, Calendar, List } from "lucide-react";
 import type { GiftExchange, ExchangeParticipantWithWishlist } from "@niftygifty/types";
 
@@ -81,7 +81,7 @@ export default function MyMatchPage({
           <Gift className="h-12 w-12 mx-auto text-slate-600 mb-4" />
           <h2 className="text-xl font-semibold text-white mb-2">Matches Not Ready Yet</h2>
           <p className="text-slate-400 mb-4">
-            The exchange organizer hasn't started the matching yet.
+            The exchange organizer has not started the matching yet.
           </p>
           <Link href={`/exchanges/${id}`}>
             <Button>Back to Exchange</Button>
@@ -124,7 +124,7 @@ export default function MyMatchPage({
         {/* Match Reveal Card */}
         <Card className="border-slate-800 bg-gradient-to-br from-amber-500/10 to-orange-500/10 mb-8">
           <CardContent className="py-8 text-center">
-            <p className="text-sm text-amber-400 mb-2">You're getting a gift for...</p>
+            <p className="text-sm text-amber-400 mb-2">You are getting a gift for...</p>
             <h1 className="text-4xl font-bold text-white mb-4">🎁 {match.display_name}</h1>
             {exchange.exchange_date && (
               <p className="text-slate-400 flex items-center justify-center gap-2">
@@ -155,7 +155,7 @@ export default function MyMatchPage({
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-white flex items-center gap-2">
             <List className="h-5 w-5 text-violet-400" />
-            {match.display_name}'s Wishlist
+            {match.display_name}&apos;s Wishlist
           </h2>
         </div>
 
@@ -167,7 +167,7 @@ export default function MyMatchPage({
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">No wishlist items yet</h3>
               <p className="text-slate-400">
-                {match.display_name} hasn't added any items to their wishlist yet.
+                {match.display_name} has not added any items to their wishlist yet.
                 <br />
                 Check back later or surprise them with something thoughtful!
               </p>

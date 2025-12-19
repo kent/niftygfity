@@ -146,7 +146,7 @@ export default function ExchangeDetailPage({
       setNewParticipant({ name: "", email: "" });
       setShowAddDialog(false);
       toast.success(`Invited ${participant.name}`);
-    } catch (err) {
+    } catch {
       toast.error("Failed to add participant");
     } finally {
       setAddingParticipant(false);
@@ -157,7 +157,7 @@ export default function ExchangeDetailPage({
     try {
       await exchangeParticipantsService.resendInvite(parseInt(id), participant.id);
       toast.success(`Invitation resent to ${participant.email}`);
-    } catch (err) {
+    } catch {
       toast.error("Failed to resend invitation");
     }
   };
@@ -175,7 +175,7 @@ export default function ExchangeDetailPage({
           : prev
       );
       toast.success(`Removed ${participant.name}`);
-    } catch (err) {
+    } catch {
       toast.error("Failed to remove participant");
     }
   };
@@ -193,7 +193,7 @@ export default function ExchangeDetailPage({
       setNewExclusion({ participant_a_id: "", participant_b_id: "" });
       setShowExclusionDialog(false);
       toast.success("Exclusion rule added");
-    } catch (err) {
+    } catch {
       toast.error("Failed to add exclusion rule");
     }
   };
@@ -203,7 +203,7 @@ export default function ExchangeDetailPage({
       await exchangeExclusionsService.delete(parseInt(id), exclusion.id);
       setExclusions((prev) => prev.filter((e) => e.id !== exclusion.id));
       toast.success("Exclusion rule removed");
-    } catch (err) {
+    } catch {
       toast.error("Failed to remove exclusion rule");
     }
   };
@@ -215,8 +215,9 @@ export default function ExchangeDetailPage({
       setExchange(updated);
       setShowStartDialog(false);
       toast.success("Exchange started! Matches have been sent to all participants.");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to start exchange");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to start exchange";
+      toast.error(message);
     } finally {
       setStarting(false);
     }
