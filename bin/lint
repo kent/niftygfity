@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+echo "==> Linting Rails (apps/api)"
+cd "$ROOT_DIR/apps/api"
+bundle exec rubocop
+bundle exec rails zeitwerk:check
+
+echo "==> Linting Next.js (apps/web)"
+cd "$ROOT_DIR/apps/web"
+npm run lint
+npm run typecheck --if-present
