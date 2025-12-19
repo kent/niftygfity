@@ -933,7 +933,7 @@ export function MatchWorkspace({
                     const unplaced = unplacedItemsByPerson.get(person.id) || [];
                     return (
                       <div key={person.id} className="space-y-2">
-                        <h4 className="text-sm font-medium text-slate-400 mb-2">{person.name}'s Gifts</h4>
+                        <h4 className="text-sm font-medium text-slate-400 mb-2">{person.name}&apos;s Gifts</h4>
                         {unplaced.length === 0 ? (
                           <p className="text-sm text-slate-600 italic">All gifts placed</p>
                         ) : (

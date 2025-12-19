@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { createConsumer, Consumer } from "@rails/actioncable";
 
@@ -40,5 +40,7 @@ export function useCable() {
     };
   }, [isSignedIn, getToken]);
 
-  return { consumer: consumerRef.current, isConnected };
+  const getConsumer = useCallback(() => consumerRef.current, []);
+
+  return { getConsumer, isConnected };
 }

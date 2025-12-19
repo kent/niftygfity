@@ -20,7 +20,7 @@ const THROTTLE_MS = 50;
 const CURSOR_TIMEOUT_MS = 5000;
 
 export function useCursorChannel(holidayId: number | null) {
-  const { consumer, isConnected } = useCable();
+  const { getConsumer, isConnected } = useCable();
   const { user } = useUser();
   const subscriptionRef = useRef<Subscription | null>(null);
   const [cursors, setCursors] = useState<Map<string, CursorPosition>>(new Map());
@@ -48,6 +48,7 @@ export function useCursorChannel(holidayId: number | null) {
 
   // Subscribe to channel
   useEffect(() => {
+    const consumer = getConsumer();
     if (!consumer || !holidayId || !isConnected) return;
 
     subscriptionRef.current = consumer.subscriptions.create(
@@ -74,7 +75,7 @@ export function useCursorChannel(holidayId: number | null) {
       }
       setCursors(new Map());
     };
-  }, [consumer, holidayId, isConnected, user?.id]);
+  }, [getConsumer, holidayId, isConnected, user?.id]);
 
   const sendCursorPosition = useCallback(
     (x: number, y: number) => {
