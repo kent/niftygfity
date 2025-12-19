@@ -77,8 +77,8 @@ class MatchArrangementsController < ApplicationController
       :holiday_id,
       :title,
       person_ids: [],
-      groupings: [:id, :label, :person_id, { gift_ids: [] }],
-      slots: [:id, :person_id, :gift_id, :group_key, :row_index]
+      groupings: [ :id, :label, :person_id, { gift_ids: [] } ],
+      slots: [ :id, :person_id, :gift_id, :group_key, :row_index ]
     )
   end
 

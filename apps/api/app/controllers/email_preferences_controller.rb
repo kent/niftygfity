@@ -39,4 +39,3 @@ class EmailPreferencesController < ActionController::API
     )
   end
 end
-

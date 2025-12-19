@@ -5,4 +5,3 @@ class NotificationPreferenceBlueprint < ApplicationBlueprint
          :created_at,
          :updated_at
 end
-

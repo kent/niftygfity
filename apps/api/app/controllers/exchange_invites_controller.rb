@@ -1,5 +1,5 @@
 class ExchangeInvitesController < ApplicationController
-  skip_before_action :authenticate_clerk_user!, only: [:show]
+  skip_before_action :authenticate_clerk_user!, only: [ :show ]
   before_action :set_participant_by_token
 
   # GET /exchange_invite/:token - Public, shows invite details

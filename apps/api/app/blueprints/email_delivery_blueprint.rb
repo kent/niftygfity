@@ -6,4 +6,3 @@ class EmailDeliveryBlueprint < ApplicationBlueprint
     association :holiday, blueprint: HolidayBlueprint
   end
 end
-

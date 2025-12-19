@@ -30,4 +30,3 @@ class NotificationPreferencesController < ApplicationController
     )
   end
 end
-
