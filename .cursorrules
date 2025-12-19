@@ -3,8 +3,35 @@
 ## Project Structure
 This is a Turborepo monorepo with:
 - `apps/api` - Rails 8 API (JSON only, no views)
-- `apps/web` - Next.js 16 frontend with shadcn/ui
+- `apps/web` - Next.js 16 frontend with shadcn/ui (NiftyGifty)
+- `apps/mobile` - Expo/React Native app (Listy Gifty) ⚠️ BUILDS INDEPENDENTLY
 - `packages/types` - Shared TypeScript types
+- `packages/api-client` - Shared API client class
+- `packages/services` - Shared service layer (holidays, gifts, etc.)
+
+## ⚠️ CRITICAL: Mobile App Is Special
+
+**The mobile app is NOT part of npm workspaces.** It builds independently.
+
+### Why?
+- React Native 0.81 requires React 19.1.0
+- Web app uses React 19.2.0
+- Workspace hoisting causes version conflicts
+
+### Mobile App Rules
+1. **Always `cd apps/mobile`** before running mobile commands
+2. Use `npm install --legacy-peer-deps` (Clerk peer dep conflicts)
+3. Mobile has its own `package-lock.json`
+4. Uses `file:` references to shared packages (not workspace protocol)
+5. **Build shared packages first** before mobile: `npm run build` from root
+
+### Mobile Commands
+```bash
+cd apps/mobile
+npm install --legacy-peer-deps
+npm test
+npx expo start
+```
 
 ## Critical Rules
 
@@ -21,15 +48,17 @@ This is a Turborepo monorepo with:
 
 ### 3. Service Layer (Frontend)
 - Components **NEVER** make direct API calls
-- All API interactions go through services in `apps/web/src/services/`
-- Services use `apiClient` from `@/lib/api-client`
+- All API interactions go through services
+- Web: `apps/web/src/services/` or `@niftygifty/services`
+- Mobile: `apps/mobile/lib/api.ts` uses `@niftygifty/services`
 - Pattern: `Component → Service → ApiClient → API`
 
 ### 4. API Client Usage
 ```typescript
 // ✅ Correct - use services
-import { authService, holidaysService } from "@/services";
-await authService.signIn(email, password);
+import { holidaysService } from "@/services";  // web
+import { holidaysService } from "@/lib/api";   // mobile
+await holidaysService.getAll();
 
 // ❌ Wrong - direct API calls in components
 import { apiClient } from "@/lib/api-client";
@@ -38,8 +67,7 @@ await apiClient.post("/endpoint", data);
 
 ### 5. Rails API Conventions
 - Controllers return JSON via Blueprinter
-- All routes under `/api/v1/` namespace (future)
-- Devise + JWT for authentication
+- Devise + Clerk for authentication
 - rack-cors configured for frontend origins
 
 ### 6. File Organization
@@ -52,17 +80,65 @@ apps/web/src/
 ├── hooks/         # Custom React hooks
 ├── lib/           # Utilities (api-client, utils)
 └── services/      # API service layer
+
+apps/mobile/
+├── app/           # Expo Router pages
+├── components/    # React Native components
+├── lib/           # API client, token cache, hooks
+└── __tests__/     # Jest tests
 ```
 
 ### 7. Styling
-- Use Tailwind CSS
-- Use shadcn/ui components
-- Dark theme by default
-- Consistent color palette (violet/fuchsia gradients)
+- Web: Tailwind CSS, shadcn/ui, dark theme default
+- Mobile: React Native StyleSheet, dark theme (#0f172a background)
+- Consistent color palette (violet/fuchsia gradients, #8b5cf6)
 
 ### 8. Before Creating Anything New
 1. Check `packages/types` for existing types
-2. Check `apps/web/src/services` for existing services
-3. Check `apps/web/src/components` for existing components
-4. Check `apps/api/app/blueprints` for serializers
+2. Check `packages/services` for existing services  
+3. Check `packages/api-client` for API client utilities
+4. Check `apps/web/src/services` for web-specific services
+5. Check `apps/web/src/components` for existing components
+6. Check `apps/api/app/blueprints` for serializers
 
+## Build & Test Commands
+
+### Monorepo (root)
+```bash
+npm install          # Install web + packages deps
+npm run build        # Build all packages + web
+npm run test         # Run all tests
+./bin/lint           # RuboCop + Next.js lint
+```
+
+### API (apps/api)
+```bash
+bin/rails server -p 3001   # Start server
+bin/rails test             # Run tests
+bin/rubocop                # Lint Ruby
+```
+
+### Web (apps/web)
+```bash
+npm run dev          # Start dev server
+npm run build        # Production build
+npm run lint         # ESLint + TypeScript
+```
+
+### Mobile (apps/mobile) - RUN INDEPENDENTLY
+```bash
+cd apps/mobile                    # ALWAYS cd first
+npm install --legacy-peer-deps    # Install deps
+npm test                          # Run Jest tests
+npx expo start                    # Start Expo
+npx expo start --ios              # iOS simulator
+npx expo start --android          # Android emulator
+```
+
+### Shared Packages
+```bash
+cd packages/types && npm run build
+cd packages/api-client && npm run build
+cd packages/services && npm run build
+# Or from root: npm run build
+```

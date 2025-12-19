@@ -1,0 +1,90 @@
+# Listy Gifty Mobile App Rules
+
+## This App Builds Independently
+
+⚠️ **DO NOT** run `npm install` from the monorepo root expecting it to install mobile deps.
+
+Always work from this directory:
+```bash
+cd apps/mobile
+npm install --legacy-peer-deps
+npm test
+npx expo start
+```
+
+## Key Constraints
+
+### React Version
+- **Must use React 19.1.0** - React Native 0.81 is incompatible with 19.2.0
+- Keep `react` and `react-test-renderer` versions in sync
+
+### Shared Packages
+Uses `file:` references (symlinks), not workspace protocol:
+```json
+"@niftygifty/types": "file:../../packages/types"
+```
+
+**Always rebuild shared packages after changes:**
+```bash
+cd ../.. && npm run build
+```
+
+### Clerk Peer Dependencies  
+Use `--legacy-peer-deps` when installing to avoid Clerk conflicts.
+
+## Code Patterns
+
+### API Calls
+```typescript
+// ✅ Use services from lib/api.ts
+import { holidaysService } from "@/lib/api";
+const data = await holidaysService.getAll();
+
+// ❌ Never call API directly in components
+fetch(API_URL + "/holidays");
+```
+
+### Authentication
+```typescript
+// ✅ Use Clerk hooks
+import { useAuth, useSignIn, useSSO } from "@clerk/clerk-expo";
+
+// ❌ Don't manage auth state manually
+```
+
+### Styling
+```typescript
+// ✅ Use StyleSheet with consistent colors
+const styles = StyleSheet.create({
+  container: { backgroundColor: "#0f172a" },
+  accent: { backgroundColor: "#8b5cf6" },
+});
+
+// ❌ Don't use inline styles excessively
+// ❌ Don't use Tailwind (not configured for RN)
+```
+
+### Navigation
+```typescript
+// ✅ Use expo-router
+import { useRouter, Link } from "expo-router";
+router.push("/(app)/gifts");
+
+// ❌ Don't use react-navigation directly
+```
+
+## File Organization
+
+```
+app/           → Expo Router file-based routing
+components/    → Reusable React Native components  
+lib/           → API client, hooks, utilities
+__tests__/     → Jest test files
+assets/        → Images, icons, fonts
+```
+
+## Before Committing
+
+1. Run tests: `npm test`
+2. Check TypeScript: `npx tsc --noEmit`
+3. Test on simulator: `npx expo start --ios`
