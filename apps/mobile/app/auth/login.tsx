@@ -1,6 +1,6 @@
-import { useSignIn } from "@clerk/clerk-expo";
+import { useSignIn, useSSO } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,15 +10,49 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+
+// Warm up browser for faster OAuth
+WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
+  const { startSSOFlow } = useSSO();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Warm up browser on mount
+  useEffect(() => {
+    void WebBrowser.warmUpAsync();
+    return () => {
+      void WebBrowser.coolDownAsync();
+    };
+  }, []);
+
+  const handleGoogleSignIn = useCallback(async () => {
+    setError("");
+    setGoogleLoading(true);
+    try {
+      const { createdSessionId, setActive: setActiveSession } = await startSSOFlow({
+        strategy: "oauth_google",
+      });
+
+      if (createdSessionId && setActiveSession) {
+        await setActiveSession({ session: createdSessionId });
+        router.replace("/(app)");
+      }
+    } catch (err: unknown) {
+      const clerkError = err as { errors?: Array<{ message: string }> };
+      setError(clerkError.errors?.[0]?.message || "Failed to sign in with Google");
+    } finally {
+      setGoogleLoading(false);
+    }
+  }, [startSSOFlow, router]);
 
   const handleSignIn = async () => {
     if (!isLoaded) return;
@@ -51,7 +85,7 @@ export default function LoginScreen() {
     >
       <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
         <Text style={{ fontSize: 32, fontWeight: "bold", color: "#fff", textAlign: "center", marginBottom: 8 }}>
-          NiftyGifty
+          Listy Gifty
         </Text>
         <Text style={{ fontSize: 16, color: "#94a3b8", textAlign: "center", marginBottom: 32 }}>
           Sign in to your account
@@ -62,6 +96,37 @@ export default function LoginScreen() {
             <Text style={{ color: "#fca5a5" }}>{error}</Text>
           </View>
         ) : null}
+
+        <TouchableOpacity
+          onPress={handleGoogleSignIn}
+          disabled={googleLoading}
+          style={{
+            backgroundColor: "#fff",
+            padding: 16,
+            borderRadius: 8,
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "center",
+            marginBottom: 24,
+          }}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color="#1f2937" />
+          ) : (
+            <>
+              <Text style={{ fontSize: 18, marginRight: 12 }}>G</Text>
+              <Text style={{ color: "#1f2937", fontSize: 16, fontWeight: "600" }}>
+                Continue with Google
+              </Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
+          <View style={{ flex: 1, height: 1, backgroundColor: "#334155" }} />
+          <Text style={{ color: "#64748b", paddingHorizontal: 16 }}>or</Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: "#334155" }} />
+        </View>
 
         <TextInput
           placeholder="Email"

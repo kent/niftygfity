@@ -15,8 +15,8 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@niftygifty/api-client": "*",
-    "@niftygifty/types": "*"
+    "@niftygifty/api-client": "file:../api-client",
+    "@niftygifty/types": "file:../types"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

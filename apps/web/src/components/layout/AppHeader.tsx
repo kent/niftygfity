@@ -13,7 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Gift, Calendar, Users, Settings, Crown, Sparkles, Menu, LogOut, Home } from "lucide-react";
+import { Gift, Calendar, Users, Settings, Crown, Sparkles, Menu, LogOut, Home, ArrowLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -25,6 +25,7 @@ interface AppHeaderProps {
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/holidays", label: "Gift Lists", icon: Calendar },
+  { href: "/exchanges", label: "Exchanges", icon: ArrowLeftRight },
   { href: "/people", label: "People", icon: Users },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;

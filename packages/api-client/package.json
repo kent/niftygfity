@@ -15,7 +15,7 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "@niftygifty/types": "*"
+    "@niftygifty/types": "file:../types"
   },
   "devDependencies": {
     "typescript": "^5.7.2"

@@ -14,7 +14,11 @@ class GiftExchange < ApplicationRecord
 
   scope :owned_by, ->(user) { where(user: user) }
   scope :participating, ->(user) { joins(:exchange_participants).where(exchange_participants: { user: user }) }
-  scope :for_user, ->(user) { owned_by(user).or(participating(user)).distinct }
+  scope :for_user, ->(user) {
+    where(id: owned_by(user).select(:id))
+      .or(where(id: participating(user).select(:id)))
+      .distinct
+  }
 
   def owner?(check_user)
     user_id == check_user.id
