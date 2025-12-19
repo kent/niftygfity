@@ -109,6 +109,11 @@ try {
 }
 ```
 
+## Agent Checks
+
+- Run `./bin/lint` before finishing any change (Rails rubocop + Next lint/typecheck).
+- Run `./bin/test` whenever you touch backend or shared code (`apps/api` tests + frontend tests if present).
+
 ## Development Workflow
 
 ### Starting Development
