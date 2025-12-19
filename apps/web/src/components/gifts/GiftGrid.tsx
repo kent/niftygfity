@@ -38,7 +38,8 @@ type GiftUpdatePayload = Partial<CreateGiftRequest["gift"]>;
 type LocalGift = Gift & { _isNew?: boolean; _isSaving?: boolean };
 
 interface GiftGridProps {
-  gifts: Gift[];
+  gifts: Gift[];           // Filtered gifts for display
+  allGifts: Gift[];        // Full unfiltered list for state management
   people: Person[];
   statuses: GiftStatus[];
   holidays: Holiday[];
@@ -49,7 +50,8 @@ interface GiftGridProps {
 }
 
 export function GiftGrid({
-  gifts: externalGifts,
+  gifts: displayGifts,
+  allGifts,
   people,
   statuses,
   holidays,
@@ -65,8 +67,9 @@ export function GiftGrid({
   
   const onGiftsChangeRef = useRef(onGiftsChange);
   onGiftsChangeRef.current = onGiftsChange;
-  const externalGiftsRef = useRef(externalGifts);
-  externalGiftsRef.current = externalGifts;
+  // Use allGifts for state management to preserve unfiltered gifts
+  const allGiftsRef = useRef(allGifts);
+  allGiftsRef.current = allGifts;
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -78,10 +81,10 @@ export function GiftGrid({
     })
   );
 
-  // Sort by position
+  // Sort displayGifts by position for rendering
   const sortedGifts = useMemo(
-    () => [...externalGifts].sort((a, b) => a.position - b.position),
-    [externalGifts]
+    () => [...displayGifts].sort((a, b) => a.position - b.position),
+    [displayGifts]
   );
   
   const gifts: LocalGift[] = sortedGifts.map((g) => ({
@@ -108,7 +111,7 @@ export function GiftGrid({
 
   const updateGift = useCallback(
     async (id: number, updates: GiftUpdatePayload) => {
-      const currentGift = externalGiftsRef.current.find((g) => g.id === id);
+      const currentGift = allGiftsRef.current.find((g) => g.id === id);
       if (!currentGift) return;
 
       const optimisticGift: Gift = { ...currentGift };
@@ -119,70 +122,73 @@ export function GiftGrid({
       }
       if (updates.cost !== undefined) optimisticGift.cost = updates.cost?.toString() ?? null;
 
-      onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
+      onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
 
       startTransition(async () => {
         try {
           const updated = await giftsService.update(id, updates);
           setLocalMeta(id, { _isNew: false });
-          onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? updated : g)));
+          onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === id ? updated : g)));
         } catch {
           const refreshed = await giftsService.getAll();
-          onGiftsChangeRef.current(refreshed);
+          const holidayId = defaultHolidayId || holidays[0]?.id;
+          onGiftsChangeRef.current(refreshed.filter((g) => g.holiday_id === holidayId));
         }
       });
     },
-    [statuses]
+    [statuses, defaultHolidayId, holidays]
   );
 
   const updateRecipients = useCallback(
     async (id: number, recipientIds: number[]) => {
-      const currentGift = externalGiftsRef.current.find((g) => g.id === id);
+      const currentGift = allGiftsRef.current.find((g) => g.id === id);
       if (!currentGift) return;
 
       const optimisticGift: Gift = {
         ...currentGift,
         recipients: people.filter((p) => recipientIds.includes(p.id)),
       };
-      onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
+      onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
 
       startTransition(async () => {
         try {
           const updated = await giftsService.update(id, { recipient_ids: recipientIds });
           setLocalMeta(id, { _isNew: false });
-          onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? updated : g)));
+          onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === id ? updated : g)));
         } catch {
           const refreshed = await giftsService.getAll();
-          onGiftsChangeRef.current(refreshed);
+          const holidayId = defaultHolidayId || holidays[0]?.id;
+          onGiftsChangeRef.current(refreshed.filter((g) => g.holiday_id === holidayId));
         }
       });
     },
-    [people]
+    [people, defaultHolidayId, holidays]
   );
 
   const updateGivers = useCallback(
     async (id: number, giverIds: number[]) => {
-      const currentGift = externalGiftsRef.current.find((g) => g.id === id);
+      const currentGift = allGiftsRef.current.find((g) => g.id === id);
       if (!currentGift) return;
 
       const optimisticGift: Gift = {
         ...currentGift,
         givers: people.filter((p) => giverIds.includes(p.id)),
       };
-      onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
+      onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === id ? optimisticGift : g)));
 
       startTransition(async () => {
         try {
           const updated = await giftsService.update(id, { giver_ids: giverIds });
           setLocalMeta(id, { _isNew: false });
-          onGiftsChangeRef.current(externalGiftsRef.current.map((g) => (g.id === id ? updated : g)));
+          onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === id ? updated : g)));
         } catch {
           const refreshed = await giftsService.getAll();
-          onGiftsChangeRef.current(refreshed);
+          const holidayId = defaultHolidayId || holidays[0]?.id;
+          onGiftsChangeRef.current(refreshed.filter((g) => g.holiday_id === holidayId));
         }
       });
     },
-    [people]
+    [people, defaultHolidayId, holidays]
   );
 
   const addGift = useCallback(async (atPosition?: number) => {
@@ -227,7 +233,7 @@ export function GiftGrid({
   }, [defaultHolidayId, defaultStatusId, holidays, statuses, refreshBillingStatus]);
 
   const insertGift = useCallback(async (referenceId: number, position: "above" | "below") => {
-    const sorted = [...externalGiftsRef.current].sort((a, b) => a.position - b.position);
+    const sorted = [...allGiftsRef.current].sort((a, b) => a.position - b.position);
     const refIndex = sorted.findIndex((g) => g.id === referenceId);
     if (refIndex === -1) return;
     
@@ -239,7 +245,7 @@ export function GiftGrid({
 
   const deleteGift = useCallback(async (id: number) => {
     setDeletingId(id);
-    onGiftsChangeRef.current(externalGiftsRef.current.filter((g) => g.id !== id));
+    onGiftsChangeRef.current(allGiftsRef.current.filter((g) => g.id !== id));
 
     startTransition(async () => {
       try {
@@ -249,18 +255,19 @@ export function GiftGrid({
         await refreshBillingStatus();
       } catch {
         const refreshed = await giftsService.getAll();
-        onGiftsChangeRef.current(refreshed);
+        const holidayId = defaultHolidayId || holidays[0]?.id;
+        onGiftsChangeRef.current(refreshed.filter((g) => g.holiday_id === holidayId));
       } finally {
         setDeletingId(null);
       }
     });
-  }, [refreshBillingStatus]);
+  }, [refreshBillingStatus, defaultHolidayId, holidays]);
 
   const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const sorted = [...externalGiftsRef.current].sort((a, b) => a.position - b.position);
+    const sorted = [...allGiftsRef.current].sort((a, b) => a.position - b.position);
     const oldIndex = sorted.findIndex((g) => g.id === active.id);
     const newIndex = sorted.findIndex((g) => g.id === over.id);
     

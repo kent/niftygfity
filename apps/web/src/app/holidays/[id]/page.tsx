@@ -342,6 +342,7 @@ export default function HolidayDetailPage() {
               />
               <GiftGrid
                 gifts={filteredGifts}
+                allGifts={gifts}
                 people={people}
                 statuses={statuses}
                 holidays={holidays}
