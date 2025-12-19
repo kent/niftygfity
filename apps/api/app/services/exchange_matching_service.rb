@@ -27,14 +27,14 @@ class ExchangeMatchingService
   def build_exclusion_set
     exclusions = Set.new
     @exchange.exchange_exclusions.each do |e|
-      exclusions.add([e.participant_a_id, e.participant_b_id].sort)
+      exclusions.add([ e.participant_a_id, e.participant_b_id ].sort)
     end
     exclusions
   end
 
   def excluded?(giver, receiver)
     return true if giver.id == receiver.id # Can't give to yourself
-    @exclusions.include?([giver.id, receiver.id].sort)
+    @exclusions.include?([ giver.id, receiver.id ].sort)
   end
 
   def can_give_to?(giver, receiver)

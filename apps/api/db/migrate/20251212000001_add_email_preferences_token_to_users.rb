@@ -4,4 +4,3 @@ class AddEmailPreferencesTokenToUsers < ActiveRecord::Migration[8.1]
     add_index :users, :email_preferences_token, unique: true
   end
 end
-

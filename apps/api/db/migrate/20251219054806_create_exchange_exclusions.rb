@@ -8,7 +8,7 @@ class CreateExchangeExclusions < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :exchange_exclusions, [:gift_exchange_id, :participant_a_id, :participant_b_id],
+    add_index :exchange_exclusions, [ :gift_exchange_id, :participant_a_id, :participant_b_id ],
               unique: true, name: "idx_exchange_exclusions_unique"
     add_index :exchange_exclusions, :participant_a_id
     add_index :exchange_exclusions, :participant_b_id

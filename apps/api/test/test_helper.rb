@@ -65,7 +65,7 @@ module ActionDispatch
                 # Create a mock user object
                 user_obj = Object.new
                 user_obj.define_singleton_method(:email_addresses) do
-                  [{ "id" => "email_1", "email_address" => user_email }]
+                  [ { "id" => "email_1", "email_address" => user_email } ]
                 end
                 user_obj.define_singleton_method(:primary_email_address_id) { "email_1" }
                 user_obj.define_singleton_method(:first_name) { nil }

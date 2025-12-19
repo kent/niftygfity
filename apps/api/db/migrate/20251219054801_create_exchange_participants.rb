@@ -16,7 +16,7 @@ class CreateExchangeParticipants < ActiveRecord::Migration[8.1]
     add_index :exchange_participants, :email
     add_index :exchange_participants, :status
     add_index :exchange_participants, :matched_participant_id
-    add_index :exchange_participants, [:gift_exchange_id, :email], unique: true
+    add_index :exchange_participants, [ :gift_exchange_id, :email ], unique: true
 
     add_foreign_key :exchange_participants, :exchange_participants, column: :matched_participant_id
   end

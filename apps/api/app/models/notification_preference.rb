@@ -3,4 +3,3 @@ class NotificationPreference < ApplicationRecord
 
   validates :user_id, uniqueness: true
 end
-

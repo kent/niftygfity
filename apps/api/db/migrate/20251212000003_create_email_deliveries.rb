@@ -14,9 +14,8 @@ class CreateEmailDeliveries < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :email_deliveries, [:user_id, :kind, :dedupe_key], unique: true, name: "idx_email_deliveries_dedupe"
-    add_index :email_deliveries, [:user_id, :kind, :sent_at]
+    add_index :email_deliveries, [ :user_id, :kind, :dedupe_key ], unique: true, name: "idx_email_deliveries_dedupe"
+    add_index :email_deliveries, [ :user_id, :kind, :sent_at ]
     add_index :email_deliveries, :kind
   end
 end
-

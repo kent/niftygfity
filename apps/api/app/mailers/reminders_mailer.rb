@@ -46,4 +46,3 @@ class RemindersMailer < ApplicationMailer
     "#{ENV.fetch('FRONTEND_URL', 'https://listygifty.com')}/email-preferences/#{user.email_preferences_token}"
   end
 end
-

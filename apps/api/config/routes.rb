@@ -37,7 +37,7 @@ Rails.application.routes.draw do
       get :collaborators
       delete "collaborators/:user_id", action: :remove_collaborator, as: :remove_collaborator
     end
-    resources :match_arrangements, only: [:index], controller: "match_arrangements", action: :by_holiday
+    resources :match_arrangements, only: [ :index ], controller: "match_arrangements", action: :by_holiday
   end
 
   resources :match_arrangements, only: %i[index show create update destroy]

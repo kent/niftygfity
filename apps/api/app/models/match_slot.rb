@@ -4,7 +4,7 @@ class MatchSlot < ApplicationRecord
   belongs_to :gift, optional: true
 
   validates :row_index, numericality: { greater_than_or_equal_to: 0, allow_nil: false }
-  validates :person_id, uniqueness: { scope: [:match_arrangement_id, :row_index] }
+  validates :person_id, uniqueness: { scope: [ :match_arrangement_id, :row_index ] }
   validate :gift_or_group_present
 
   private

@@ -91,12 +91,12 @@ end
 # "Christina, Kent, Jack Emma" -> [Christina, Kent, Jack, Emma]
 def parse_people(people, str)
   return [] if str.blank?
-  
+
   # Normalize separators
   normalized = str.gsub(/\s+and\s+/i, ", ")
                   .gsub(/\s*&\s*/, ", ")
                   .gsub(/\s+/, " ")
-  
+
   normalized.split(",").map(&:strip).flat_map do |part|
     # Handle "Jack Emma" (space separated names)
     part.split(/\s+/)
@@ -114,7 +114,7 @@ end
 # Helper to map status
 def map_status(statuses, status_str)
   return statuses["Idea"] if status_str.blank?
-  
+
   case status_str.strip.downcase
   when "delivered" then statuses["Delivered"]
   when "idea" then statuses["Idea"]
@@ -129,95 +129,95 @@ end
 # Recipients/givers use normalized strings that will be parsed into individual people
 GIFTS = [
   # Jack's Zelda gifts
-  ["Jack", nil, "Twilight Princess - Console", "Delivered", 200],
-  ["Jack", nil, "Twilight Princess - Game", "Delivered", 90],
-  ["Jack", nil, "Twilight Princess - Controller", "Delivered", 45],
-  ["Jack", nil, "Ocarina", "Delivered", 120],
-  ["Jack", nil, "Zelda Jewels", "Delivered", 200],
-  ["Jack", nil, "Zelda Chess", "Delivered", nil],
-  ["Jack", nil, "Categories OR Blank Slate game", nil, nil],
-  ["Jack", "Mom & Dad", "Blue Jay Shirt", nil, nil],
-  
+  [ "Jack", nil, "Twilight Princess - Console", "Delivered", 200 ],
+  [ "Jack", nil, "Twilight Princess - Game", "Delivered", 90 ],
+  [ "Jack", nil, "Twilight Princess - Controller", "Delivered", 45 ],
+  [ "Jack", nil, "Ocarina", "Delivered", 120 ],
+  [ "Jack", nil, "Zelda Jewels", "Delivered", 200 ],
+  [ "Jack", nil, "Zelda Chess", "Delivered", nil ],
+  [ "Jack", nil, "Categories OR Blank Slate game", nil, nil ],
+  [ "Jack", "Mom & Dad", "Blue Jay Shirt", nil, nil ],
+
   # Emma's gifts
-  ["Emma", nil, "Smart Bird Feeder", "Delivered", nil],
-  ["Emma", nil, "Fluffy Crocs", "Idea", nil],
-  ["Emma", "Mom & Dad", "Clue Board Game", "Wrapped", 35],
-  [nil, "Mom & Dad", "Brawl Stars Guess Who", "Delivered", 50],
-  ["Emma", "Mom & Dad", "Bitzee Hamster Ball", "Delivered", nil],
-  ["Emma", "Mom & Dad", "Gui Gui Slime", "Delivered", nil],
-  ["Emma", "Mom & Dad", "Scooter", nil, nil],
-  ["Emma", "Jack", "Baby Three Surprise Dolls x2 + Cat Calendar + Happy Salmon Game", "Delivered", nil],
-  ["Emma", "Santa", "My Generation Bunk Bed", "Delivered", nil],
-  ["Emma", "Santa", "Bluey Puppets (Unicorse and Bob Billy)", nil, nil],
-  ["Emma", "Santa", "Bluey Spot It", nil, nil],
-  ["Emma", nil, "Pusheen Bowl", nil, nil],
-  ["Emma", nil, "Threshold Game", nil, nil],
-  ["Emma", "Mom & Dad", "Squirrel Shirt", nil, nil],
-  
+  [ "Emma", nil, "Smart Bird Feeder", "Delivered", nil ],
+  [ "Emma", nil, "Fluffy Crocs", "Idea", nil ],
+  [ "Emma", "Mom & Dad", "Clue Board Game", "Wrapped", 35 ],
+  [ nil, "Mom & Dad", "Brawl Stars Guess Who", "Delivered", 50 ],
+  [ "Emma", "Mom & Dad", "Bitzee Hamster Ball", "Delivered", nil ],
+  [ "Emma", "Mom & Dad", "Gui Gui Slime", "Delivered", nil ],
+  [ "Emma", "Mom & Dad", "Scooter", nil, nil ],
+  [ "Emma", "Jack", "Baby Three Surprise Dolls x2 + Cat Calendar + Happy Salmon Game", "Delivered", nil ],
+  [ "Emma", "Santa", "My Generation Bunk Bed", "Delivered", nil ],
+  [ "Emma", "Santa", "Bluey Puppets (Unicorse and Bob Billy)", nil, nil ],
+  [ "Emma", "Santa", "Bluey Spot It", nil, nil ],
+  [ "Emma", nil, "Pusheen Bowl", nil, nil ],
+  [ "Emma", nil, "Threshold Game", nil, nil ],
+  [ "Emma", "Mom & Dad", "Squirrel Shirt", nil, nil ],
+
   # Stocking stuffers
-  ["Emma", "Stocking", "Queen of Farts Game", nil, nil],
-  ["Jack", "Stocking", "May Contain Butts Game", nil, nil],
-  ["Emma", "Stocking", "Abercrombie Body Spray", nil, nil],
-  ["Jack", "Stocking", "Abercrombie Body Spray", nil, nil],
-  ["Emma", "Stocking", "Cat vs Pickle", nil, nil],
-  ["Jack", "Stocking", "Cat vs Pickle", nil, nil],
-  ["Emma", "Stocking", "Cat Sucks", nil, nil],
-  
+  [ "Emma", "Stocking", "Queen of Farts Game", nil, nil ],
+  [ "Jack", "Stocking", "May Contain Butts Game", nil, nil ],
+  [ "Emma", "Stocking", "Abercrombie Body Spray", nil, nil ],
+  [ "Jack", "Stocking", "Abercrombie Body Spray", nil, nil ],
+  [ "Emma", "Stocking", "Cat vs Pickle", nil, nil ],
+  [ "Jack", "Stocking", "Cat vs Pickle", nil, nil ],
+  [ "Emma", "Stocking", "Cat Sucks", nil, nil ],
+
   # Jack ideas
-  ["Jack", nil, "Foot Bath", "Idea", nil],
-  ["Jack", nil, "Fishing Rod", "Idea", nil],
-  ["Jack", nil, "Fishing Lures", "Idea", nil],
-  ["Jack", "Grandma & Grandpa", "Sax Lessons", "Idea", nil],
-  ["Jack", nil, "Lego Stranger Things", "Idea", nil],
-  ["Jack", nil, "Footbath", "Idea", nil],
-  
+  [ "Jack", nil, "Foot Bath", "Idea", nil ],
+  [ "Jack", nil, "Fishing Rod", "Idea", nil ],
+  [ "Jack", nil, "Fishing Lures", "Idea", nil ],
+  [ "Jack", "Grandma & Grandpa", "Sax Lessons", "Idea", nil ],
+  [ "Jack", nil, "Lego Stranger Things", "Idea", nil ],
+  [ "Jack", nil, "Footbath", "Idea", nil ],
+
   # Emma ideas
-  ["Emma", nil, "Fishing Rod", "Idea", nil],
-  ["Emma", nil, "Fishing Lures", "Idea", nil],
-  ["Emma", nil, "Wicked Lego", "Idea", nil],
-  
+  [ "Emma", nil, "Fishing Rod", "Idea", nil ],
+  [ "Emma", nil, "Fishing Lures", "Idea", nil ],
+  [ "Emma", nil, "Wicked Lego", "Idea", nil ],
+
   # Joint gifts for Jack & Emma
-  ["Jack & Emma", "Grandma & Grandpa", "BEAVERBOT - Cardboard Cutter", "Delivered", nil],
-  ["Emma", "Grandma & Grandpa", "Cutter Tools", "Delivered", nil],
-  ["Jack & Emma", nil, "Super Mario Galaxy 1 & 2 Switch Edition", "Delivered", 70],
-  ["Emma", nil, "Disney Dreamlight Valley, Cozy Edition", "In Transit", 52],
-  
+  [ "Jack & Emma", "Grandma & Grandpa", "BEAVERBOT - Cardboard Cutter", "Delivered", nil ],
+  [ "Emma", "Grandma & Grandpa", "Cutter Tools", "Delivered", nil ],
+  [ "Jack & Emma", nil, "Super Mario Galaxy 1 & 2 Switch Edition", "Delivered", 70 ],
+  [ "Emma", nil, "Disney Dreamlight Valley, Cozy Edition", "In Transit", 52 ],
+
   # Nana
-  ["Nana", nil, "Sunglasses", "Wrapped", nil],
-  ["Nana", nil, "Frame of Us at the Gala", "Idea", nil],
-  ["Nana", "Jack & Emma", "Waffles Stuffie", "Wrapped", nil],
-  
+  [ "Nana", nil, "Sunglasses", "Wrapped", nil ],
+  [ "Nana", nil, "Frame of Us at the Gala", "Idea", nil ],
+  [ "Nana", "Jack & Emma", "Waffles Stuffie", "Wrapped", nil ],
+
   # Nonno
-  ["Nonno", nil, "Nice Portable Game Chair", nil, 70],
-  ["Nonno", nil, "Venom Shirt", nil, 25],
-  ["Nonno", "Jack & Emma", "Jays Hat", "Delivered", nil],
-  
+  [ "Nonno", nil, "Nice Portable Game Chair", nil, 70 ],
+  [ "Nonno", nil, "Venom Shirt", nil, 25 ],
+  [ "Nonno", "Jack & Emma", "Jays Hat", "Delivered", nil ],
+
   # Grandparents
-  ["Grandma", "Christina & Kent", "Toothbrush", "Delivered", nil],
-  ["Grandpa", "Christina & Kent", "Toothbrush", "Delivered", nil],
-  ["Grandpa", "Jack & Emma", "M&M Socks", "Delivered", nil],
-  
+  [ "Grandma", "Christina & Kent", "Toothbrush", "Delivered", nil ],
+  [ "Grandpa", "Christina & Kent", "Toothbrush", "Delivered", nil ],
+  [ "Grandpa", "Jack & Emma", "M&M Socks", "Delivered", nil ],
+
   # Extended family
-  ["Rob", "Fenwicks", "Jays Hat", "Delivered", nil],
-  ["Dave", "Fenwicks", "Jays Hat", "Delivered", nil],
-  ["Heather", "Christina & Kent & Jack & Emma", "Christmas Vacation Monopoly", "Delivered", nil],
-  ["Heather", "Christina & Kent & Jack & Emma", "Roots Sweater + Socks", "Delivered", nil],
-  ["Josh", "Christina & Kent & Jack & Emma", "Roots Sweater + Socks", "Delivered", nil],
-  
+  [ "Rob", "Fenwicks", "Jays Hat", "Delivered", nil ],
+  [ "Dave", "Fenwicks", "Jays Hat", "Delivered", nil ],
+  [ "Heather", "Christina & Kent & Jack & Emma", "Christmas Vacation Monopoly", "Delivered", nil ],
+  [ "Heather", "Christina & Kent & Jack & Emma", "Roots Sweater + Socks", "Delivered", nil ],
+  [ "Josh", "Christina & Kent & Jack & Emma", "Roots Sweater + Socks", "Delivered", nil ],
+
   # Misc / no recipient specified
-  [nil, nil, "Smoothie Thing", "Idea", nil],
-  [nil, nil, "Birdhouse Maker", "Delivered", nil],
-  [nil, nil, "Exploding Kittens Game", "Delivered", nil],
-  [nil, nil, "Art Canvas Kit", "Delivered", nil],
+  [ nil, nil, "Smoothie Thing", "Idea", nil ],
+  [ nil, nil, "Birdhouse Maker", "Delivered", nil ],
+  [ nil, nil, "Exploding Kittens Game", "Delivered", nil ],
+  [ nil, nil, "Art Canvas Kit", "Delivered", nil ]
 ]
 
 # Create gifts
 position = 0
 GIFTS.each do |recipients_str, givers_str, gift_name, status_str, cost|
   next if gift_name.blank?
-  
+
   position += 1
-  
+
   gift = Gift.create!(
     name: gift_name,
     holiday: holiday,
@@ -226,17 +226,17 @@ GIFTS.each do |recipients_str, givers_str, gift_name, status_str, cost|
     position: position,
     created_by_user_id: user.id
   )
-  
+
   # Add recipients
   parse_people(people, recipients_str).each do |person|
     GiftRecipient.create!(gift: gift, person: person)
   end
-  
+
   # Add givers
   parse_people(people, givers_str).each do |person|
     GiftGiver.create!(gift: gift, person: person)
   end
-  
+
   puts "  Created: #{gift_name}"
 end
 

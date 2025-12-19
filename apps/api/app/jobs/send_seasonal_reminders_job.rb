@@ -112,7 +112,7 @@ class SendSeasonalRemindersJob < ApplicationJob
 
     user.holidays
         .where(is_template: false, archived: false, completed: false)
-        .includes(gifts: [:gift_status, :recipients])
+        .includes(gifts: [ :gift_status, :recipients ])
         .each_with_object({}) do |holiday, result|
       pending = holiday.gifts.reject { |g| done_status_ids.include?(g.gift_status_id) }
       result[holiday] = pending if pending.any?
@@ -161,4 +161,3 @@ class SendSeasonalRemindersJob < ApplicationJob
     Rails.logger.error "[SendSeasonalRemindersJob] Failed #{kind} for #{user.email}: #{e.message}"
   end
 end
-

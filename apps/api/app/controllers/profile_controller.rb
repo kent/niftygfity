@@ -23,4 +23,3 @@ class ProfileController < ApplicationController
     render json: UserBlueprint.render_as_hash(current_user)
   end
 end
-

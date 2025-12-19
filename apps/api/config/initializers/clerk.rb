@@ -18,13 +18,13 @@ elsif Rails.env.production?
   # Only require Clerk when running the web server
   # Allow all other commands (runner, console, db tasks, etc.) to run without Clerk
   is_server = false
-  
+
   # Check if we're running the server command
   if $PROGRAM_NAME&.include?("rails") || $0&.include?("rails")
     # Check command line arguments - only require for "server" command
     is_server = ARGV.any? { |arg| %w[server s].include?(arg) }
   end
-  
+
   unless is_server
     # Skip Clerk for non-server commands (runner, console, db tasks, etc.)
   else

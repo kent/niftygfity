@@ -19,7 +19,7 @@ class CreateMatchArrangements < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :match_slots, [:match_arrangement_id, :person_id, :row_index], 
+    add_index :match_slots, [ :match_arrangement_id, :person_id, :row_index ],
               unique: true, name: "idx_match_slots_unique"
   end
 end

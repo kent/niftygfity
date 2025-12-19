@@ -55,4 +55,3 @@ class EmailDelivery < ApplicationRecord
     )
   end
 end
-

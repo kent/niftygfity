@@ -17,8 +17,8 @@ class DigestMailerPreview < ActionMailer::Preview
       OpenStruct.new(
         gift: OpenStruct.new(
           name: "Nintendo Switch",
-          recipients: [OpenStruct.new(name: "Mom")],
-          givers: [OpenStruct.new(name: "Dad")]
+          recipients: [ OpenStruct.new(name: "Mom") ],
+          givers: [ OpenStruct.new(name: "Dad") ]
         ),
         created?: true,
         updated?: false,
@@ -28,12 +28,12 @@ class DigestMailerPreview < ActionMailer::Preview
       OpenStruct.new(
         gift: OpenStruct.new(
           name: "Cozy Blanket",
-          recipients: [OpenStruct.new(name: "Sister")],
+          recipients: [ OpenStruct.new(name: "Sister") ],
           givers: []
         ),
         created?: false,
         updated?: true,
-        changes_data: { "price" => ["$30", "$45"], "notes" => ["", "Gift wrapped"] },
+        changes_data: { "price" => [ "$30", "$45" ], "notes" => [ "", "Gift wrapped" ] },
         user: user
       )
     ]
