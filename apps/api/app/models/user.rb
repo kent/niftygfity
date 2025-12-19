@@ -10,6 +10,9 @@ class User < ApplicationRecord
   has_many :gift_changes, dependent: :nullify
   has_one :notification_preference, dependent: :destroy
   has_many :email_deliveries, dependent: :destroy
+  has_many :owned_gift_exchanges, class_name: "GiftExchange", dependent: :destroy
+  has_many :exchange_participants, dependent: :destroy
+  has_many :gift_exchanges, through: :exchange_participants
 
   validates :subscription_plan, inclusion: { in: SUBSCRIPTION_PLANS }
   validates :clerk_user_id, presence: true, uniqueness: true

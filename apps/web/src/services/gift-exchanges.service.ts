@@ -1,0 +1,36 @@
+import { apiClient } from "@/lib/api-client";
+import type {
+  GiftExchange,
+  GiftExchangeWithParticipants,
+  CreateGiftExchangeRequest,
+  UpdateGiftExchangeRequest,
+  EXCHANGE_API_ENDPOINTS,
+} from "@niftygifty/types";
+
+class GiftExchangesService {
+  async getAll(): Promise<GiftExchange[]> {
+    return apiClient.get<GiftExchange[]>("/gift_exchanges");
+  }
+
+  async getById(id: number): Promise<GiftExchangeWithParticipants> {
+    return apiClient.get<GiftExchangeWithParticipants>(`/gift_exchanges/${id}`);
+  }
+
+  async create(data: CreateGiftExchangeRequest["gift_exchange"]): Promise<GiftExchange> {
+    return apiClient.post<GiftExchange>("/gift_exchanges", { gift_exchange: data });
+  }
+
+  async update(id: number, data: UpdateGiftExchangeRequest["gift_exchange"]): Promise<GiftExchange> {
+    return apiClient.patch<GiftExchange>(`/gift_exchanges/${id}`, { gift_exchange: data });
+  }
+
+  async delete(id: number): Promise<void> {
+    return apiClient.delete(`/gift_exchanges/${id}`);
+  }
+
+  async start(id: number): Promise<GiftExchangeWithParticipants> {
+    return apiClient.post<GiftExchangeWithParticipants>(`/gift_exchanges/${id}/start`);
+  }
+}
+
+export const giftExchangesService = new GiftExchangesService();

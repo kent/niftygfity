@@ -5,6 +5,26 @@ Rails.application.routes.draw do
     end
   end
   resources :gift_statuses
+
+  # Gift Exchanges
+  resources :gift_exchanges do
+    member do
+      post :start
+    end
+    resources :exchange_participants, only: %i[index show create update destroy] do
+      member do
+        post :resend_invite
+      end
+      resources :wishlist_items, only: %i[index show create update destroy]
+    end
+    resources :exchange_exclusions, only: %i[index create destroy]
+  end
+
+  # Exchange invite endpoints (token-based)
+  get "exchange_invite/:token" => "exchange_invites#show"
+  post "exchange_invite/:token/accept" => "exchange_invites#accept"
+  post "exchange_invite/:token/decline" => "exchange_invites#decline"
+
   resources :holidays do
     collection do
       get :templates

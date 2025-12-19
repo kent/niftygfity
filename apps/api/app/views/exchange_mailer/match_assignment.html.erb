@@ -1,0 +1,53 @@
+<% content_for :preview_text do %>You're giving a gift to <%= @match.display_name %> for <%= @exchange.name %>!</% end %>
+
+<h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #18181b;">
+  Your Match is Ready! 🎅
+</h1>
+
+<p style="margin: 0 0 24px 0; font-size: 16px; color: #52525b;">
+  The matches for <strong><%= @exchange.name %></strong> are in! Here's who you're getting a gift for:
+</p>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="background-color: #fef3c7; border-radius: 12px; padding: 24px; text-align: center;">
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #92400e;">You're buying a gift for:</p>
+      <p style="margin: 0; font-size: 28px; font-weight: 700; color: #78350f;">
+        🎁 <%= @match.display_name %>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<% if @exchange.budget_min || @exchange.budget_max %>
+<p style="margin: 0 0 16px 0; font-size: 14px; color: #52525b;">
+  <strong>Budget:</strong> 
+  <% if @exchange.budget_min && @exchange.budget_max %>
+    $<%= @exchange.budget_min.to_i %> - $<%= @exchange.budget_max.to_i %>
+  <% elsif @exchange.budget_max %>
+    Up to $<%= @exchange.budget_max.to_i %>
+  <% else %>
+    At least $<%= @exchange.budget_min.to_i %>
+  <% end %>
+</p>
+<% end %>
+
+<% if @exchange.exchange_date %>
+<p style="margin: 0 0 24px 0; font-size: 14px; color: #52525b;">
+  <strong>Exchange Date:</strong> <%= @exchange.exchange_date.strftime("%B %d, %Y") %>
+</p>
+<% end %>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td align="center">
+      <a href="<%= @exchange_url %>" class="button" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #a855f7, #ec4899); color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">
+        View Their Wishlist
+      </a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 32px 0 0 0; font-size: 14px; color: #71717a; text-align: center;">
+  Remember: Keep it a secret! 🤫
+</p>

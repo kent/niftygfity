@@ -1,0 +1,17 @@
+Your Match is Ready!
+
+The matches for <%= @exchange.name %> are in! Here's who you're getting a gift for:
+
+🎁 You're buying a gift for: <%= @match.display_name %>
+
+<% if @exchange.budget_min || @exchange.budget_max %>
+Budget: <% if @exchange.budget_min && @exchange.budget_max %>$<%= @exchange.budget_min.to_i %> - $<%= @exchange.budget_max.to_i %><% elsif @exchange.budget_max %>Up to $<%= @exchange.budget_max.to_i %><% else %>At least $<%= @exchange.budget_min.to_i %><% end %>
+<% end %>
+
+<% if @exchange.exchange_date %>
+Exchange Date: <%= @exchange.exchange_date.strftime("%B %d, %Y") %>
+<% end %>
+
+View their wishlist: <%= @exchange_url %>
+
+Remember: Keep it a secret!

@@ -545,3 +545,177 @@ export interface EmailPreferencesResponse {
   };
   preferences: NotificationPreferences;
 }
+
+// =============================================================================
+// Gift Exchanges
+// =============================================================================
+
+export type ExchangeStatus = "draft" | "inviting" | "active" | "completed";
+export type ParticipantStatus = "invited" | "accepted" | "declined";
+
+export interface GiftExchange extends BaseEntity {
+  name: string;
+  exchange_date: string | null;
+  status: ExchangeStatus;
+  budget_min: string | null;
+  budget_max: string | null;
+  user_id: number;
+  is_owner: boolean;
+  participant_count: number;
+  accepted_count: number;
+  can_start: boolean;
+  my_participant?: ExchangeParticipant | null;
+}
+
+export interface GiftExchangeWithParticipants extends GiftExchange {
+  exchange_participants: ExchangeParticipant[];
+}
+
+export interface ExchangeParticipant extends BaseEntity {
+  gift_exchange_id: number;
+  user_id: number | null;
+  name: string;
+  email: string;
+  status: ParticipantStatus;
+  display_name: string;
+  has_user: boolean;
+  wishlist_count: number;
+  invite_token?: string; // Only visible to admin
+  matched_participant_id?: number | null;
+  matched_participant?: ExchangeParticipantWithWishlist | null;
+}
+
+export interface ExchangeParticipantWithWishlist extends ExchangeParticipant {
+  wishlist_items: WishlistItem[];
+}
+
+export interface WishlistItem extends BaseEntity {
+  exchange_participant_id: number;
+  name: string;
+  description: string | null;
+  link: string | null;
+  price: string | null;
+  photo_url: string | null;
+  has_photo: boolean;
+}
+
+export interface ExchangeExclusion extends BaseEntity {
+  gift_exchange_id: number;
+  participant_a_id: number;
+  participant_b_id: number;
+  participant_a: {
+    id: number;
+    name: string;
+  };
+  participant_b: {
+    id: number;
+    name: string;
+  };
+}
+
+// Request types
+export interface CreateGiftExchangeRequest {
+  gift_exchange: {
+    name: string;
+    exchange_date?: string;
+    budget_min?: number;
+    budget_max?: number;
+  };
+}
+
+export interface UpdateGiftExchangeRequest {
+  gift_exchange: Partial<CreateGiftExchangeRequest["gift_exchange"]> & {
+    status?: ExchangeStatus;
+  };
+}
+
+export interface CreateExchangeParticipantRequest {
+  exchange_participant: {
+    name: string;
+    email: string;
+  };
+}
+
+export interface UpdateExchangeParticipantRequest {
+  exchange_participant: Partial<CreateExchangeParticipantRequest["exchange_participant"]>;
+}
+
+export interface CreateWishlistItemRequest {
+  wishlist_item: {
+    name: string;
+    description?: string;
+    link?: string;
+    price?: number;
+  };
+}
+
+export interface UpdateWishlistItemRequest {
+  wishlist_item: Partial<CreateWishlistItemRequest["wishlist_item"]>;
+}
+
+export interface CreateExchangeExclusionRequest {
+  exchange_exclusion: {
+    participant_a_id: number;
+    participant_b_id: number;
+  };
+}
+
+// Response types
+export type GiftExchangesResponse = GiftExchange[];
+export type ExchangeParticipantsResponse = ExchangeParticipant[];
+export type WishlistItemsResponse = WishlistItem[];
+export type ExchangeExclusionsResponse = ExchangeExclusion[];
+
+// Invite response (public endpoint)
+export interface ExchangeInviteDetails {
+  exchange: {
+    id: number;
+    name: string;
+    exchange_date: string | null;
+    budget_min: string | null;
+    budget_max: string | null;
+    owner_name: string;
+  };
+  participant: {
+    name: string;
+    email: string;
+    status: ParticipantStatus;
+  };
+}
+
+export interface AcceptInviteResponse {
+  message: string;
+  exchange: GiftExchange;
+  participant: ExchangeParticipant;
+}
+
+// API Endpoints for gift exchanges
+export const EXCHANGE_API_ENDPOINTS = {
+  // Gift Exchanges
+  giftExchanges: "/gift_exchanges",
+  giftExchange: (id: number) => `/gift_exchanges/${id}`,
+  startExchange: (id: number) => `/gift_exchanges/${id}/start`,
+  
+  // Participants
+  exchangeParticipants: (exchangeId: number) => `/gift_exchanges/${exchangeId}/exchange_participants`,
+  exchangeParticipant: (exchangeId: number, participantId: number) => 
+    `/gift_exchanges/${exchangeId}/exchange_participants/${participantId}`,
+  resendInvite: (exchangeId: number, participantId: number) => 
+    `/gift_exchanges/${exchangeId}/exchange_participants/${participantId}/resend_invite`,
+  
+  // Wishlist Items
+  wishlistItems: (exchangeId: number, participantId: number) => 
+    `/gift_exchanges/${exchangeId}/exchange_participants/${participantId}/wishlist_items`,
+  wishlistItem: (exchangeId: number, participantId: number, itemId: number) => 
+    `/gift_exchanges/${exchangeId}/exchange_participants/${participantId}/wishlist_items/${itemId}`,
+  
+  // Exclusions
+  exchangeExclusions: (exchangeId: number) => `/gift_exchanges/${exchangeId}/exchange_exclusions`,
+  exchangeExclusion: (exchangeId: number, exclusionId: number) => 
+    `/gift_exchanges/${exchangeId}/exchange_exclusions/${exclusionId}`,
+  
+  // Invites (public)
+  exchangeInvite: (token: string) => `/exchange_invite/${token}`,
+  acceptInvite: (token: string) => `/exchange_invite/${token}/accept`,
+  declineInvite: (token: string) => `/exchange_invite/${token}/decline`,
+} as const;

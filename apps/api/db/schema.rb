@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_12_000003) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "email_deliveries", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -34,6 +62,37 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_000003) do
     t.index ["user_id"], name: "index_email_deliveries_on_user_id"
   end
 
+  create_table "exchange_exclusions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "gift_exchange_id", null: false
+    t.bigint "participant_a_id", null: false
+    t.bigint "participant_b_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gift_exchange_id", "participant_a_id", "participant_b_id"], name: "idx_exchange_exclusions_unique", unique: true
+    t.index ["gift_exchange_id"], name: "index_exchange_exclusions_on_gift_exchange_id"
+    t.index ["participant_a_id"], name: "index_exchange_exclusions_on_participant_a_id"
+    t.index ["participant_b_id"], name: "index_exchange_exclusions_on_participant_b_id"
+  end
+
+  create_table "exchange_participants", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.bigint "gift_exchange_id", null: false
+    t.string "invite_token", null: false
+    t.bigint "matched_participant_id"
+    t.string "name", null: false
+    t.string "status", default: "invited", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["email"], name: "index_exchange_participants_on_email"
+    t.index ["gift_exchange_id", "email"], name: "index_exchange_participants_on_gift_exchange_id_and_email", unique: true
+    t.index ["gift_exchange_id"], name: "index_exchange_participants_on_gift_exchange_id"
+    t.index ["invite_token"], name: "index_exchange_participants_on_invite_token", unique: true
+    t.index ["matched_participant_id"], name: "index_exchange_participants_on_matched_participant_id"
+    t.index ["status"], name: "index_exchange_participants_on_status"
+    t.index ["user_id"], name: "index_exchange_participants_on_user_id"
+  end
+
   create_table "gift_changes", force: :cascade do |t|
     t.string "change_type", null: false
     t.jsonb "changes_data", default: {}
@@ -48,6 +107,20 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_000003) do
     t.index ["holiday_id"], name: "index_gift_changes_on_holiday_id"
     t.index ["notified_at"], name: "index_gift_changes_on_notified_at"
     t.index ["user_id"], name: "index_gift_changes_on_user_id"
+  end
+
+  create_table "gift_exchanges", force: :cascade do |t|
+    t.decimal "budget_max", precision: 10, scale: 2
+    t.decimal "budget_min", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.date "exchange_date"
+    t.string "name", null: false
+    t.string "status", default: "draft", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["exchange_date"], name: "index_gift_exchanges_on_exchange_date"
+    t.index ["status"], name: "index_gift_exchanges_on_status"
+    t.index ["user_id"], name: "index_gift_exchanges_on_user_id"
   end
 
   create_table "gift_givers", force: :cascade do |t|
@@ -326,11 +399,32 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_000003) do
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
   end
 
+  create_table "wishlist_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.bigint "exchange_participant_id", null: false
+    t.string "link"
+    t.string "name", null: false
+    t.decimal "price", precision: 10, scale: 2
+    t.datetime "updated_at", null: false
+    t.index ["exchange_participant_id"], name: "index_wishlist_items_on_exchange_participant_id"
+    t.index ["name"], name: "index_wishlist_items_on_name"
+  end
+
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "email_deliveries", "holidays"
   add_foreign_key "email_deliveries", "users"
+  add_foreign_key "exchange_exclusions", "exchange_participants", column: "participant_a_id"
+  add_foreign_key "exchange_exclusions", "exchange_participants", column: "participant_b_id"
+  add_foreign_key "exchange_exclusions", "gift_exchanges"
+  add_foreign_key "exchange_participants", "exchange_participants", column: "matched_participant_id"
+  add_foreign_key "exchange_participants", "gift_exchanges"
+  add_foreign_key "exchange_participants", "users"
   add_foreign_key "gift_changes", "gifts"
   add_foreign_key "gift_changes", "holidays"
   add_foreign_key "gift_changes", "users"
+  add_foreign_key "gift_exchanges", "users"
   add_foreign_key "gift_givers", "gifts"
   add_foreign_key "gift_givers", "people"
   add_foreign_key "gift_recipients", "gifts"
@@ -356,4 +450,5 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_000003) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "wishlist_items", "exchange_participants"
 end
