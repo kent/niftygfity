@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Plus, ArrowRight, Loader2, Calendar } from "lucide-react";
+import { GiftTodoList } from "@/components/gift-todo-list";
 import type { Holiday, Person } from "@niftygifty/types";
 
 const HOLIDAY_ICONS: Record<string, string> = {
@@ -160,6 +161,11 @@ export default function DashboardPage() {
             </div>
           </section>
         )}
+
+        {/* Gift To Do List */}
+        <section className="mb-8">
+          <GiftTodoList />
+        </section>
 
         {/* Quick Actions */}
         <div className="space-y-4">
