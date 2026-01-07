@@ -19,7 +19,7 @@ export default async function GivingPledgePage() {
   const progressPercent = Math.min((stats.raised_amount / stats.goal_amount) * 100, 100);
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
@@ -31,9 +31,9 @@ export default async function GivingPledgePage() {
               height={40}
               className="rounded-lg"
             />
-            <span className="text-xl font-bold text-white">Listy Gifty</span>
+            <span className="text-xl font-bold text-slate-900 dark:text-white">Listy Gifty</span>
           </Link>
-          <Button variant="ghost" asChild className="text-slate-300 hover:text-white hover:bg-slate-800">
+          <Button variant="ghost" asChild className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
             <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
           </Button>
         </nav>
@@ -54,33 +54,33 @@ export default async function GivingPledgePage() {
             </svg>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">
             Our Giving Pledge
           </h1>
 
-          <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
-            We donate <span className="text-violet-400 font-bold">$5 per premium user</span> to{" "}
-            <span className="text-white font-semibold">SickKids Hospital</span> each December.
+          <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+            We donate <span className="text-violet-600 dark:text-violet-400 font-bold">$5 per premium user</span> to{" "}
+            <span className="text-slate-900 dark:text-white font-semibold">SickKids Hospital</span> each December.
           </p>
 
           {/* Progress Counter */}
-          <div className="mb-10 p-6 rounded-2xl bg-slate-900/50 border border-slate-800">
-            <div className="text-sm text-slate-400 mb-2">{stats.year} Goal</div>
+          <div className="mb-10 p-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+            <div className="text-sm text-slate-500 dark:text-slate-400 mb-2">{stats.year} Goal</div>
             <div className="flex items-baseline justify-center gap-1 mb-4">
-              <span className="text-5xl md:text-6xl font-bold text-violet-400">${stats.raised_amount}</span>
-              <span className="text-2xl text-slate-500">/ ${stats.goal_amount}</span>
+              <span className="text-5xl md:text-6xl font-bold text-violet-600 dark:text-violet-400">${stats.raised_amount}</span>
+              <span className="text-2xl text-slate-400 dark:text-slate-500">/ ${stats.goal_amount}</span>
             </div>
-            
+
             {/* Progress Bar */}
-            <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden">
-              <div 
+            <div className="w-full h-4 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div
                 className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
           </div>
 
-          <p className="text-slate-400 mb-10">
+          <p className="text-slate-500 dark:text-slate-400 mb-10">
             Because the best gifts help those who need it most.
           </p>
 
@@ -120,3 +120,4 @@ export default async function GivingPledgePage() {
     </div>
   );
 }
+

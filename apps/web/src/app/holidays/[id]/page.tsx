@@ -143,7 +143,7 @@ export default function HolidayDetailPage() {
 
   if (authLoading || dataLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -151,9 +151,9 @@ export default function HolidayDetailPage() {
 
   if (error || !holiday) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">{error || "Gift list not found"}</p>
+          <p className="text-red-500 dark:text-red-400 mb-4">{error || "Gift list not found"}</p>
           <Link href="/holidays">
             <Button>Back to Gift Lists</Button>
           </Link>
@@ -175,8 +175,8 @@ export default function HolidayDetailPage() {
   const collaboratorJoinCount = Math.max(collaborators.length - 1, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
       <AppHeader user={user} onSignOut={signOut} />
 
@@ -184,7 +184,7 @@ export default function HolidayDetailPage() {
         <div className="mb-8">
           <Link
             href="/holidays"
-            className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Gift Lists
@@ -197,7 +197,7 @@ export default function HolidayDetailPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                  <h1 className="text-2xl md:text-3xl font-bold text-white">{holiday.name}</h1>
+                  <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{holiday.name}</h1>
                   {holiday.collaborator_count > 1 && (
                     <Badge variant="secondary" className="gap-1">
                       <Users className="h-3 w-3" />
@@ -205,22 +205,22 @@ export default function HolidayDetailPage() {
                     </Badge>
                   )}
                   {!holiday.is_owner && holiday.role === "collaborator" && (
-                    <Badge variant="outline" className="text-slate-400 border-slate-600">
+                    <Badge variant="outline" className="text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600">
                       Shared
                     </Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-2 text-slate-400 text-sm md:text-base mt-1">
+                <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm md:text-base mt-1">
                   <Calendar className="h-4 w-4 shrink-0" />
                   <span className="truncate">{formattedDate}</span>
                 </div>
                 {/* Collaborators - hidden on mobile, shown on desktop */}
-                <div className="hidden md:block mt-2 text-sm text-slate-300">
+                <div className="hidden md:block mt-2 text-sm text-slate-600 dark:text-slate-300">
                   {collaboratorsLoading ? (
-                    <div className="h-4 w-32 animate-pulse rounded bg-slate-800" />
+                    <div className="h-4 w-32 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
                   ) : collaboratorJoinCount > 0 ? (
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 text-slate-300">
+                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
                         <Users className="h-4 w-4" />
                         <span>
                           {collaboratorJoinCount} {collaboratorJoinCount === 1 ? "person" : "people"} joined
@@ -234,26 +234,26 @@ export default function HolidayDetailPage() {
                               key={collab.user_id}
                               src={collab.image_url}
                               alt={getCollaboratorName(collab)}
-                              className="h-8 w-8 rounded-full border-2 border-slate-900 object-cover"
+                              className="h-8 w-8 rounded-full border-2 border-white dark:border-slate-900 object-cover"
                             />
                           ) : (
                             <div
                               key={collab.user_id}
-                              className="h-8 w-8 rounded-full bg-violet-500/20 border-2 border-slate-900 flex items-center justify-center text-xs font-semibold text-violet-200"
+                              className="h-8 w-8 rounded-full bg-violet-500/20 border-2 border-white dark:border-slate-900 flex items-center justify-center text-xs font-semibold text-violet-600 dark:text-violet-200"
                             >
                               {getCollaboratorInitials(collab)}
                             </div>
                           )
                         )}
                         {collaboratorPeers.length > 3 && (
-                          <div className="h-8 w-8 rounded-full bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-xs text-slate-300">
+                          <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-xs text-slate-600 dark:text-slate-300">
                             +{collaboratorPeers.length - 3}
                           </div>
                         )}
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                       <Users className="h-4 w-4" />
                       <span>No collaborators yet — share your link.</span>
                     </div>
@@ -297,10 +297,10 @@ export default function HolidayDetailPage() {
         </div>
 
         {statuses.length === 0 ? (
-          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
-            <GiftIcon className="h-12 w-12 mx-auto text-slate-600 mb-4" />
-            <h2 className="text-xl font-semibold text-white mb-2">No Gift Statuses</h2>
-            <p className="text-slate-400 mb-4">
+          <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-12 text-center">
+            <GiftIcon className="h-12 w-12 mx-auto text-slate-400 dark:text-slate-600 mb-4" />
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">No Gift Statuses</h2>
+            <p className="text-slate-600 dark:text-slate-400 mb-4">
               Create gift statuses (e.g., Idea, Ordered, Delivered) to start tracking gifts.
             </p>
           </div>

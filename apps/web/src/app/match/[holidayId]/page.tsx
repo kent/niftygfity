@@ -80,7 +80,7 @@ export default function MatchPage() {
 
   if (authLoading || dataLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -88,9 +88,9 @@ export default function MatchPage() {
 
   if (error || !holiday) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">{error || "Gift list not found"}</p>
+          <p className="text-red-500 dark:text-red-400 mb-4">{error || "Gift list not found"}</p>
           <Link href="/holidays">
             <Button>Back to Gift Lists</Button>
           </Link>
@@ -110,8 +110,8 @@ export default function MatchPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
       <AppHeader user={user} onSignOut={signOut} />
 
@@ -119,7 +119,7 @@ export default function MatchPage() {
         <div className="mb-8">
           <Link
             href={`/holidays/${holidayId}`}
-            className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to {holiday.name}
@@ -130,8 +130,8 @@ export default function MatchPage() {
               {icon}
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Gift Matching</h1>
-              <div className="flex items-center gap-2 text-slate-400">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Gift Matching</h1>
+              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                 <Calendar className="h-4 w-4" />
                 <span>{formattedDate}</span>
               </div>

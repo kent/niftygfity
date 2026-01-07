@@ -96,12 +96,12 @@ export default function EmailPreferencesPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
             <div className="animate-spin h-10 w-10 border-4 border-violet-500/30 border-t-violet-500 rounded-full" />
           </div>
-          <span className="text-sm text-slate-400">Loading preferences...</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">Loading preferences...</span>
         </div>
       </div>
     );
@@ -109,13 +109,13 @@ export default function EmailPreferencesPage({
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 mb-4">
-            <XCircle className="h-8 w-8 text-red-400" />
+            <XCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Invalid Link</h1>
-          <p className="text-slate-400 mb-6">{error}</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Invalid Link</h1>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">{error}</p>
           <Link href="/">
             <Button className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500">
               Go to Listy Gifty
@@ -127,22 +127,22 @@ export default function EmailPreferencesPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Background effects */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-fuchsia-900/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
+        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-fuchsia-500/5 dark:from-fuchsia-900/5 via-transparent to-transparent" />
       </div>
 
       <main className="relative z-10 container mx-auto px-4 py-12 max-w-2xl">
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 border border-violet-500/30 mb-4">
-            <Bell className="h-8 w-8 text-violet-400" />
+            <Bell className="h-8 w-8 text-violet-500 dark:text-violet-400" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Email Preferences</h1>
-          <p className="text-slate-400">
-            Managing notifications for <span className="text-white font-medium">{data.user.email}</span>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Email Preferences</h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Managing notifications for <span className="text-slate-900 dark:text-white font-medium">{data.user.email}</span>
           </p>
         </div>
 
@@ -159,16 +159,16 @@ export default function EmailPreferencesPage({
           {NOTIFICATION_TOGGLES.map(({ id, title, description, icon: Icon }) => (
             <div
               key={id}
-              className="group relative rounded-2xl border border-slate-800/50 bg-slate-900/30 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-slate-700/50"
+              className="group relative rounded-2xl border border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/30 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-700/50"
             >
               <div className="relative p-6">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700/50 shrink-0">
-                    <Icon className="h-5 w-5 text-slate-400" />
+                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 dark:from-slate-800 to-slate-50 dark:to-slate-800/50 border border-slate-200 dark:border-slate-700/50 shrink-0">
+                    <Icon className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-medium text-white">{title}</h3>
-                    <p className="text-sm text-slate-400">{description}</p>
+                    <h3 className="text-lg font-medium text-slate-900 dark:text-white">{title}</h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     {updating === id && (
@@ -195,7 +195,7 @@ export default function EmailPreferencesPage({
           <Link href="/holidays">
             <Button
               variant="outline"
-              className="border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-700 hover:text-white"
+              className="border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
             >
               <ExternalLink className="h-4 w-4 mr-2" />
               Open Listy Gifty
@@ -206,7 +206,7 @@ export default function EmailPreferencesPage({
 
       {/* Footer brand */}
       <footer className="relative z-10 py-8 text-center">
-        <p className="text-xs text-slate-600">
+        <p className="text-xs text-slate-500 dark:text-slate-600">
           🎁 Listy Gifty • Made with ❤️ for gift givers everywhere
         </p>
       </footer>

@@ -113,7 +113,7 @@ export default function MyWishlistPage({
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -121,9 +121,9 @@ export default function MyWishlistPage({
 
   if (!exchange || !exchange.my_participant) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-slate-400">You are not a participant in this exchange</p>
+          <p className="text-slate-600 dark:text-slate-400">You are not a participant in this exchange</p>
           <Link href="/exchanges">
             <Button className="mt-4">Back to Exchanges</Button>
           </Link>
@@ -133,15 +133,15 @@ export default function MyWishlistPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
       <AppHeader user={user} onSignOut={signOut} />
 
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-3xl">
         <Link
           href={`/exchanges/${id}`}
-          className="inline-flex items-center text-sm text-slate-400 hover:text-white mb-6"
+          className="inline-flex items-center text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back to {exchange.name}
@@ -149,8 +149,8 @@ export default function MyWishlistPage({
 
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">My Wishlist</h1>
-            <p className="text-slate-400">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">My Wishlist</h1>
+            <p className="text-slate-600 dark:text-slate-400">
               Add items you would like to receive for {exchange.name}
             </p>
           </div>
@@ -161,43 +161,43 @@ export default function MyWishlistPage({
                 Add Item
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-800">
+            <DialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
               <DialogHeader>
-                <DialogTitle className="text-white">Add Wishlist Item</DialogTitle>
+                <DialogTitle className="text-slate-900 dark:text-white">Add Wishlist Item</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleAddItem} className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-slate-300">Name *</Label>
+                  <Label className="text-slate-700 dark:text-slate-300">Name *</Label>
                   <Input
                     value={newItem.name}
                     onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                     placeholder="What would you like?"
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-slate-300">Description</Label>
+                  <Label className="text-slate-700 dark:text-slate-300">Description</Label>
                   <Textarea
                     value={newItem.description}
                     onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
                     placeholder="Size, color, or other details..."
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                     rows={3}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-slate-300">Link</Label>
+                  <Label className="text-slate-700 dark:text-slate-300">Link</Label>
                   <Input
                     type="url"
                     value={newItem.link}
                     onChange={(e) => setNewItem({ ...newItem, link: e.target.value })}
                     placeholder="https://..."
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-slate-300">Approximate Price ($)</Label>
+                  <Label className="text-slate-700 dark:text-slate-300">Approximate Price ($)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -205,7 +205,7 @@ export default function MyWishlistPage({
                     value={newItem.price}
                     onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
                     placeholder="25.00"
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
                 <DialogFooter>
@@ -222,13 +222,13 @@ export default function MyWishlistPage({
         </div>
 
         {items.length === 0 ? (
-          <Card className="border-slate-800 bg-slate-900/50">
+          <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
             <CardContent className="py-12 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-800 mx-auto mb-4">
-                <Plus className="h-8 w-8 text-slate-500" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 mx-auto mb-4">
+                <Plus className="h-8 w-8 text-slate-400 dark:text-slate-500" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">No items yet</h3>
-              <p className="text-slate-400 mb-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No items yet</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4">
                 Add items to your wishlist so your Secret Santa knows what you want!
               </p>
               <Button onClick={() => setShowAddDialog(true)}>
@@ -240,7 +240,7 @@ export default function MyWishlistPage({
         ) : (
           <div className="space-y-3">
             {items.map((item) => (
-              <Card key={item.id} className="border-slate-800 bg-slate-900/50">
+              <Card key={item.id} className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
                     {item.photo_url ? (
@@ -251,19 +251,19 @@ export default function MyWishlistPage({
                         className="w-16 h-16 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-lg bg-slate-800 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                         {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                        <Image className="h-6 w-6 text-slate-600" />
+                        <Image className="h-6 w-6 text-slate-400 dark:text-slate-600" />
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white">{item.name}</h3>
+                      <h3 className="font-semibold text-slate-900 dark:text-white">{item.name}</h3>
                       {item.description && (
-                        <p className="text-sm text-slate-400 mt-1">{item.description}</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{item.description}</p>
                       )}
                       <div className="flex items-center gap-4 mt-2 text-sm">
                         {item.price && (
-                          <span className="flex items-center gap-1 text-slate-400">
+                          <span className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
                             <DollarSign className="h-3 w-3" />
                             {parseFloat(item.price).toFixed(2)}
                           </span>
@@ -273,7 +273,7 @@ export default function MyWishlistPage({
                             href={item.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-violet-400 hover:text-violet-300"
+                            className="flex items-center gap-1 text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300"
                           >
                             <ExternalLink className="h-3 w-3" />
                             View Link
@@ -284,7 +284,7 @@ export default function MyWishlistPage({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-red-400 hover:text-red-300"
+                      className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300"
                       onClick={() => handleDeleteItem(item)}
                     >
                       <Trash2 className="h-4 w-4" />

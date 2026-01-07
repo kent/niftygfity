@@ -100,14 +100,14 @@ function groupGiftsByHolidayDescending(gifts: Gift[]): Map<Holiday, Gift[]> {
 
 function GiftCard({ gift }: { gift: Gift }) {
   const cost = gift.cost ? parseFloat(gift.cost) : null;
-  
+
   return (
-    <div className="group p-4 rounded-lg bg-slate-800/30 border border-slate-700/50 hover:border-slate-600 transition-colors">
+    <div className="group p-4 rounded-lg bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-white truncate">{gift.name}</h4>
+          <h4 className="font-medium text-slate-900 dark:text-white truncate">{gift.name}</h4>
           {gift.description && (
-            <p className="text-sm text-slate-400 mt-1 line-clamp-2">{gift.description}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">{gift.description}</p>
           )}
         </div>
         {gift.link && (
@@ -115,22 +115,22 @@ function GiftCard({ gift }: { gift: Gift }) {
             href={gift.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-slate-500 hover:text-violet-400 transition-colors shrink-0"
+            className="text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition-colors shrink-0"
           >
             <ExternalLink className="h-4 w-4" />
           </a>
         )}
       </div>
-      
+
       <div className="flex items-center gap-3 mt-3">
         <Badge
           variant="secondary"
-          className="bg-slate-700/50 text-slate-300 border-0"
+          className="bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 border-0"
         >
           {gift.gift_status.name}
         </Badge>
         {cost !== null && (
-          <span className="text-sm text-emerald-400 flex items-center gap-1">
+          <span className="text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
             <DollarSign className="h-3 w-3" />
             {cost.toFixed(2)}
           </span>
@@ -143,17 +143,17 @@ function GiftCard({ gift }: { gift: Gift }) {
 function HolidayGiftGroup({ holiday, gifts }: { holiday: Holiday; gifts: Gift[] }) {
   const icon = getHolidayIcon(holiday.icon);
   const totalCost = gifts.reduce((sum, g) => sum + (g.cost ? parseFloat(g.cost) : 0), 0);
-  
+
   return (
-    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm overflow-hidden">
+    <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">{icon}</span>
             <div>
-              <CardTitle className="text-lg text-white">{holiday.name}</CardTitle>
+              <CardTitle className="text-lg text-slate-900 dark:text-white">{holiday.name}</CardTitle>
               {holiday.date && (
-                <div className="flex items-center gap-1 text-sm text-slate-400 mt-0.5">
+                <div className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                   <Calendar className="h-3 w-3" />
                   {formatDate(holiday.date)}
                 </div>
@@ -161,9 +161,9 @@ function HolidayGiftGroup({ holiday, gifts }: { holiday: Holiday; gifts: Gift[] 
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm text-slate-400">{gifts.length} gift{gifts.length !== 1 ? "s" : ""}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{gifts.length} gift{gifts.length !== 1 ? "s" : ""}</div>
             {totalCost > 0 && (
-              <div className="text-sm text-emerald-400">${totalCost.toFixed(2)}</div>
+              <div className="text-sm text-emerald-600 dark:text-emerald-400">${totalCost.toFixed(2)}</div>
             )}
           </div>
         </div>
@@ -181,12 +181,12 @@ function HolidayGiftGroup({ holiday, gifts }: { holiday: Holiday; gifts: Gift[] 
 
 function GiftSection({ gifts, emptyMessage }: { gifts: Gift[]; emptyMessage: string }) {
   const groupedGifts = useMemo(() => groupGiftsByHolidayDescending(gifts), [gifts]);
-  
+
   if (gifts.length === 0) {
     return (
-      <Card className="border-slate-800 bg-slate-900/30">
+      <Card className="border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-900/30">
         <CardContent className="py-8 text-center">
-          <GiftIcon className="h-10 w-10 mx-auto text-slate-600 mb-3" />
+          <GiftIcon className="h-10 w-10 mx-auto text-slate-400 dark:text-slate-600 mb-3" />
           <p className="text-slate-500">{emptyMessage}</p>
         </CardContent>
       </Card>
@@ -205,9 +205,9 @@ function GiftSection({ gifts, emptyMessage }: { gifts: Gift[]; emptyMessage: str
 function HolidaysSection({ holidays }: { holidays: Holiday[] }) {
   if (holidays.length === 0) {
     return (
-      <Card className="border-slate-800 bg-slate-900/30">
+      <Card className="border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-900/30">
         <CardContent className="py-8 text-center">
-          <Sparkles className="h-10 w-10 mx-auto text-slate-600 mb-3" />
+          <Sparkles className="h-10 w-10 mx-auto text-slate-400 dark:text-slate-600 mb-3" />
           <p className="text-slate-500">No holidays associated with this person yet</p>
         </CardContent>
       </Card>
@@ -219,13 +219,13 @@ function HolidaysSection({ holidays }: { holidays: Holiday[] }) {
       {holidays.map((holiday) => {
         const icon = getHolidayIcon(holiday.icon);
         return (
-          <Card key={holiday.id} className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+          <Card key={holiday.id} className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
             <CardContent className="p-4 flex items-center gap-4">
               <span className="text-3xl">{icon}</span>
               <div>
-                <h3 className="font-medium text-white">{holiday.name}</h3>
+                <h3 className="font-medium text-slate-900 dark:text-white">{holiday.name}</h3>
                 {holiday.date && (
-                  <div className="flex items-center gap-1 text-sm text-slate-400 mt-0.5">
+                  <div className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                     <Calendar className="h-3 w-3" />
                     {formatDate(holiday.date)}
                   </div>
@@ -260,15 +260,15 @@ function StatsSection({
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       {stats.map(({ label, value, icon: Icon, color }) => (
-        <Card key={label} className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+        <Card key={label} className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className={cn("p-3 rounded-lg bg-slate-800/50", color)}>
+              <div className={cn("p-3 rounded-lg bg-slate-100 dark:bg-slate-800/50", color)}>
                 <Icon className="h-6 w-6" />
               </div>
               <div>
-                <div className="text-3xl font-bold text-white">{value}</div>
-                <div className="text-sm text-slate-400">{label}</div>
+                <div className="text-3xl font-bold text-slate-900 dark:text-white">{value}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{label}</div>
               </div>
             </div>
           </CardContent>
@@ -325,42 +325,42 @@ function AboutSection({
 
   return (
     <>
-      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+      <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg text-white flex items-center gap-2">
-            <UserCog className="h-5 w-5 text-violet-400" />
+          <CardTitle className="text-lg text-slate-900 dark:text-white flex items-center gap-2">
+            <UserCog className="h-5 w-5 text-violet-500 dark:text-violet-400" />
             Edit Person
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-slate-300">Name</Label>
+            <Label htmlFor="name" className="text-slate-700 dark:text-slate-300">Name</Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-slate-800/50 border-slate-700 text-white"
+              className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="age" className="text-slate-300">Age</Label>
+            <Label htmlFor="age" className="text-slate-700 dark:text-slate-300">Age</Label>
             <Input
               id="age"
               type="number"
               value={age}
               onChange={(e) => setAge(e.target.value)}
               placeholder="Optional"
-              className="bg-slate-800/50 border-slate-700 text-white"
+              className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="gender" className="text-slate-300">Gender</Label>
+            <Label htmlFor="gender" className="text-slate-700 dark:text-slate-300">Gender</Label>
             <Input
               id="gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
               placeholder="Optional"
-              className="bg-slate-800/50 border-slate-700 text-white"
+              className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
             />
           </div>
           <Button
@@ -372,12 +372,12 @@ function AboutSection({
             {saving ? "Saving..." : "Save Changes"}
           </Button>
 
-          <div className="pt-4 border-t border-slate-700">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
             <Button
               variant="outline"
               onClick={() => setDeleteDialogOpen(true)}
               disabled={hasGifts}
-              className="w-full border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+              className="w-full border-red-500/50 text-red-500 dark:text-red-400 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-300 disabled:opacity-50"
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete Person
@@ -392,10 +392,10 @@ function AboutSection({
       </Card>
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="bg-slate-900 border-slate-700">
+        <DialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
           <DialogHeader>
-            <DialogTitle className="text-white">Delete {person.name}?</DialogTitle>
-            <DialogDescription className="text-slate-400">
+            <DialogTitle className="text-slate-900 dark:text-white">Delete {person.name}?</DialogTitle>
+            <DialogDescription className="text-slate-600 dark:text-slate-400">
               This action cannot be undone. This will permanently remove {person.name} from your gift list.
             </DialogDescription>
           </DialogHeader>
@@ -403,7 +403,7 @@ function AboutSection({
             <Button
               variant="outline"
               onClick={() => setDeleteDialogOpen(false)}
-              className="border-slate-600 text-slate-300 hover:bg-slate-800"
+              className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               Cancel
             </Button>
@@ -455,18 +455,18 @@ function VerticalNav({
             "flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all",
             "focus:outline-none focus:ring-2 focus:ring-violet-500/50",
             activeTab === id
-              ? "bg-violet-600/20 border border-violet-500/50 text-white"
-              : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-300 border border-transparent"
+              ? "bg-violet-600/20 border border-violet-500/50 text-slate-900 dark:text-white"
+              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-300 border border-transparent"
           )}
         >
-          <Icon className={cn("h-5 w-5", activeTab === id ? "text-violet-400" : "")} />
+          <Icon className={cn("h-5 w-5", activeTab === id ? "text-violet-500 dark:text-violet-400" : "")} />
           <span className="font-medium">{label}</span>
           {count !== undefined && (
             <span className={cn(
               "ml-auto text-xs px-2 py-0.5 rounded-full",
-              activeTab === id 
-                ? "bg-violet-500/30 text-violet-300" 
-                : "bg-slate-700/50 text-slate-500"
+              activeTab === id
+                ? "bg-violet-500/30 text-violet-700 dark:text-violet-300"
+                : "bg-slate-200 dark:bg-slate-700/50 text-slate-600 dark:text-slate-500"
             )}>
               {count}
             </span>
@@ -638,7 +638,7 @@ export default function PersonDetailPage() {
 
   if (authLoading || dataLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -646,9 +646,9 @@ export default function PersonDetailPage() {
 
   if (error || !person) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">{error || "Person not found"}</p>
+          <p className="text-red-500 dark:text-red-400 mb-4">{error || "Person not found"}</p>
           <Link href="/people">
             <Button>Back to People</Button>
           </Link>
@@ -667,8 +667,8 @@ export default function PersonDetailPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
       <AppHeader user={user} onSignOut={signOut} />
 
@@ -677,7 +677,7 @@ export default function PersonDetailPage() {
         <div className="mb-8">
           <Link
             href="/people"
-            className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to People
@@ -685,7 +685,7 @@ export default function PersonDetailPage() {
 
           <div className="flex items-center gap-4">
             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-violet-500/20">
-              <User className="h-7 w-7 text-fuchsia-400" />
+              <User className="h-7 w-7 text-fuchsia-500 dark:text-fuchsia-400" />
             </div>
             <div className="flex-1 flex items-center gap-3">
               {isEditingName ? (
@@ -697,14 +697,14 @@ export default function PersonDetailPage() {
                     onKeyDown={handleNameKeyDown}
                     disabled={savingName}
                     autoFocus
-                    className="text-3xl font-bold h-auto py-1 bg-slate-800/50 border-slate-700 text-white focus:border-violet-500"
+                    className="text-3xl font-bold h-auto py-1 bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-violet-500"
                   />
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={handleSaveName}
                     disabled={savingName}
-                    className="h-8 w-8 p-0 text-slate-400 hover:text-white"
+                    className="h-8 w-8 p-0 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   >
                     {savingName ? (
                       <div className="animate-spin h-4 w-4 border-2 border-violet-500 border-t-transparent rounded-full" />
@@ -717,19 +717,19 @@ export default function PersonDetailPage() {
                     variant="ghost"
                     onClick={handleCancelEditName}
                     disabled={savingName}
-                    className="h-8 w-8 p-0 text-slate-400 hover:text-white"
+                    className="h-8 w-8 p-0 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ) : (
                 <>
-                  <h1 className="text-3xl font-bold text-white">{person.name}</h1>
+                  <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{person.name}</h1>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={handleStartEditName}
-                    className="h-8 w-8 p-0 text-slate-500 hover:text-slate-300 transition-colors"
+                    className="h-8 w-8 p-0 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                     title="Edit name"
                   >
                     <Pencil className="h-4 w-4" />
@@ -742,12 +742,12 @@ export default function PersonDetailPage() {
               onValueChange={(value) => handleRelationshipSelect(value as RelationshipCategory)}
               disabled={updatingRelationship}
             >
-              <SelectTrigger className="w-40 bg-slate-800/50 border-slate-700 text-white">
+              <SelectTrigger className="w-40 bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 {RELATIONSHIP_CATEGORIES.map((category) => (
-                  <SelectItem key={category} value={category} className="capitalize text-white hover:bg-slate-700">
+                  <SelectItem key={category} value={category} className="capitalize text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
                     {category}
                   </SelectItem>
                 ))}

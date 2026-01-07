@@ -55,65 +55,65 @@ export default function JoinHolidayPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
-      <Card className="relative z-10 w-full max-w-md bg-slate-900/80 border-slate-800 backdrop-blur">
+      <Card className="relative z-10 w-full max-w-md bg-white/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 backdrop-blur">
         <CardHeader className="text-center">
           {status === "loading" || status === "joining" ? (
             <>
               <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-violet-500/20 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 text-violet-400 animate-spin" />
+                <Loader2 className="h-8 w-8 text-violet-500 dark:text-violet-400 animate-spin" />
               </div>
-              <CardTitle className="text-white">Joining Holiday...</CardTitle>
+              <CardTitle className="text-slate-900 dark:text-white">Joining Holiday...</CardTitle>
               <CardDescription>Please wait while we add you to the holiday.</CardDescription>
             </>
           ) : status === "success" ? (
             <>
               <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-green-500/20 flex items-center justify-center">
-                <CheckCircle className="h-8 w-8 text-green-400" />
+                <CheckCircle className="h-8 w-8 text-green-500 dark:text-green-400" />
               </div>
-              <CardTitle className="text-white">Welcome!</CardTitle>
+              <CardTitle className="text-slate-900 dark:text-white">Welcome!</CardTitle>
               <CardDescription>
-                You&apos;ve joined <span className="text-white font-medium">{holiday?.name}</span>
+                You&apos;ve joined <span className="text-slate-900 dark:text-white font-medium">{holiday?.name}</span>
               </CardDescription>
             </>
           ) : status === "already_member" ? (
             <>
               <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <Users className="h-8 w-8 text-blue-400" />
+                <Users className="h-8 w-8 text-blue-500 dark:text-blue-400" />
               </div>
-              <CardTitle className="text-white">Already a Member</CardTitle>
+              <CardTitle className="text-slate-900 dark:text-white">Already a Member</CardTitle>
               <CardDescription>You&apos;re already part of this holiday.</CardDescription>
             </>
           ) : (
             <>
               <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-red-500/20 flex items-center justify-center">
-                <XCircle className="h-8 w-8 text-red-400" />
+                <XCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
               </div>
-              <CardTitle className="text-white">Unable to Join</CardTitle>
-              <CardDescription className="text-red-400">{error || "Invalid or expired share link."}</CardDescription>
+              <CardTitle className="text-slate-900 dark:text-white">Unable to Join</CardTitle>
+              <CardDescription className="text-red-500 dark:text-red-400">{error || "Invalid or expired share link."}</CardDescription>
             </>
           )}
         </CardHeader>
         <CardContent className="space-y-4">
           {status === "success" && holiday && (
-            <div className="rounded-lg bg-slate-800/50 p-4 space-y-3">
+            <div className="rounded-lg bg-slate-100 dark:bg-slate-800/50 p-4 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-violet-500/20 flex items-center justify-center">
-                  <Gift className="h-5 w-5 text-violet-400" />
+                  <Gift className="h-5 w-5 text-violet-500 dark:text-violet-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-white">{holiday.name}</p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-white">{holiday.name}</p>
                   {holiday.date && (
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {new Date(holiday.date).toLocaleDateString("en-US", {
                         month: "long",
                         day: "numeric",

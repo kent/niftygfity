@@ -99,7 +99,7 @@ export default function HomePage() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.length ? process.env.NEXT_PUBLIC_APP_URL : "https://listygifty.com";
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col overflow-hidden">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -126,9 +126,9 @@ export default function HomePage() {
 
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-500" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-violet-500/10 dark:bg-violet-500/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-violet-500/10 dark:bg-violet-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute -bottom-40 right-1/3 w-80 h-80 bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-500" />
       </div>
 
       {/* Header */}
@@ -143,13 +143,13 @@ export default function HomePage() {
               className="rounded-lg"
               priority
             />
-            <span className="text-xl font-bold text-white">Listy Gifty</span>
+            <span className="text-xl font-bold text-slate-900 dark:text-white">Listy Gifty</span>
           </div>
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               asChild
-              className="text-slate-300 hover:text-white hover:bg-slate-800"
+              className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
             </Button>
@@ -170,7 +170,7 @@ export default function HomePage() {
             {/* Giving Pledge Banner */}
             <Link
               href="/giving-pledge"
-              className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm font-medium hover:bg-rose-500/20 hover:border-rose-500/30 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-300 text-sm font-medium hover:bg-rose-500/20 hover:border-rose-500/30 transition-colors"
             >
               <span>❤️</span>
               <span>10% of profits go to SickKids Hospital</span>
@@ -180,14 +180,14 @@ export default function HomePage() {
             </Link>
 
             {/* Main headline */}
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
               Never Stress About{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 tracking-normal whitespace-nowrap">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 dark:from-violet-400 via-fuchsia-500 dark:via-fuchsia-400 to-pink-500 dark:to-pink-400 tracking-normal whitespace-nowrap">
                 Gifts Again
               </span>
             </h1>
-            
-            <p className="text-xl md:text-2xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+
+            <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
               The only app that tracks gifts across every holiday, balances spending between loved ones, and suggests perfect presents with AI.
             </p>
 
@@ -209,7 +209,7 @@ export default function HomePage() {
                 variant="outline"
                 size="lg"
                 asChild
-                className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white hover:border-slate-600 text-lg px-8 py-6 h-auto"
+                className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-600 text-lg px-8 py-6 h-auto"
               >
                 <Link href="#features">See How It Works</Link>
               </Button>
@@ -218,14 +218,14 @@ export default function HomePage() {
             {/* NEW: Interactive Preview */}
             <div className="mb-16">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-white mb-2">See It In Action</h3>
-                <p className="text-slate-400">This is what your gift planning will look like</p>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">See It In Action</h3>
+                <p className="text-slate-600 dark:text-slate-400">This is what your gift planning will look like</p>
               </div>
               <HeroPreview />
             </div>
 
             {/* Social proof */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-slate-400">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-slate-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
@@ -236,9 +236,9 @@ export default function HomePage() {
                 </div>
                 <span className="text-sm">5.0 from happy families</span>
               </div>
-              <div className="hidden sm:block w-px h-4 bg-slate-700" />
+              <div className="hidden sm:block w-px h-4 bg-slate-300 dark:bg-slate-700" />
               <div className="text-sm">
-                <span className="text-violet-400 font-semibold">10%</span> of profits support charity
+                <span className="text-violet-600 dark:text-violet-400 font-semibold">10%</span> of profits support charity
               </div>
             </div>
           </div>
@@ -246,13 +246,13 @@ export default function HomePage() {
         {/* Features Section */}
         <section id="features" className="container mx-auto px-4 py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               Everything You Need for{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 dark:from-violet-400 to-fuchsia-500 dark:to-fuchsia-400">
                 Perfect Gifting
               </span>
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               From tracking to balancing to AI suggestions, we&apos;ve thought of everything so you don&apos;t have to.
             </p>
           </div>
@@ -261,16 +261,16 @@ export default function HomePage() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group relative p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/5"
+                className="group relative p-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/5"
               >
                 {/* Icon */}
                 <div className={`w-14 h-14 mb-6 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-white shadow-lg`}>
                   {feature.icon}
                 </div>
-                
+
                 {/* Content */}
-                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-400 leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{feature.description}</p>
 
                 {/* Hover effect */}
                 <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
@@ -282,13 +282,13 @@ export default function HomePage() {
         {/* Holidays Section */}
         <section className="container mx-auto px-4 py-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               Not Just{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-green-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 dark:from-red-400 to-green-500 dark:to-green-400">
                 Christmas
               </span>
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Plan gifts for every occasion that matters to you and your loved ones.
             </p>
           </div>
@@ -312,7 +312,7 @@ export default function HomePage() {
             ].map((holiday) => (
               <div
                 key={holiday.name}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700 text-slate-300 hover:border-slate-600 hover:bg-slate-800 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-white dark:hover:bg-slate-800 transition-colors"
               >
                 <span className="text-lg">{holiday.emoji}</span>
                 <span className="text-sm font-medium">{holiday.name}</span>
@@ -324,7 +324,7 @@ export default function HomePage() {
         {/* Sharing & Privacy Section */}
         <section id="sharing" className="container mx-auto px-4 py-20">
           <div className="max-w-4xl mx-auto">
-            <div className="relative p-10 md:p-14 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 overflow-hidden">
+            <div className="relative p-10 md:p-14 rounded-3xl bg-gradient-to-br from-white dark:from-slate-900 to-slate-50 dark:to-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden">
               {/* Background decoration */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-24 -right-24 w-48 h-48 bg-fuchsia-500/10 rounded-full blur-3xl" />
@@ -343,13 +343,13 @@ export default function HomePage() {
 
                 {/* Content */}
                 <div className="flex-1 text-center lg:text-left">
-                  <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+                  <h2 className="text-2xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                     Share Lists,{" "}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-violet-400">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 dark:from-fuchsia-400 to-violet-500 dark:to-violet-400">
                       Keep Control
                     </span>
                   </h2>
-                  <p className="text-slate-400 mb-6 leading-relaxed">
+                  <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                     Invite family, friends, or coworkers to collaborate on a holiday list with a simple link. They can add gifts and people too. Your other lists stay private by default.
                   </p>
 
@@ -359,7 +359,7 @@ export default function HomePage() {
                       "Work together on gifts and people in real-time",
                       "Regenerate your link anytime to revoke access",
                     ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-slate-300">
+                      <li key={i} className="flex items-start gap-3 text-slate-700 dark:text-slate-300">
                         <svg className="w-5 h-5 text-fuchsia-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
@@ -389,13 +389,13 @@ export default function HomePage() {
         {/* How It Works Section */}
         <section className="container mx-auto px-4 py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               Simple as{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 dark:from-violet-400 to-purple-500 dark:to-purple-400">
                 1-2-3
               </span>
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Get started in minutes, not hours. Our intuitive design makes gift planning effortless.
             </p>
           </div>
@@ -419,16 +419,16 @@ export default function HomePage() {
             {/* Labels */}
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <h3 className="text-xl font-bold text-white mb-3">Add Your People</h3>
-                <p className="text-slate-400">Import family, friends, coworkers. Everyone you buy gifts for.</p>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Add Your People</h3>
+                <p className="text-slate-600 dark:text-slate-400">Import family, friends, coworkers. Everyone you buy gifts for.</p>
               </div>
               <div className="text-center">
-                <h3 className="text-xl font-bold text-white mb-3">Plan Your Gifts</h3>
-                <p className="text-slate-400">Track ideas, set budgets, and get AI suggestions for each person.</p>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Plan Your Gifts</h3>
+                <p className="text-slate-600 dark:text-slate-400">Track ideas, set budgets, and get AI suggestions for each person.</p>
               </div>
               <div className="text-center">
-                <h3 className="text-xl font-bold text-white mb-3">Balance & Relax</h3>
-                <p className="text-slate-400">Our tools ensure fair spending. Notifications keep you on track.</p>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Balance & Relax</h3>
+                <p className="text-slate-600 dark:text-slate-400">Our tools ensure fair spending. Notifications keep you on track.</p>
               </div>
             </div>
           </div>
@@ -437,13 +437,13 @@ export default function HomePage() {
         {/* Testimonials Section */}
         <section className="container mx-auto px-4 py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
               Loved by{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 dark:from-amber-400 to-orange-500 dark:to-orange-400">
                 Real Families
               </span>
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Don&apos;t just take our word for it. Here&apos;s what our users have to say.
             </p>
           </div>
@@ -452,17 +452,17 @@ export default function HomePage() {
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="p-8 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition-all duration-300"
+                className="p-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300"
               >
                 <StarRating rating={testimonial.rating} />
-                <p className="text-lg text-white mt-4 mb-6 leading-relaxed">
+                <p className="text-lg text-slate-900 dark:text-white mt-4 mb-6 leading-relaxed">
                   &ldquo;{testimonial.quote}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold">
                     {testimonial.author.charAt(0)}
                   </div>
-                  <span className="text-slate-300 font-medium">- {testimonial.author}</span>
+                  <span className="text-slate-700 dark:text-slate-300 font-medium">- {testimonial.author}</span>
                 </div>
               </div>
             ))}
@@ -471,25 +471,25 @@ export default function HomePage() {
 
         {/* Final CTA Section */}
         <section className="container mx-auto px-4 py-20">
-          <div className="relative max-w-4xl mx-auto text-center p-12 md:p-16 rounded-3xl bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 border border-violet-500/20 overflow-hidden">
+          <div className="relative max-w-4xl mx-auto text-center p-12 md:p-16 rounded-3xl bg-gradient-to-br from-violet-600/10 dark:from-violet-600/20 to-fuchsia-600/10 dark:to-fuchsia-600/20 border border-violet-500/20 overflow-hidden">
             {/* Background decoration */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -top-20 -right-20 w-60 h-60 bg-violet-500/20 rounded-full blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-fuchsia-500/20 rounded-full blur-3xl" />
+              <div className="absolute -top-20 -right-20 w-60 h-60 bg-violet-500/10 dark:bg-violet-500/20 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-fuchsia-500/10 dark:bg-fuchsia-500/20 rounded-full blur-3xl" />
             </div>
 
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
                 Ready to Make Gifting Effortless?
               </h2>
-              <p className="text-lg text-slate-300 mb-8 max-w-xl mx-auto">
+              <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-xl mx-auto">
                 Join thousands of families who&apos;ve made holiday stress a thing of the past. Start free today.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   asChild
                   size="lg"
-                  className="bg-white text-violet-700 hover:bg-slate-100 text-lg px-8 py-6 h-auto shadow-xl font-semibold"
+                  className="bg-white dark:bg-white text-violet-700 hover:bg-slate-100 text-lg px-8 py-6 h-auto shadow-xl font-semibold"
                 >
                   <Link href={AUTH_ROUTES.signUp}>
                     Get Started Free
@@ -499,7 +499,7 @@ export default function HomePage() {
                   </Link>
                 </Button>
               </div>
-              <p className="text-sm text-slate-400 mt-4">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-4">
                 No credit card required
               </p>
             </div>
@@ -509,7 +509,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="relative container mx-auto px-4 py-12 z-10">
-        <div className="border-t border-slate-800 pt-8">
+        <div className="border-t border-slate-200 dark:border-slate-800 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
               <Image
@@ -519,11 +519,11 @@ export default function HomePage() {
                 height={32}
                 className="rounded-md"
               />
-              <span className="text-sm font-semibold text-white">Listy Gifty</span>
+              <span className="text-sm font-semibold text-slate-900 dark:text-white">Listy Gifty</span>
             </div>
 
             <div className="flex items-center gap-6">
-              <Link href="/giving-pledge" className="text-sm text-slate-400 hover:text-violet-400 transition-colors">
+              <Link href="/giving-pledge" className="text-sm text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                 Our Giving Pledge
               </Link>
             </div>
@@ -532,7 +532,7 @@ export default function HomePage() {
               <p className="text-slate-500 text-sm">
                 © {new Date().getFullYear()} Listy Gifty. Made with 💜 for gift givers everywhere
               </p>
-              <p className="text-slate-600 text-xs mt-1">
+              <p className="text-slate-400 dark:text-slate-600 text-xs mt-1">
                 10% of profits support charity
               </p>
             </div>

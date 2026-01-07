@@ -46,29 +46,29 @@ export default function NewExchangePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
       <AppHeader user={user} onSignOut={signOut} />
 
       <main className="relative z-10 container mx-auto px-4 py-8 max-w-2xl">
         <Link
           href="/exchanges"
-          className="inline-flex items-center text-sm text-slate-400 hover:text-white mb-6"
+          className="inline-flex items-center text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back to Exchanges
         </Link>
 
-        <Card className="border-slate-800 bg-slate-900/50">
+        <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
-                <Gift className="h-6 w-6 text-violet-400" />
+                <Gift className="h-6 w-6 text-violet-500 dark:text-violet-400" />
               </div>
               <div>
-                <CardTitle className="text-white">Create Gift Exchange</CardTitle>
-                <p className="text-sm text-slate-400">
+                <CardTitle className="text-slate-900 dark:text-white">Create Gift Exchange</CardTitle>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
                   Set up a new Secret Santa-style gift exchange
                 </p>
               </div>
@@ -77,7 +77,7 @@ export default function NewExchangePage() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-slate-300">
+                <Label htmlFor="name" className="text-slate-700 dark:text-slate-300">
                   Exchange Name *
                 </Label>
                 <Input
@@ -85,13 +85,13 @@ export default function NewExchangePage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g., Family Christmas 2025"
-                  className="bg-slate-800 border-slate-700 text-white"
+                  className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="date" className="text-slate-300">
+                <Label htmlFor="date" className="text-slate-700 dark:text-slate-300">
                   Exchange Date
                 </Label>
                 <Input
@@ -99,7 +99,7 @@ export default function NewExchangePage() {
                   type="date"
                   value={formData.exchange_date}
                   onChange={(e) => setFormData({ ...formData, exchange_date: e.target.value })}
-                  className="bg-slate-800 border-slate-700 text-white"
+                  className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 />
                 <p className="text-xs text-slate-500">
                   When should participants exchange gifts?
@@ -108,7 +108,7 @@ export default function NewExchangePage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="budget_min" className="text-slate-300">
+                  <Label htmlFor="budget_min" className="text-slate-700 dark:text-slate-300">
                     Minimum Budget ($)
                   </Label>
                   <Input
@@ -119,11 +119,11 @@ export default function NewExchangePage() {
                     value={formData.budget_min}
                     onChange={(e) => setFormData({ ...formData, budget_min: e.target.value })}
                     placeholder="25"
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="budget_max" className="text-slate-300">
+                  <Label htmlFor="budget_max" className="text-slate-700 dark:text-slate-300">
                     Maximum Budget ($)
                   </Label>
                   <Input
@@ -134,7 +134,7 @@ export default function NewExchangePage() {
                     value={formData.budget_max}
                     onChange={(e) => setFormData({ ...formData, budget_max: e.target.value })}
                     placeholder="50"
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -144,7 +144,7 @@ export default function NewExchangePage() {
                   <Button
                     type="button"
                     variant="ghost"
-                    className="w-full text-slate-400 hover:text-white"
+                    className="w-full text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   >
                     Cancel
                   </Button>
