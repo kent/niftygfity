@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "company_profiles", force: :cascade do |t|
+    t.text "address"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.jsonb "tax_metadata", default: {}
+    t.datetime "updated_at", null: false
+    t.string "website"
+    t.bigint "workspace_id", null: false
+    t.index ["workspace_id"], name: "index_company_profiles_on_workspace_id", unique: true
   end
 
   create_table "email_deliveries", force: :cascade do |t|
@@ -118,9 +129,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
     t.string "status", default: "draft", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.bigint "workspace_id", null: false
     t.index ["exchange_date"], name: "index_gift_exchanges_on_exchange_date"
     t.index ["status"], name: "index_gift_exchanges_on_status"
     t.index ["user_id"], name: "index_gift_exchanges_on_user_id"
+    t.index ["workspace_id", "user_id"], name: "index_gift_exchanges_on_workspace_id_and_user_id"
+    t.index ["workspace_id"], name: "index_gift_exchanges_on_workspace_id"
   end
 
   create_table "gift_givers", force: :cascade do |t|
@@ -207,7 +221,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
     t.string "name"
     t.string "share_token"
     t.datetime "updated_at", null: false
+    t.bigint "workspace_id"
     t.index ["share_token"], name: "index_holidays_on_share_token", unique: true
+    t.index ["workspace_id", "is_template"], name: "index_holidays_on_workspace_id_and_is_template"
+    t.index ["workspace_id"], name: "index_holidays_on_workspace_id"
   end
 
   create_table "match_arrangements", force: :cascade do |t|
@@ -252,7 +269,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
     t.string "relationship"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.bigint "workspace_id", null: false
     t.index ["user_id"], name: "index_people_on_user_id"
+    t.index ["workspace_id", "user_id"], name: "index_people_on_workspace_id_and_user_id"
+    t.index ["workspace_id"], name: "index_people_on_workspace_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -411,8 +431,48 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
     t.index ["name"], name: "index_wishlist_items_on_name"
   end
 
+  create_table "workspace_invites", force: :cascade do |t|
+    t.datetime "accepted_at"
+    t.bigint "accepted_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "invited_by_id", null: false
+    t.string "role", default: "member", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "workspace_id", null: false
+    t.index ["accepted_by_id"], name: "index_workspace_invites_on_accepted_by_id"
+    t.index ["invited_by_id"], name: "index_workspace_invites_on_invited_by_id"
+    t.index ["token"], name: "index_workspace_invites_on_token", unique: true
+    t.index ["workspace_id", "expires_at"], name: "index_workspace_invites_on_workspace_id_and_expires_at"
+    t.index ["workspace_id"], name: "index_workspace_invites_on_workspace_id"
+  end
+
+  create_table "workspace_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "workspace_id", null: false
+    t.index ["role"], name: "index_workspace_memberships_on_role"
+    t.index ["user_id"], name: "index_workspace_memberships_on_user_id"
+    t.index ["workspace_id", "user_id"], name: "index_workspace_memberships_on_workspace_id_and_user_id", unique: true
+    t.index ["workspace_id"], name: "index_workspace_memberships_on_workspace_id"
+  end
+
+  create_table "workspaces", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "created_by_user_id", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.string "workspace_type", default: "personal", null: false
+    t.index ["created_by_user_id"], name: "index_workspaces_on_created_by_user_id"
+    t.index ["workspace_type"], name: "index_workspaces_on_workspace_type"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "company_profiles", "workspaces"
   add_foreign_key "email_deliveries", "holidays"
   add_foreign_key "email_deliveries", "users"
   add_foreign_key "exchange_exclusions", "exchange_participants", column: "participant_a_id"
@@ -425,6 +485,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
   add_foreign_key "gift_changes", "holidays"
   add_foreign_key "gift_changes", "users"
   add_foreign_key "gift_exchanges", "users"
+  add_foreign_key "gift_exchanges", "workspaces"
   add_foreign_key "gift_givers", "gifts"
   add_foreign_key "gift_givers", "people"
   add_foreign_key "gift_recipients", "gifts"
@@ -438,12 +499,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
   add_foreign_key "holiday_people", "people"
   add_foreign_key "holiday_users", "holidays"
   add_foreign_key "holiday_users", "users"
+  add_foreign_key "holidays", "workspaces"
   add_foreign_key "match_arrangements", "holidays"
   add_foreign_key "match_slots", "gifts"
   add_foreign_key "match_slots", "match_arrangements"
   add_foreign_key "match_slots", "people"
   add_foreign_key "notification_preferences", "users"
   add_foreign_key "people", "users"
+  add_foreign_key "people", "workspaces"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -451,4 +514,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_19_054808) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "wishlist_items", "exchange_participants"
+  add_foreign_key "workspace_invites", "users", column: "accepted_by_id"
+  add_foreign_key "workspace_invites", "users", column: "invited_by_id"
+  add_foreign_key "workspace_invites", "workspaces"
+  add_foreign_key "workspace_memberships", "users"
+  add_foreign_key "workspace_memberships", "workspaces"
+  add_foreign_key "workspaces", "users", column: "created_by_user_id"
 end

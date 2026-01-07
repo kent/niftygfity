@@ -18,17 +18,32 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Building2, User, Pencil, Check, X, Loader2, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Building2, User, Pencil, Check, X, Loader2, Trash2, Plus, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 export function WorkspaceSection() {
   const router = useRouter();
-  const { currentWorkspace, refreshWorkspaces } = useWorkspace();
+  const { currentWorkspace, workspaces, refreshWorkspaces, switchWorkspace } = useWorkspace();
   const [isEditingName, setIsEditingName] = useState(false);
   const [name, setName] = useState(currentWorkspace?.name || "");
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmName, setDeleteConfirmName] = useState("");
+
+  // Create workspace dialog state
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newWorkspaceName, setNewWorkspaceName] = useState("");
+  const [newCompanyName, setNewCompanyName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
   if (!currentWorkspace) {
     return (
@@ -83,6 +98,40 @@ export function WorkspaceSection() {
     } finally {
       setIsDeleting(false);
       setDeleteConfirmName("");
+    }
+  };
+
+  const handleCreateWorkspace = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newWorkspaceName.trim()) return;
+
+    setIsCreating(true);
+    try {
+      const workspace = await workspacesService.create({
+        workspace: {
+          name: newWorkspaceName.trim(),
+          workspace_type: "business",
+        },
+        company_name: newCompanyName.trim() || undefined,
+      });
+
+      await refreshWorkspaces();
+      switchWorkspace(workspace.id);
+      setIsCreateDialogOpen(false);
+      setNewWorkspaceName("");
+      setNewCompanyName("");
+      toast.success(`Created ${workspace.name}!`);
+    } catch {
+      toast.error("Failed to create workspace");
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleSwitchWorkspace = (workspaceId: number) => {
+    if (workspaceId !== currentWorkspace.id) {
+      switchWorkspace(workspaceId);
+      toast.success("Switched workspace");
     }
   };
 
@@ -201,6 +250,150 @@ export function WorkspaceSection() {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* All Workspaces Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">All Workspaces</h3>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-violet-200 dark:border-violet-800 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30 hover:text-violet-700 dark:hover:text-violet-300 hover:border-violet-300 dark:hover:border-violet-700"
+              >
+                <Plus className="h-4 w-4 mr-1.5" />
+                New Workspace
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+              <DialogHeader>
+                <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 border border-violet-500/30">
+                  <Building2 className="h-6 w-6 text-violet-500" />
+                </div>
+                <DialogTitle className="text-center text-slate-900 dark:text-white">Create Business Workspace</DialogTitle>
+                <DialogDescription className="text-center text-slate-600 dark:text-slate-400">
+                  Set up a new workspace for your team or organization
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleCreateWorkspace} className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-workspace-name" className="text-slate-700 dark:text-slate-300">
+                    Workspace Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="new-workspace-name"
+                    type="text"
+                    value={newWorkspaceName}
+                    onChange={(e) => setNewWorkspaceName(e.target.value)}
+                    placeholder="e.g., Marketing Team"
+                    className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-violet-500 focus:ring-violet-500/20"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-company-name" className="text-slate-700 dark:text-slate-300">
+                    Company Name <span className="text-slate-400">(optional)</span>
+                  </Label>
+                  <Input
+                    id="new-company-name"
+                    type="text"
+                    value={newCompanyName}
+                    onChange={(e) => setNewCompanyName(e.target.value)}
+                    placeholder="e.g., Acme Corporation"
+                    className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-violet-500 focus:ring-violet-500/20"
+                  />
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    You can add more company details later in settings
+                  </p>
+                </div>
+                <DialogFooter className="pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsCreateDialogOpen(false)}
+                    disabled={isCreating}
+                    className="border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={!newWorkspaceName.trim() || isCreating}
+                    className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-lg shadow-violet-500/25 disabled:shadow-none disabled:opacity-50"
+                  >
+                    {isCreating ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Building2 className="h-4 w-4 mr-2" />
+                        Create Workspace
+                      </>
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {/* Workspace List */}
+        <div className="space-y-2">
+          {workspaces.map((workspace) => {
+            const isCurrentWorkspace = workspace.id === currentWorkspace.id;
+            const WorkspaceIcon = workspace.workspace_type === "personal" ? User : Building2;
+            return (
+              <button
+                key={workspace.id}
+                onClick={() => handleSwitchWorkspace(workspace.id)}
+                className={`w-full group relative rounded-xl border transition-all duration-200 text-left ${
+                  isCurrentWorkspace
+                    ? "border-violet-300 dark:border-violet-700 bg-violet-50/50 dark:bg-violet-900/20"
+                    : "border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/30 hover:border-slate-300 dark:hover:border-slate-700/50 hover:bg-white dark:hover:bg-slate-800/50"
+                }`}
+              >
+                <div className="p-4 flex items-center gap-4">
+                  <div className={`flex items-center justify-center w-10 h-10 rounded-lg shrink-0 ${
+                    workspace.workspace_type === "personal"
+                      ? "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                      : "bg-violet-100 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-800"
+                  }`}>
+                    <WorkspaceIcon className={`h-5 w-5 ${
+                      workspace.workspace_type === "personal"
+                        ? "text-slate-500 dark:text-slate-400"
+                        : "text-violet-500 dark:text-violet-400"
+                    }`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-slate-900 dark:text-white truncate">
+                        {workspace.name}
+                      </p>
+                      {isCurrentWorkspace && (
+                        <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400">
+                          Current
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 capitalize">
+                      {workspace.workspace_type} workspace
+                      {workspace.member_count && workspace.member_count > 1 && (
+                        <span className="ml-1">· {workspace.member_count} members</span>
+                      )}
+                    </p>
+                  </div>
+                  {!isCurrentWorkspace && (
+                    <ChevronRight className="h-5 w-5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 

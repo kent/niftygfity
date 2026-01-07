@@ -1,7 +1,7 @@
 class CreateCompanyProfiles < ActiveRecord::Migration[8.1]
   def change
     create_table :company_profiles do |t|
-      t.references :workspace, null: false, foreign_key: true
+      t.references :workspace, null: false, foreign_key: true, index: { unique: true }
       t.string :name, null: false
       t.string :website
       t.text :address
@@ -9,7 +9,5 @@ class CreateCompanyProfiles < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-
-    add_index :company_profiles, :workspace_id, unique: true
   end
 end

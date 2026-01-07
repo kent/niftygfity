@@ -11,10 +11,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, ChevronRight, Plus, Pencil, Check, Archive, RotateCcw, Users } from "lucide-react";
+import { Calendar, ChevronRight, Plus, Pencil, Check, Archive, RotateCcw, Users, MapPin, Sparkles, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import type { Holiday } from "@niftygifty/types";
+import {
+  detectUserRegion,
+  getRegionDisplayName,
+  getUpcomingHolidaysForRegion,
+  getPersonalOccasions,
+  formatDaysUntil,
+  type UpcomingHoliday,
+} from "@/lib/regional-holidays";
 
 function getHolidayIcon(icon?: string | null) {
   const icons: Record<string, string> = {
@@ -251,66 +259,63 @@ function CreateHolidayForm({
   );
 }
 
-interface UpcomingHoliday {
-  name: string;
-  date: string; // ISO date
-  icon: string;
-  displayDate: string;
-}
-
-function getUpcomingHolidays(): UpcomingHoliday[] {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const currentYear = today.getFullYear();
-  const nextYear = currentYear + 1;
-
-  // Define known holidays with their typical dates
-  const holidayDefs = [
-    { name: "Valentine's Day", month: 2, day: 14, icon: "heart" },
-    { name: "Easter", month: 4, day: 20, icon: "egg" }, // Approximate
-    { name: "Mother's Day", month: 5, day: 11, icon: "heart-handshake" }, // 2nd Sunday
-    { name: "Father's Day", month: 6, day: 15, icon: "user" }, // 3rd Sunday
-    { name: "Diwali", month: 10, day: 20, icon: "flame" }, // Approximate
-    { name: "Hanukkah", month: 12, day: 14, icon: "candle" }, // Approximate
-    { name: "Christmas", month: 12, day: 25, icon: "christmas" },
-    { name: "New Year", month: 1, day: 1, icon: "party-popper" },
-  ];
-
-  const upcoming: UpcomingHoliday[] = [];
-
-  // Check this year and next year
-  for (const year of [currentYear, nextYear]) {
-    for (const def of holidayDefs) {
-      const date = new Date(year, def.month - 1, def.day);
-      if (date > today) {
-        upcoming.push({
-          name: def.name,
-          date: date.toISOString().split("T")[0],
-          icon: def.icon,
-          displayDate: date.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }),
-        });
-      }
-    }
-  }
-
-  // Sort by date and take first 6
-  return upcoming.sort((a, b) => a.date.localeCompare(b.date)).slice(0, 6);
-}
 
 function QuickHolidayCard({
   holiday,
   onClick,
   isCreating,
+  featured = false,
 }: {
   holiday: UpcomingHoliday;
   onClick: () => void;
   isCreating: boolean;
+  featured?: boolean;
 }) {
   const icon = getHolidayIcon(holiday.icon);
+  const daysText = formatDaysUntil(holiday.daysUntil);
+  const isUrgent = holiday.daysUntil <= 14;
+
+  if (featured) {
+    return (
+      <button
+        onClick={onClick}
+        disabled={isCreating}
+        className="w-full text-left"
+      >
+        <Card className="border-violet-500/30 dark:border-violet-500/30 bg-gradient-to-br from-violet-500/10 via-fuchsia-500/5 to-transparent dark:from-violet-500/20 dark:via-fuchsia-500/10 backdrop-blur-sm hover:border-violet-500/50 transition-all group cursor-pointer overflow-hidden relative">
+          <div className="absolute top-2 right-2">
+            <Badge className="bg-violet-500/20 text-violet-600 dark:text-violet-400 border-violet-500/30 text-xs gap-1">
+              <Sparkles className="h-3 w-3" />
+              Coming up
+            </Badge>
+          </div>
+          <CardContent className="p-5 pt-10">
+            <div className="flex items-start gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 text-3xl shrink-0 shadow-lg shadow-violet-500/10">
+                {icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">
+                  {holiday.name}
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{holiday.displayDate}</p>
+                <p className={`text-xs mt-1 ${isUrgent ? "text-amber-600 dark:text-amber-400 font-medium" : "text-slate-500"}`}>
+                  {daysText}
+                </p>
+              </div>
+              {isCreating ? (
+                <div className="animate-spin h-5 w-5 border-2 border-violet-500 border-t-transparent rounded-full shrink-0 mt-1" />
+              ) : (
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-white shrink-0 group-hover:bg-violet-600 transition-colors shadow-lg shadow-violet-500/25">
+                  <Plus className="h-5 w-5" />
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </button>
+    );
+  }
 
   return (
     <button
@@ -327,7 +332,12 @@ function QuickHolidayCard({
             <h3 className="font-semibold text-slate-900 dark:text-white truncate text-sm sm:text-base">
               {holiday.name}
             </h3>
-            <p className="text-xs text-slate-500">{holiday.displayDate}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-slate-500">{holiday.displayDate}</p>
+              {isUrgent && (
+                <span className="text-xs text-amber-600 dark:text-amber-400">({daysText})</span>
+              )}
+            </div>
           </div>
           {isCreating ? (
             <div className="animate-spin h-4 w-4 border-2 border-violet-500 border-t-transparent rounded-full shrink-0" />
@@ -340,6 +350,28 @@ function QuickHolidayCard({
   );
 }
 
+function PersonalOccasionCard({
+  name,
+  icon,
+  onClick,
+}: {
+  name: string;
+  icon: string;
+  onClick: () => void;
+}) {
+  const iconEmoji = getHolidayIcon(icon);
+
+  return (
+    <button onClick={onClick} className="text-left">
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 hover:border-violet-500/50 hover:bg-violet-50/50 dark:hover:bg-violet-900/20 transition-all group">
+        <span className="text-lg">{iconEmoji}</span>
+        <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">{name}</span>
+        <Plus className="h-3 w-3 text-slate-400 group-hover:text-violet-500 ml-auto" />
+      </div>
+    </button>
+  );
+}
+
 function EmptyHolidaysState({
   onCreateHoliday,
   onShowCustomForm,
@@ -348,7 +380,16 @@ function EmptyHolidaysState({
   onShowCustomForm: () => void;
 }) {
   const [creatingHoliday, setCreatingHoliday] = useState<string | null>(null);
-  const upcomingHolidays = getUpcomingHolidays();
+  const [regionName, setRegionName] = useState<string>("your region");
+  const [upcomingHolidays, setUpcomingHolidays] = useState<UpcomingHoliday[]>([]);
+  const personalOccasions = getPersonalOccasions();
+
+  useEffect(() => {
+    // Detect region on client side only
+    const detectedRegion = detectUserRegion();
+    setRegionName(getRegionDisplayName(detectedRegion));
+    setUpcomingHolidays(getUpcomingHolidaysForRegion(detectedRegion, 6));
+  }, []);
 
   const handleQuickCreate = async (holiday: UpcomingHoliday) => {
     setCreatingHoliday(holiday.date);
@@ -359,33 +400,83 @@ function EmptyHolidaysState({
     }
   };
 
+  const handlePersonalOccasion = (name: string, icon: string) => {
+    // For personal occasions, show the custom form with pre-filled name
+    onShowCustomForm();
+  };
+
+  const featuredHoliday = upcomingHolidays[0];
+  const otherHolidays = upcomingHolidays.slice(1);
+
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <Calendar className="h-10 w-10 mx-auto text-violet-500 dark:text-violet-400 mb-3" />
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Start Planning</h2>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
-          Pick an upcoming holiday to start your gift list
+    <div className="space-y-8">
+      {/* Hero section */}
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 text-sm mb-4">
+          <MapPin className="h-3.5 w-3.5" />
+          <span>Suggestions for {regionName}</span>
+        </div>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Start Planning Your Gifts</h2>
+        <p className="text-slate-600 dark:text-slate-400">
+          Pick an upcoming occasion or create a custom gift list
         </p>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        {upcomingHolidays.map((holiday) => (
-          <QuickHolidayCard
-            key={`${holiday.name}-${holiday.date}`}
-            holiday={holiday}
-            onClick={() => handleQuickCreate(holiday)}
-            isCreating={creatingHoliday === holiday.date}
-          />
-        ))}
+      {/* Featured upcoming holiday */}
+      {featuredHoliday && (
+        <QuickHolidayCard
+          holiday={featuredHoliday}
+          onClick={() => handleQuickCreate(featuredHoliday)}
+          isCreating={creatingHoliday === featuredHoliday.date}
+          featured
+        />
+      )}
+
+      {/* Other upcoming holidays */}
+      {otherHolidays.length > 0 && (
+        <div>
+          <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            More upcoming occasions
+          </h3>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {otherHolidays.map((holiday) => (
+              <QuickHolidayCard
+                key={`${holiday.name}-${holiday.date}`}
+                holiday={holiday}
+                onClick={() => handleQuickCreate(holiday)}
+                isCreating={creatingHoliday === holiday.date}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Personal occasions */}
+      <div>
+        <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+          <Heart className="h-4 w-4" />
+          Personal occasions
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {personalOccasions.map((occasion) => (
+            <PersonalOccasionCard
+              key={occasion.name}
+              name={occasion.name}
+              icon={occasion.icon}
+              onClick={() => handlePersonalOccasion(occasion.name, occasion.icon)}
+            />
+          ))}
+        </div>
       </div>
 
+      {/* Custom option */}
       <button onClick={onShowCustomForm} className="w-full">
         <Card className="border-slate-300 dark:border-slate-800 border-dashed bg-slate-100/50 dark:bg-slate-900/30 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
           <CardContent className="p-4 flex items-center justify-center gap-2">
             <Plus className="h-4 w-4 text-slate-500 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors" />
             <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-              Create Custom Holiday
+              Create Something Else
             </span>
           </CardContent>
         </Card>
@@ -544,11 +635,30 @@ function NewHolidaySection({
 }) {
   const [selectedTemplate, setSelectedTemplate] = useState<Holiday | null>(null);
   const [showCustomForm, setShowCustomForm] = useState(false);
+  const [creatingHoliday, setCreatingHoliday] = useState<string | null>(null);
+  const [regionName, setRegionName] = useState<string>("your region");
+  const [upcomingHolidays, setUpcomingHolidays] = useState<UpcomingHoliday[]>([]);
+  const personalOccasions = getPersonalOccasions();
+
+  useEffect(() => {
+    const detectedRegion = detectUserRegion();
+    setRegionName(getRegionDisplayName(detectedRegion));
+    setUpcomingHolidays(getUpcomingHolidaysForRegion(detectedRegion, 6));
+  }, []);
 
   const handleSubmit = async (name: string, date: string, icon?: string) => {
     await onCreateHoliday(name, date, icon);
     setSelectedTemplate(null);
     setShowCustomForm(false);
+  };
+
+  const handleQuickCreate = async (holiday: UpcomingHoliday) => {
+    setCreatingHoliday(holiday.date);
+    try {
+      await onCreateHoliday(holiday.name, holiday.date, holiday.icon);
+    } finally {
+      setCreatingHoliday(null);
+    }
   };
 
   if (selectedTemplate || showCustomForm) {
@@ -564,10 +674,68 @@ function NewHolidaySection({
     );
   }
 
+  const featuredHoliday = upcomingHolidays[0];
+  const otherHolidays = upcomingHolidays.slice(1, 5);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Hero section with regional suggestions */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Choose a Template</h2>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 text-sm">
+            <MapPin className="h-3.5 w-3.5" />
+            <span>Suggestions for {regionName}</span>
+          </div>
+        </div>
+
+        {/* Featured upcoming holiday */}
+        {featuredHoliday && (
+          <QuickHolidayCard
+            holiday={featuredHoliday}
+            onClick={() => handleQuickCreate(featuredHoliday)}
+            isCreating={creatingHoliday === featuredHoliday.date}
+            featured
+          />
+        )}
+
+        {/* Other upcoming holidays */}
+        {otherHolidays.length > 0 && (
+          <div className="mt-4">
+            <div className="grid gap-2 sm:grid-cols-2">
+              {otherHolidays.map((holiday) => (
+                <QuickHolidayCard
+                  key={`${holiday.name}-${holiday.date}`}
+                  holiday={holiday}
+                  onClick={() => handleQuickCreate(holiday)}
+                  isCreating={creatingHoliday === holiday.date}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Personal occasions */}
+      <div>
+        <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+          <Heart className="h-4 w-4" />
+          Personal occasions
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {personalOccasions.map((occasion) => (
+            <PersonalOccasionCard
+              key={occasion.name}
+              name={occasion.name}
+              icon={occasion.icon}
+              onClick={() => setShowCustomForm(true)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Templates section */}
+      <div className="border-t border-slate-200 dark:border-slate-800 pt-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">All Templates</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {templates.map((template) => (
             <TemplateCard
@@ -579,6 +747,7 @@ function NewHolidaySection({
         </div>
       </div>
 
+      {/* Custom option */}
       <div className="border-t border-slate-200 dark:border-slate-800 pt-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Or Create Your Own</h2>
         <button onClick={() => setShowCustomForm(true)} className="w-full max-w-sm">
