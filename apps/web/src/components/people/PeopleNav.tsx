@@ -33,8 +33,8 @@ export function PeopleNav({ activeSection, onSectionChange, counts }: PeopleNavP
                 className={cn(
                   "flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap",
                   activeSection === id
-                    ? "bg-violet-500/20 text-violet-300"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800"
+                    ? "bg-violet-500/20 text-violet-600 dark:text-violet-300"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800"
                 )}
               >
                 <Icon className="h-4 w-4" />

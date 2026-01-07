@@ -68,22 +68,22 @@ function HolidayCard({
   return (
     <div className="relative group">
       <Link href={`/holidays/${holiday.id}`}>
-        <Card className={`border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer ${isShared ? "border-l-2 border-l-cyan-500/50" : ""}`}>
+        <Card className={`border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:bg-slate-100/50 dark:hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer ${isShared ? "border-l-2 border-l-cyan-500/50" : ""}`}>
           <CardContent className="p-5 flex items-center gap-4">
             <div className={`flex h-12 w-12 items-center justify-center rounded-xl text-2xl ${isShared ? "bg-gradient-to-br from-cyan-500/20 to-violet-500/20" : "bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20"}`}>
               {icon}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
+                <h3 className="font-semibold text-slate-900 dark:text-white truncate">{holiday.name}</h3>
                 {isShared && (
-                  <Badge variant="outline" className="text-xs text-cyan-400 border-cyan-500/50 gap-1 shrink-0">
+                  <Badge variant="outline" className="text-xs text-cyan-600 dark:text-cyan-400 border-cyan-500/50 gap-1 shrink-0">
                     <Users className="h-3 w-3" />
                     Shared
                   </Badge>
                 )}
               </div>
-              {formattedDate && <p className="text-sm text-slate-400">{formattedDate}</p>}
+              {formattedDate && <p className="text-sm text-slate-500 dark:text-slate-400">{formattedDate}</p>}
             </div>
             <div className="w-5" /> {/* Spacer for arrow/button */}
           </CardContent>
@@ -95,7 +95,7 @@ function HolidayCard({
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8 text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
+            className="h-8 w-8 text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -110,7 +110,7 @@ function HolidayCard({
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8 text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
+            className="h-8 w-8 text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -125,7 +125,7 @@ function HolidayCard({
             )}
           </Button>
         )}
-        <ChevronRight className="h-5 w-5 text-slate-600 group-hover:text-violet-400 transition-colors pointer-events-none" />
+        <ChevronRight className="h-5 w-5 text-slate-400 dark:text-slate-600 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors pointer-events-none" />
       </div>
     </div>
   );
@@ -145,16 +145,16 @@ function TemplateCard({
       onClick={() => onSelect(holiday)}
       className="w-full text-left"
     >
-      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
+      <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:bg-slate-100/50 dark:hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
         <CardContent className="p-5 flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
             {icon}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white truncate">{holiday.name}</h3>
             <p className="text-sm text-slate-500">Click to add</p>
           </div>
-          <Plus className="h-5 w-5 text-slate-600 group-hover:text-violet-400 transition-colors" />
+          <Plus className="h-5 w-5 text-slate-400 dark:text-slate-600 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors" />
         </CardContent>
       </Card>
     </button>
@@ -188,20 +188,20 @@ function CreateHolidayForm({
   const icon = getHolidayIcon(template?.icon);
 
   return (
-    <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm max-w-md">
+    <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm max-w-md">
       <CardContent className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
               {icon}
             </div>
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
               {template ? `Add ${template.name}` : "Create Custom Gift List"}
             </h3>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-slate-300">
+            <Label htmlFor="name" className="text-slate-700 dark:text-slate-300">
               Name
             </Label>
             <Input
@@ -209,13 +209,13 @@ function CreateHolidayForm({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Gift list name"
-              className="bg-slate-800 border-slate-700 text-white"
+              className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="date" className="text-slate-300">
+            <Label htmlFor="date" className="text-slate-700 dark:text-slate-300">
               Date
             </Label>
             <Input
@@ -223,7 +223,7 @@ function CreateHolidayForm({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="bg-slate-800 border-slate-700 text-white"
+              className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
               required
             />
           </div>
@@ -233,7 +233,7 @@ function CreateHolidayForm({
               type="button"
               variant="ghost"
               onClick={onCancel}
-              className="flex-1 text-slate-400 hover:text-white"
+              className="flex-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             >
               Cancel
             </Button>
@@ -318,13 +318,13 @@ function QuickHolidayCard({
       disabled={isCreating}
       className="w-full text-left"
     >
-      <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
+      <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:bg-slate-100/50 dark:hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
         <CardContent className="p-4 flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-xl shrink-0">
             {icon}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white truncate text-sm sm:text-base">
+            <h3 className="font-semibold text-slate-900 dark:text-white truncate text-sm sm:text-base">
               {holiday.name}
             </h3>
             <p className="text-xs text-slate-500">{holiday.displayDate}</p>
@@ -332,7 +332,7 @@ function QuickHolidayCard({
           {isCreating ? (
             <div className="animate-spin h-4 w-4 border-2 border-violet-500 border-t-transparent rounded-full shrink-0" />
           ) : (
-            <Plus className="h-4 w-4 text-slate-600 group-hover:text-violet-400 transition-colors shrink-0" />
+            <Plus className="h-4 w-4 text-slate-400 dark:text-slate-600 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors shrink-0" />
           )}
         </CardContent>
       </Card>
@@ -362,9 +362,9 @@ function EmptyHolidaysState({
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <Calendar className="h-10 w-10 mx-auto text-violet-400 mb-3" />
-        <h2 className="text-lg font-semibold text-white mb-1">Start Planning</h2>
-        <p className="text-sm text-slate-400">
+        <Calendar className="h-10 w-10 mx-auto text-violet-500 dark:text-violet-400 mb-3" />
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Start Planning</h2>
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Pick an upcoming holiday to start your gift list
         </p>
       </div>
@@ -381,10 +381,10 @@ function EmptyHolidaysState({
       </div>
 
       <button onClick={onShowCustomForm} className="w-full">
-        <Card className="border-slate-800 border-dashed bg-slate-900/30 hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
+        <Card className="border-slate-300 dark:border-slate-800 border-dashed bg-slate-100/50 dark:bg-slate-900/30 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
           <CardContent className="p-4 flex items-center justify-center gap-2">
-            <Plus className="h-4 w-4 text-slate-500 group-hover:text-violet-400 transition-colors" />
-            <span className="text-sm font-medium text-slate-400 group-hover:text-white transition-colors">
+            <Plus className="h-4 w-4 text-slate-500 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors" />
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
               Create Custom Holiday
             </span>
           </CardContent>
@@ -441,10 +441,10 @@ function PastSection({
 }) {
   if (holidays.length === 0) {
     return (
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
-        <Archive className="h-12 w-12 mx-auto text-slate-600 mb-4" />
-        <h2 className="text-xl font-semibold text-white mb-2">No Past Gift Lists</h2>
-        <p className="text-slate-400 max-w-md mx-auto">
+      <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-12 text-center">
+        <Archive className="h-12 w-12 mx-auto text-slate-400 dark:text-slate-600 mb-4" />
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">No Past Gift Lists</h2>
+        <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
           Gift lists marked as complete will appear here.
         </p>
       </div>
@@ -474,10 +474,10 @@ function ArchivedSection({
 }) {
   if (holidays.length === 0) {
     return (
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
-        <Archive className="h-12 w-12 mx-auto text-slate-600 mb-4" />
-        <h2 className="text-xl font-semibold text-white mb-2">No Archived Gift Lists</h2>
-        <p className="text-slate-400 max-w-md mx-auto">
+      <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 p-12 text-center">
+        <Archive className="h-12 w-12 mx-auto text-slate-400 dark:text-slate-600 mb-4" />
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">No Archived Gift Lists</h2>
+        <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
           Archived gift lists will appear here.
         </p>
       </div>
@@ -489,17 +489,17 @@ function ArchivedSection({
       {holidays.map((holiday) => (
         <div key={holiday.id} className="relative group">
           <Link href={`/holidays/${holiday.id}`}>
-            <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer opacity-60">
+            <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:bg-slate-100/50 dark:hover:bg-slate-800/50 hover:border-violet-500/50 transition-all cursor-pointer opacity-60">
               <CardContent className="p-5 flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-2xl">
                   {getHolidayIcon(holiday.icon)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-white truncate">{holiday.name}</h3>
+                    <h3 className="font-semibold text-slate-900 dark:text-white truncate">{holiday.name}</h3>
                   </div>
                   {holiday.date && (
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {new Date(holiday.date).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -512,12 +512,12 @@ function ArchivedSection({
               </CardContent>
             </Card>
           </Link>
-          
+
           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
             <Button
               size="icon"
               variant="ghost"
-              className="h-8 w-8 text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
+              className="h-8 w-8 text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 hover:bg-violet-500/10 opacity-0 group-hover:opacity-100 transition-all z-10"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -527,7 +527,7 @@ function ArchivedSection({
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
-            <ChevronRight className="h-5 w-5 text-slate-600 group-hover:text-violet-400 transition-colors pointer-events-none" />
+            <ChevronRight className="h-5 w-5 text-slate-400 dark:text-slate-600 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors pointer-events-none" />
           </div>
         </div>
       ))}
@@ -567,7 +567,7 @@ function NewHolidaySection({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4">Choose a Template</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Choose a Template</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {templates.map((template) => (
             <TemplateCard
@@ -579,21 +579,21 @@ function NewHolidaySection({
         </div>
       </div>
 
-      <div className="border-t border-slate-800 pt-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Or Create Your Own</h2>
+      <div className="border-t border-slate-200 dark:border-slate-800 pt-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Or Create Your Own</h2>
         <button onClick={() => setShowCustomForm(true)} className="w-full max-w-sm">
-          <Card className="border-slate-800 border-dashed bg-slate-900/30 hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
+          <Card className="border-slate-300 dark:border-slate-800 border-dashed bg-slate-100/50 dark:bg-slate-900/30 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:border-violet-500/50 transition-all group cursor-pointer">
             <CardContent className="p-5 flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-dashed border-slate-700 group-hover:border-violet-500/50 transition-colors">
-                <Pencil className="h-5 w-5 text-slate-500 group-hover:text-violet-400 transition-colors" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-dashed border-slate-400 dark:border-slate-700 group-hover:border-violet-500/50 transition-colors">
+                <Pencil className="h-5 w-5 text-slate-500 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors" />
               </div>
               <div className="flex-1 min-w-0 text-left">
-                <h3 className="font-semibold text-slate-300 group-hover:text-white transition-colors">
+                <h3 className="font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                   Custom Holiday
                 </h3>
                 <p className="text-sm text-slate-500">Create your own</p>
               </div>
-              <Plus className="h-5 w-5 text-slate-600 group-hover:text-violet-400 transition-colors" />
+              <Plus className="h-5 w-5 text-slate-400 dark:text-slate-600 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors" />
             </CardContent>
           </Card>
         </button>
@@ -686,7 +686,7 @@ export default function HolidaysPage() {
 
   if (authLoading || dataLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -694,9 +694,9 @@ export default function HolidaysPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">{error}</p>
+          <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>
           <Button onClick={() => window.location.reload()}>Retry</Button>
         </div>
       </div>
@@ -711,15 +711,15 @@ export default function HolidaysPage() {
   const archivedHolidays = holidays.filter((h) => h.archived);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
       <AppHeader user={user} onSignOut={signOut} />
 
       <main className="relative z-10 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Gift Lists</h1>
-          <p className="text-slate-400">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Gift Lists</h1>
+          <p className="text-slate-600 dark:text-slate-400">
             Plan gifts for upcoming occasions or review past ones.
           </p>
         </div>

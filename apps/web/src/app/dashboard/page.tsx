@@ -109,7 +109,7 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
       </div>
     );
@@ -123,7 +123,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950">
       <AppHeader user={user} onSignOut={signOut} />
 
       <main className="container max-w-2xl mx-auto px-4 py-8">
@@ -144,14 +144,14 @@ export default function DashboardPage() {
         {/* Active Gift Lists Only */}
         {activeHolidays.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-sm font-medium text-slate-400 mb-3">Active Gift Lists</h2>
+            <h2 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">Active Gift Lists</h2>
             <div className="flex flex-wrap gap-2">
               {activeHolidays.map((holiday) => (
                 <Link key={holiday.id} href={`/holidays/${holiday.id}`}>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-violet-500/50 text-violet-300 hover:bg-violet-500/20"
+                    className="border-violet-500/50 text-violet-600 dark:text-violet-300 hover:bg-violet-500/20"
                   >
                     {getIcon(holiday.name)} {holiday.name}
                     <ArrowRight className="ml-1 h-3 w-3" />
@@ -170,13 +170,13 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <div className="space-y-4">
           {/* Start a Gift List */}
-          <Card className="border-slate-800 bg-slate-900/50">
+          <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
             <CardContent className="p-4">
-              <h2 className="font-semibold text-white mb-3">Start a Gift List</h2>
+              <h2 className="font-semibold text-slate-900 dark:text-white mb-3">Start a Gift List</h2>
               {loadingData ? (
                 <div className="flex gap-2">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="h-9 w-24 bg-slate-800 rounded animate-pulse" />
+                    <div key={i} className="h-9 w-24 bg-slate-200 dark:bg-slate-800 rounded animate-pulse" />
                   ))}
                 </div>
               ) : (
@@ -188,7 +188,7 @@ export default function DashboardPage() {
                       size="sm"
                       onClick={() => handleStartPlanning(template)}
                       disabled={creatingHolidayId === template.id}
-                      className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+                      className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                     >
                       {creatingHolidayId === template.id ? (
                         <Loader2 className="mr-1 h-3 w-3 animate-spin" />
@@ -204,15 +204,15 @@ export default function DashboardPage() {
           </Card>
 
           {/* Add People */}
-          <Card className="border-slate-800 bg-slate-900/50">
+          <Card className="border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
             <CardContent className="p-4">
-              <h2 className="font-semibold text-white mb-3">Add People</h2>
+              <h2 className="font-semibold text-slate-900 dark:text-white mb-3">Add People</h2>
               <form onSubmit={handleAddPerson} className="flex gap-2 mb-3">
                 <Input
                   placeholder="Name"
                   value={newPersonName}
                   onChange={(e) => setNewPersonName(e.target.value)}
-                  className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500"
+                  className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-500"
                 />
                 <Button
                   type="submit"
@@ -226,7 +226,7 @@ export default function DashboardPage() {
                 <div className="flex flex-wrap gap-2">
                   {people.map((person) => (
                     <Link key={person.id} href={`/people/${person.id}`}>
-                      <span className="inline-flex px-2.5 py-1 rounded-full bg-slate-800 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors cursor-pointer">
+                      <span className="inline-flex px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
                         {person.name}
                       </span>
                     </Link>

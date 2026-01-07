@@ -29,8 +29,8 @@ export function RelationshipFilter({ value, onChange }: RelationshipFilterProps)
           className={cn(
             "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
             value === option.value
-              ? "bg-violet-500/20 text-violet-300 border border-violet-500/50"
-              : "bg-slate-800/50 text-slate-400 border border-slate-700 hover:text-white hover:border-slate-600"
+              ? "bg-violet-500/20 text-violet-600 dark:text-violet-300 border border-violet-500/50"
+              : "bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 hover:text-slate-900 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-600"
           )}
         >
           {option.label}

@@ -58,15 +58,15 @@ export function NewPersonModal({ open, onOpenChange, onSubmit }: NewPersonModalP
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-slate-900 border-slate-800">
+      <DialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500/20 to-violet-500/20">
-              <UserPlus className="h-5 w-5 text-fuchsia-400" />
+              <UserPlus className="h-5 w-5 text-fuchsia-500 dark:text-fuchsia-400" />
             </div>
             <div>
-              <DialogTitle className="text-white">Add New Person</DialogTitle>
-              <DialogDescription className="text-slate-400">
+              <DialogTitle className="text-slate-900 dark:text-white">Add New Person</DialogTitle>
+              <DialogDescription className="text-slate-600 dark:text-slate-400">
                 Add someone to your gift list
               </DialogDescription>
             </div>
@@ -75,7 +75,7 @@ export function NewPersonModal({ open, onOpenChange, onSubmit }: NewPersonModalP
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-slate-300">
+            <Label htmlFor="name" className="text-slate-700 dark:text-slate-300">
               Name
             </Label>
             <Input
@@ -83,33 +83,33 @@ export function NewPersonModal({ open, onOpenChange, onSubmit }: NewPersonModalP
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter person's name"
-              className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
+              className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-500"
               autoFocus
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="relationship" className="text-slate-300">
+            <Label htmlFor="relationship" className="text-slate-700 dark:text-slate-300">
               Category
             </Label>
             <Select value={relationship} onValueChange={setRelationship}>
-              <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-900 border-slate-700">
+              <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
                 {RELATIONSHIP_CATEGORIES.map((cat) => (
                   <SelectItem
                     key={cat}
                     value={cat}
-                    className="text-slate-200 focus:bg-slate-800 focus:text-white capitalize"
+                    className="text-slate-700 dark:text-slate-200 focus:bg-slate-100 dark:focus:bg-slate-800 focus:text-slate-900 dark:focus:text-white capitalize"
                   >
                     {cat}
                   </SelectItem>
                 ))}
                 <SelectItem
                   value="other"
-                  className="text-slate-200 focus:bg-slate-800 focus:text-white"
+                  className="text-slate-700 dark:text-slate-200 focus:bg-slate-100 dark:focus:bg-slate-800 focus:text-slate-900 dark:focus:text-white"
                 >
                   Other
                 </SelectItem>
@@ -122,7 +122,7 @@ export function NewPersonModal({ open, onOpenChange, onSubmit }: NewPersonModalP
               type="button"
               variant="ghost"
               onClick={() => handleOpenChange(false)}
-              className="text-slate-400 hover:text-white"
+              className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             >
               Cancel
             </Button>

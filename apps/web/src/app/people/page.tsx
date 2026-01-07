@@ -77,7 +77,7 @@ export default function PeoplePage() {
 
   if (authLoading || dataLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -85,9 +85,9 @@ export default function PeoplePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-4">{error}</p>
+          <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>
           <Button onClick={() => window.location.reload()}>Retry</Button>
         </div>
       </div>
@@ -95,15 +95,15 @@ export default function PeoplePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
 
       <AppHeader user={user} onSignOut={signOut} />
 
       <main className="relative z-10 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">People</h1>
-          <p className="text-slate-400">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">People</h1>
+          <p className="text-slate-600 dark:text-slate-400">
             Manage everyone on your gift list. Add family, friends, and colleagues.
           </p>
         </div>
