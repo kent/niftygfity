@@ -1,5 +1,6 @@
 import type { User, BillingStatus } from "@niftygifty/types";
 import type { UserResource } from "@clerk/types";
+import type { Appearance } from "@clerk/types";
 import { dark } from "@clerk/themes";
 
 // =============================================================================
@@ -25,16 +26,39 @@ export const PUBLIC_ROUTES = [
 // Clerk Appearance Configuration
 // =============================================================================
 
-export const clerkAppearance = {
+// Shared elements that work for both themes
+const sharedElements = {
+  formButtonPrimary:
+    "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500",
+  footerActionLink: "text-violet-400 hover:text-violet-300",
+};
+
+// Dark theme appearance
+export const clerkDarkAppearance: Appearance = {
   baseTheme: dark,
   variables: { colorPrimary: "#8b5cf6" },
   elements: {
+    ...sharedElements,
     card: "bg-slate-900/80 backdrop-blur-sm border-slate-800",
-    formButtonPrimary:
-      "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500",
-    footerActionLink: "text-violet-400 hover:text-violet-300",
   },
-} as const;
+};
+
+// Light theme appearance
+export const clerkLightAppearance: Appearance = {
+  variables: { colorPrimary: "#8b5cf6" },
+  elements: {
+    ...sharedElements,
+    card: "bg-white/90 backdrop-blur-sm border-slate-200 shadow-lg",
+  },
+};
+
+// Default appearance (for backwards compatibility)
+export const clerkAppearance = clerkDarkAppearance;
+
+// Function to get appearance based on theme
+export function getClerkAppearance(theme: "light" | "dark" | undefined): Appearance {
+  return theme === "light" ? clerkLightAppearance : clerkDarkAppearance;
+}
 
 // =============================================================================
 // User Mapping

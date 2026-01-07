@@ -1,9 +1,9 @@
 "use client";
 
-import { Tags, User, CreditCard, ChevronRight, Bell } from "lucide-react";
+import { Tags, User, CreditCard, ChevronRight, Bell, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type SettingsSection = "profile" | "notifications" | "statuses" | "billing";
+export type SettingsSection = "profile" | "notifications" | "appearance" | "statuses" | "billing";
 
 interface SettingsNavProps {
   activeSection: SettingsSection;
@@ -13,6 +13,7 @@ interface SettingsNavProps {
 const NAV_ITEMS: { id: SettingsSection; label: string; icon: typeof User; disabled?: boolean; color: string }[] = [
   { id: "profile", label: "Profile", icon: User, color: "violet" },
   { id: "notifications", label: "Notifications", icon: Bell, color: "violet" },
+  { id: "appearance", label: "Appearance", icon: Palette, color: "violet" },
   { id: "statuses", label: "Gift Statuses", icon: Tags, color: "violet" },
   { id: "billing", label: "Billing", icon: CreditCard, disabled: true, color: "amber" },
 ];
@@ -26,12 +27,12 @@ export function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps
   return (
     <nav className="w-64 shrink-0">
       <div className="sticky top-8">
-        <div className="rounded-2xl border border-slate-800/50 bg-slate-900/30 backdrop-blur-xl p-2 shadow-xl shadow-black/20">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/30 backdrop-blur-xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-black/20">
           <ul className="space-y-1">
             {NAV_ITEMS.map(({ id, label, icon: Icon, disabled, color }) => {
               const isActive = activeSection === id;
               const colors = colorMap[color as keyof typeof colorMap];
-              
+
               return (
                 <li key={id}>
                   <button
@@ -42,8 +43,8 @@ export function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps
                       isActive
                         ? `bg-gradient-to-r ${colors} shadow-lg`
                         : disabled
-                          ? "text-slate-600 cursor-not-allowed"
-                          : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                          ? "text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
                     )}
                   >
                     <div className={cn(
@@ -51,12 +52,12 @@ export function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps
                       isActive
                         ? "bg-white/20"
                         : disabled
-                          ? "bg-slate-800/30"
-                          : "bg-slate-800/50 group-hover:bg-slate-700/50"
+                          ? "bg-slate-100 dark:bg-slate-800/30"
+                          : "bg-slate-100 dark:bg-slate-800/50 group-hover:bg-slate-200 dark:group-hover:bg-slate-700/50"
                     )}>
                       <Icon className={cn(
                         "h-4 w-4 transition-colors",
-                        isActive ? "text-white" : disabled ? "text-slate-600" : "text-slate-400 group-hover:text-white"
+                        isActive ? "text-white" : disabled ? "text-slate-400 dark:text-slate-600" : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white"
                       )} />
                     </div>
                     <span className={cn(
@@ -64,7 +65,7 @@ export function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps
                       isActive && "text-white"
                     )}>{label}</span>
                     {disabled ? (
-                      <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 bg-slate-800 px-2 py-1 rounded-full">
+                      <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
                         Soon
                       </span>
                     ) : (
@@ -72,7 +73,7 @@ export function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps
                         "h-4 w-4 transition-all duration-200",
                         isActive
                           ? "text-white/70 translate-x-0 opacity-100"
-                          : "text-slate-600 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                          : "text-slate-400 dark:text-slate-600 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                       )} />
                     )}
                   </button>

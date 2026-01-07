@@ -1,9 +1,10 @@
 "use client";
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider, useTheme } from "next-themes";
 import { AuthProvider, NoopAuthProvider } from "@/contexts/auth-context";
-import { clerkAppearance } from "@/services";
-import { ReactNode } from "react";
+import { getClerkAppearance } from "@/services";
+import { ReactNode, useSyncExternalStore } from "react";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -14,20 +15,63 @@ const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 const hasValidClerkKey =
   publishableKey && !publishableKey.includes("dummy_key");
 
+// Hydration-safe mounted check using useSyncExternalStore
+const emptySubscribe = () => () => {};
+function useIsMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
+
+/**
+ * Theme-aware Clerk provider that updates appearance when theme changes.
+ */
+function ThemedClerkProvider({ children }: { children: ReactNode }) {
+  const { resolvedTheme } = useTheme();
+  const mounted = useIsMounted();
+
+  // Use dark theme appearance during SSR and before mount
+  const appearance = getClerkAppearance(
+    mounted ? (resolvedTheme as "light" | "dark" | undefined) : "dark"
+  );
+
+  return (
+    <ClerkProvider appearance={appearance}>
+      <AuthProvider>{children}</AuthProvider>
+    </ClerkProvider>
+  );
+}
+
 /**
  * Client-side providers wrapper.
- * Wraps the app with Clerk and Auth providers.
+ * Wraps the app with Clerk, Theme, and Auth providers.
  * Uses NoopAuthProvider during build when no valid key exists.
  */
 export function Providers({ children }: ProvidersProps) {
   if (!hasValidClerkKey) {
-    return <NoopAuthProvider>{children}</NoopAuthProvider>;
+    return (
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <NoopAuthProvider>{children}</NoopAuthProvider>
+      </ThemeProvider>
+    );
   }
 
   return (
-    <ClerkProvider appearance={clerkAppearance}>
-      <AuthProvider>{children}</AuthProvider>
-    </ClerkProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <ThemedClerkProvider>{children}</ThemedClerkProvider>
+    </ThemeProvider>
   );
 }
 

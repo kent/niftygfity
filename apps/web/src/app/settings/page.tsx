@@ -10,6 +10,7 @@ import {
   ProfileSection,
   BillingSection,
   NotificationsSection,
+  AppearanceSection,
   SettingsNav,
   type SettingsSection,
 } from "@/components/settings";
@@ -75,13 +76,13 @@ export default function SettingsPage() {
 
   if (authLoading || dataLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
             <div className="animate-spin h-10 w-10 border-4 border-violet-500/30 border-t-violet-500 rounded-full" />
             <div className="absolute inset-0 animate-ping h-10 w-10 border-4 border-violet-500/20 rounded-full" />
           </div>
-          <span className="text-sm text-slate-400">Loading settings...</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">Loading settings...</span>
         </div>
       </div>
     );
@@ -89,7 +90,7 @@ export default function SettingsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 mb-4">
             <SettingsIcon className="h-8 w-8 text-red-400" />
@@ -102,12 +103,12 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Background effects */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/10 via-transparent to-transparent" />
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-fuchsia-900/5 via-transparent to-transparent" />
-        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-violet-900/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/10 via-transparent to-transparent" />
+        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-fuchsia-500/5 dark:from-fuchsia-900/5 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-violet-500/5 dark:from-violet-900/5 via-transparent to-transparent" />
       </div>
 
       <AppHeader user={user} onSignOut={signOut} />
@@ -120,8 +121,8 @@ export default function SettingsPage() {
               <SettingsIcon className="h-6 w-6 text-violet-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Settings</h1>
-              <p className="text-slate-400">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Settings</h1>
+              <p className="text-slate-600 dark:text-slate-400">
                 Customize Listy Gifty to fit your workflow
               </p>
             </div>
@@ -141,6 +142,9 @@ export default function SettingsPage() {
             )}
             {activeSection === "notifications" && (
               <NotificationsSection />
+            )}
+            {activeSection === "appearance" && (
+              <AppearanceSection />
             )}
             {activeSection === "statuses" && (
               <GiftStatusSection
