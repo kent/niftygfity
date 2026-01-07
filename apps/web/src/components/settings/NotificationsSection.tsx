@@ -94,8 +94,8 @@ export function NotificationsSection() {
             <Bell className="h-5 w-5 text-violet-400" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">Notifications</h2>
-            <p className="text-slate-400 text-sm">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Notifications</h2>
+            <p className="text-slate-600 dark:text-slate-400 text-sm">
               Control what emails you receive from Listy Gifty
             </p>
           </div>
@@ -107,17 +107,17 @@ export function NotificationsSection() {
         {NOTIFICATION_TOGGLES.map(({ id, title, description, icon: Icon }) => (
           <div
             key={id}
-            className="group relative rounded-2xl border border-slate-800/50 bg-slate-900/30 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-slate-700/50 hover:shadow-lg hover:shadow-violet-500/5"
+            className="group relative rounded-2xl border border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/30 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-700/50 hover:shadow-lg hover:shadow-violet-500/5"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="relative p-6">
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700/50 shrink-0">
-                  <Icon className="h-5 w-5 text-slate-400" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 dark:from-slate-800 to-slate-50 dark:to-slate-800/50 border border-slate-200 dark:border-slate-700/50 shrink-0">
+                  <Icon className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-medium text-white">{title}</h3>
-                  <p className="text-sm text-slate-400">{description}</p>
+                  <h3 className="text-lg font-medium text-slate-900 dark:text-white">{title}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   {updating === id && (
@@ -140,13 +140,13 @@ export function NotificationsSection() {
       {emailHistory.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-slate-400" />
-            <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+            <Mail className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+            <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Recent Emails
             </h3>
           </div>
-          <div className="rounded-2xl border border-slate-800/50 bg-slate-900/30 backdrop-blur-xl overflow-hidden">
-            <div className="divide-y divide-slate-800/50">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/30 backdrop-blur-xl overflow-hidden">
+            <div className="divide-y divide-slate-200 dark:divide-slate-800/50">
               {emailHistory.slice(0, 5).map((email, idx) => (
                 <div key={idx} className="p-4 flex items-center gap-4">
                   <div
@@ -158,12 +158,12 @@ export function NotificationsSection() {
                   >
                     <Mail
                       className={`h-4 w-4 ${
-                        email.status === "sent" ? "text-emerald-400" : "text-red-400"
+                        email.status === "sent" ? "text-emerald-500 dark:text-emerald-400" : "text-red-500 dark:text-red-400"
                       }`}
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                       {email.subject}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-slate-500">

@@ -36,20 +36,20 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <header className="relative z-10 border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+    <header className="relative z-10 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-3 md:py-4 flex items-center justify-between">
         <div className="flex items-center gap-4 md:gap-8">
           {/* Mobile menu button */}
           <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden text-slate-400 hover:text-white">
+              <Button variant="ghost" size="icon" className="md:hidden text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="bg-slate-900 border-slate-800 w-72">
+            <SheetContent side="left" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-72">
               <SheetHeader className="mb-6">
-                <SheetTitle className="flex items-center gap-3 text-white">
+                <SheetTitle className="flex items-center gap-3 text-slate-900 dark:text-white">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
                     <Gift className="h-5 w-5 text-white" />
                   </div>
@@ -67,8 +67,8 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
                       className={cn(
                         "flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors",
                         isActive
-                          ? "bg-violet-500/20 text-violet-300"
-                          : "text-slate-400 hover:text-white hover:bg-slate-800"
+                          ? "bg-violet-500/20 text-violet-600 dark:text-violet-300"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                       )}
                     >
                       <Icon className="h-5 w-5" />
@@ -77,7 +77,7 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
                   );
                 })}
               </nav>
-              <div className="mt-8 pt-6 border-t border-slate-800 space-y-4">
+              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4">
                 {/* Premium/Upgrade in mobile nav */}
                 {isPremium ? (
                   <Link href="/billing" onClick={() => setMobileNavOpen(false)}>
@@ -95,7 +95,7 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
                   </Link>
                 ) : null}
                 {user && (
-                  <p className="text-sm text-slate-400 px-4 truncate">{user.email}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 px-4 truncate">{user.email}</p>
                 )}
                 <Button
                   variant="ghost"
@@ -103,7 +103,7 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
                     setMobileNavOpen(false);
                     onSignOut();
                   }}
-                  className="w-full justify-start gap-3 text-slate-400 hover:text-white hover:bg-slate-800"
+                  className="w-full justify-start gap-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   <LogOut className="h-5 w-5" />
                   Sign out
@@ -116,7 +116,7 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
             <div className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
               <Gift className="h-4 w-4 md:h-5 md:w-5 text-white" />
             </div>
-            <span className="text-lg md:text-xl font-bold text-white">Listy Gifty</span>
+            <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">Listy Gifty</span>
           </Link>
 
           {/* Desktop navigation */}
@@ -130,8 +130,8 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-violet-500/20 text-violet-300"
-                      : "text-slate-400 hover:text-white hover:bg-slate-800"
+                      ? "bg-violet-500/20 text-violet-600 dark:text-violet-300"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -163,11 +163,11 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
               </Button>
             </Link>
           ) : null}
-          {user && <span className="text-sm text-slate-400">{user.email}</span>}
+          {user && <span className="text-sm text-slate-500 dark:text-slate-400">{user.email}</span>}
           <Button
             variant="outline"
             onClick={onSignOut}
-            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+            className="border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
           >
             Sign out
           </Button>
