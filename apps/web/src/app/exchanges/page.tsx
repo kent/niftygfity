@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/contexts/auth-context";
-import { giftExchangesService, AUTH_ROUTES } from "@/services";
+import { giftExchangesService } from "@/services";
+import { useWorkspaceData } from "@/hooks";
 import { AppHeader } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -79,33 +77,17 @@ function ExchangeCard({ exchange }: { exchange: GiftExchange }) {
 }
 
 export default function ExchangesPage() {
-  const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
-  const router = useRouter();
-  const [exchanges, setExchanges] = useState<GiftExchange[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: exchanges,
+    isLoading,
+    user,
+    signOut,
+  } = useWorkspaceData<GiftExchange[]>({
+    fetcher: () => giftExchangesService.getAll(),
+    initialData: [],
+  });
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(AUTH_ROUTES.signIn);
-    }
-  }, [authLoading, isAuthenticated, router]);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    async function loadData() {
-      try {
-        const data = await giftExchangesService.getAll();
-        setExchanges(data);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadData();
-  }, [isAuthenticated]);
-
-  if (authLoading || loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />

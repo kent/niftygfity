@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/contexts/auth-context";
-import { holidaysService, AUTH_ROUTES } from "@/services";
+import { holidaysService } from "@/services";
+import { useWorkspaceData } from "@/hooks";
 import { AppHeader } from "@/components/layout";
 import { HolidaysNav, type HolidaysSection } from "@/components/holidays";
 import { Button } from "@/components/ui/button";
@@ -771,52 +771,44 @@ function NewHolidaySection({
   );
 }
 
+interface HolidaysData {
+  holidays: Holiday[];
+  templates: Holiday[];
+}
+
 export default function HolidaysPage() {
-  const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
-  const router = useRouter();
   const searchParams = useSearchParams();
+
+  const {
+    data,
+    setData,
+    isLoading,
+    error,
+    user,
+    signOut,
+  } = useWorkspaceData<HolidaysData>({
+    fetcher: async () => {
+      const [holidays, templates] = await Promise.all([
+        holidaysService.getAll(),
+        holidaysService.getTemplates(),
+      ]);
+      return { holidays, templates };
+    },
+    initialData: { holidays: [], templates: [] },
+  });
+
+  const { holidays, templates } = data;
 
   // Initialize section from URL param if present
   const initialSection = (searchParams.get("section") as HolidaysSection) || "active";
   const [activeSection, setActiveSection] = useState<HolidaysSection>(
     ["active", "past", "archived", "new"].includes(initialSection) ? initialSection : "active"
   );
-  const [holidays, setHolidays] = useState<Holiday[]>([]);
-  const [templates, setTemplates] = useState<Holiday[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(AUTH_ROUTES.signIn);
-    }
-  }, [authLoading, isAuthenticated, router]);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    async function loadData() {
-      try {
-        const [holidaysData, templatesData] = await Promise.all([
-          holidaysService.getAll(),
-          holidaysService.getTemplates(),
-        ]);
-        setHolidays(holidaysData);
-        setTemplates(templatesData);
-      } catch {
-        setError("Failed to load gift lists. Please try again.");
-      } finally {
-        setDataLoading(false);
-      }
-    }
-
-    loadData();
-  }, [isAuthenticated]);
 
 
   const handleCreateHoliday = async (name: string, date: string, icon?: string) => {
     const holiday = await holidaysService.create({ name, date, icon });
-    setHolidays((prev) => [...prev, holiday]);
+    setData((prev) => ({ ...prev, holidays: [...prev.holidays, holiday] }));
     setActiveSection("active");
     toast.success(`Created "${holiday.name}"`);
   };
@@ -826,7 +818,10 @@ export default function HolidaysPage() {
       const updated = await holidaysService.update(holiday.id, {
         completed: !holiday.completed,
       });
-      setHolidays((prev) => prev.map((h) => (h.id === holiday.id ? updated : h)));
+      setData((prev) => ({
+        ...prev,
+        holidays: prev.holidays.map((h) => (h.id === holiday.id ? updated : h)),
+      }));
       toast.success(
         updated.completed
           ? `Marked "${updated.name}" as complete`
@@ -842,7 +837,10 @@ export default function HolidaysPage() {
       const updated = await holidaysService.update(holiday.id, {
         archived: !holiday.archived,
       });
-      setHolidays((prev) => prev.map((h) => (h.id === holiday.id ? updated : h)));
+      setData((prev) => ({
+        ...prev,
+        holidays: prev.holidays.map((h) => (h.id === holiday.id ? updated : h)),
+      }));
       toast.success(
         updated.archived
           ? `Archived "${updated.name}"`
@@ -853,7 +851,7 @@ export default function HolidaysPage() {
     }
   };
 
-  if (authLoading || dataLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />

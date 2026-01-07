@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
-import { peopleService, AUTH_ROUTES } from "@/services";
+import { useState, useCallback, useMemo } from "react";
+import { peopleService } from "@/services";
+import { useWorkspaceData } from "@/hooks";
 import { AppHeader } from "@/components/layout";
 import {
   PeopleNav,
@@ -20,44 +19,26 @@ import { toast } from "sonner";
 import type { Person } from "@niftygifty/types";
 
 export default function PeoplePage() {
-  const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
-  const router = useRouter();
+  const {
+    data: people,
+    setData: setPeople,
+    isLoading,
+    error,
+    user,
+    signOut,
+  } = useWorkspaceData<Person[]>({
+    fetcher: () => peopleService.getAll(),
+    initialData: [],
+  });
 
   const [activeSection, setActiveSection] = useState<PeopleSection>("all");
-  const [people, setPeople] = useState<Person[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push(AUTH_ROUTES.signIn);
-    }
-  }, [authLoading, isAuthenticated, router]);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    async function loadData() {
-      try {
-        const data = await peopleService.getAll();
-        setPeople(data);
-      } catch {
-        setError("Failed to load people. Please try again.");
-      } finally {
-        setDataLoading(false);
-      }
-    }
-
-    loadData();
-  }, [isAuthenticated]);
-
 
   const handleAddPerson = useCallback(async (name: string, relationship?: string) => {
     const person = await peopleService.create({ name, relationship });
     setPeople((prev) => [...prev, person]);
     toast.success(`Added ${person.name} to your gift list!`);
-  }, []);
+  }, [setPeople]);
 
   const handleSectionChange = (section: PeopleSection) => {
     if (section === "new") {
@@ -75,7 +56,7 @@ export default function PeoplePage() {
     shared: people.filter((p) => p.is_shared).length,
   }), [people]);
 
-  if (authLoading || dataLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-violet-500 border-t-transparent rounded-full" />
