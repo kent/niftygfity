@@ -1,10 +1,14 @@
 class HolidaysController < ApplicationController
+  include WorkspaceScoped
+
   skip_before_action :authenticate_clerk_user!, only: [ :templates ]
+  skip_before_action :set_current_workspace, only: [ :templates ]
+  skip_before_action :require_workspace_member, only: [ :templates ]
   before_action :set_holiday, only: %i[show update destroy share collaborators remove_collaborator leave]
   before_action :require_owner, only: %i[destroy remove_collaborator]
 
   def index
-    holidays = current_user.holidays.user_holidays
+    holidays = current_workspace.holidays.user_holidays.where(id: current_user.holiday_ids)
     render json: HolidayBlueprint.render(holidays, current_user: current_user)
   end
 
@@ -18,7 +22,7 @@ class HolidaysController < ApplicationController
   end
 
   def create
-    holiday = Holiday.new(holiday_params)
+    holiday = current_workspace.holidays.build(holiday_params)
 
     if holiday.save
       holiday.holiday_users.create!(user: current_user, role: "owner")
@@ -106,7 +110,7 @@ class HolidaysController < ApplicationController
   private
 
   def set_holiday
-    @holiday = current_user.holidays.find(params[:id])
+    @holiday = current_workspace.holidays.where(id: current_user.holiday_ids).find(params[:id])
   end
 
   def require_owner

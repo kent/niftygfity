@@ -14,6 +14,12 @@ class User < ApplicationRecord
   has_many :exchange_participants, dependent: :destroy
   has_many :gift_exchanges, through: :exchange_participants
 
+  # Workspace associations
+  has_many :workspace_memberships, dependent: :destroy
+  has_many :workspaces, through: :workspace_memberships
+  has_many :created_workspaces, class_name: "Workspace", foreign_key: :created_by_user_id, dependent: :nullify
+  has_many :workspace_invites_sent, class_name: "WorkspaceInvite", foreign_key: :invited_by_id, dependent: :nullify
+
   validates :subscription_plan, inclusion: { in: SUBSCRIPTION_PLANS }
   validates :clerk_user_id, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
@@ -79,6 +85,15 @@ class User < ApplicationRecord
   # Display name: first_name if present, otherwise email
   def safe_name
     first_name.presence || email
+  end
+
+  # Workspace helpers
+  def personal_workspace
+    workspaces.personal.first
+  end
+
+  def business_workspaces
+    workspaces.business
   end
 
   # Returns (and creates if missing) notification preferences

@@ -1,17 +1,30 @@
 "use client";
 
-import { Tags, User, CreditCard, ChevronRight, Bell, Palette } from "lucide-react";
+import { Tags, User, CreditCard, ChevronRight, Bell, Palette, Building2, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useWorkspace } from "@/contexts/workspace-context";
 
-export type SettingsSection = "profile" | "notifications" | "appearance" | "statuses" | "billing";
+export type SettingsSection = "profile" | "notifications" | "appearance" | "statuses" | "billing" | "workspace" | "team" | "company";
 
 interface SettingsNavProps {
   activeSection: SettingsSection;
   onSectionChange: (section: SettingsSection) => void;
 }
 
-const NAV_ITEMS: { id: SettingsSection; label: string; icon: typeof User; disabled?: boolean; color: string }[] = [
+type NavItem = {
+  id: SettingsSection;
+  label: string;
+  icon: typeof User;
+  disabled?: boolean;
+  color: string;
+  businessOnly?: boolean;
+};
+
+const NAV_ITEMS: NavItem[] = [
   { id: "profile", label: "Profile", icon: User, color: "violet" },
+  { id: "workspace", label: "Workspace", icon: Building2, color: "violet" },
+  { id: "team", label: "Team", icon: Users, color: "violet" },
+  { id: "company", label: "Company", icon: Building2, color: "violet", businessOnly: true },
   { id: "notifications", label: "Notifications", icon: Bell, color: "violet" },
   { id: "appearance", label: "Appearance", icon: Palette, color: "violet" },
   { id: "statuses", label: "Gift Statuses", icon: Tags, color: "violet" },
@@ -24,12 +37,18 @@ const colorMap = {
 };
 
 export function SettingsNav({ activeSection, onSectionChange }: SettingsNavProps) {
+  const { currentWorkspace } = useWorkspace();
+  const isBusiness = currentWorkspace?.workspace_type === "business";
+
+  // Filter out business-only items for personal workspaces
+  const visibleItems = NAV_ITEMS.filter(item => !item.businessOnly || isBusiness);
+
   return (
     <nav className="w-64 shrink-0">
       <div className="sticky top-8">
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/30 backdrop-blur-xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-black/20">
           <ul className="space-y-1">
-            {NAV_ITEMS.map(({ id, label, icon: Icon, disabled, color }) => {
+            {visibleItems.map(({ id, label, icon: Icon, disabled, color }) => {
               const isActive = activeSection === id;
               const colors = colorMap[color as keyof typeof colorMap];
 

@@ -1,6 +1,7 @@
 class Holiday < ApplicationRecord
   has_secure_token :share_token
 
+  belongs_to :workspace, optional: true # Optional for template holidays
   has_many :holiday_users, dependent: :destroy
   has_many :users, through: :holiday_users
   has_many :holiday_people, dependent: :destroy
@@ -14,6 +15,7 @@ class Holiday < ApplicationRecord
 
   scope :templates, -> { where(is_template: true) }
   scope :user_holidays, -> { where(is_template: false) }
+  scope :for_workspace, ->(workspace) { where(workspace: workspace) }
 
   def owner
     holiday_users.find_by(role: "owner")&.user

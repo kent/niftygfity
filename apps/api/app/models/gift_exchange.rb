@@ -2,6 +2,7 @@ class GiftExchange < ApplicationRecord
   STATUSES = %w[draft inviting active completed].freeze
 
   belongs_to :user
+  belongs_to :workspace
   has_many :exchange_participants, dependent: :destroy
   has_many :users, through: :exchange_participants
   has_many :exchange_exclusions, dependent: :destroy

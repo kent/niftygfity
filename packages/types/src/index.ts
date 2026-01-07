@@ -719,3 +719,140 @@ export const EXCHANGE_API_ENDPOINTS = {
   acceptInvite: (token: string) => `/exchange_invite/${token}/accept`,
   declineInvite: (token: string) => `/exchange_invite/${token}/decline`,
 } as const;
+
+// =============================================================================
+// Workspaces
+// =============================================================================
+
+export type WorkspaceType = "personal" | "business";
+export type WorkspaceRole = "owner" | "admin" | "member";
+
+export interface Workspace extends BaseEntity {
+  name: string;
+  workspace_type: WorkspaceType;
+  is_owner: boolean;
+  is_admin: boolean;
+  role: WorkspaceRole | null;
+  member_count: number;
+  has_company_profile: boolean;
+}
+
+export interface WorkspaceWithMembers extends Workspace {
+  members: WorkspaceMember[];
+}
+
+export interface WorkspaceWithCompany extends Workspace {
+  company_profile: CompanyProfile | null;
+}
+
+export interface WorkspaceMember {
+  id: number;
+  user_id: number;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  image_url: string | null;
+  safe_name: string;
+  role: WorkspaceRole;
+  created_at: string;
+}
+
+export interface CompanyProfile extends BaseEntity {
+  name: string;
+  website: string | null;
+  address: string | null;
+  tax_metadata: Record<string, unknown>;
+}
+
+export interface WorkspaceInvite {
+  id: number;
+  token: string;
+  role: WorkspaceRole;
+  expires_at: string;
+  invite_url: string;
+  invited_by_name: string;
+  is_valid: boolean;
+  created_at: string;
+}
+
+export interface WorkspaceInviteDetails {
+  workspace: {
+    id: number;
+    name: string;
+    workspace_type: WorkspaceType;
+  };
+  role: WorkspaceRole;
+  expires_at: string;
+}
+
+// Request types
+export interface CreateWorkspaceRequest {
+  workspace: {
+    name: string;
+    workspace_type: WorkspaceType;
+  };
+  company_name?: string;
+}
+
+export interface UpdateWorkspaceRequest {
+  workspace: {
+    name?: string;
+  };
+}
+
+export interface CreateWorkspaceInviteRequest {
+  workspace_invite?: {
+    role?: WorkspaceRole;
+  };
+}
+
+export interface UpdateWorkspaceMembershipRequest {
+  workspace_membership: {
+    role: WorkspaceRole;
+  };
+}
+
+export interface UpdateCompanyProfileRequest {
+  company_profile: {
+    name?: string;
+    website?: string;
+    address?: string;
+    tax_metadata?: Record<string, unknown>;
+  };
+}
+
+// Response types
+export type WorkspacesResponse = Workspace[];
+export type WorkspaceMembersResponse = WorkspaceMember[];
+export type WorkspaceInvitesResponse = WorkspaceInvite[];
+
+export interface CreateWorkspaceInviteResponse {
+  invite_token: string;
+  invite_url: string;
+  expires_at: string;
+}
+
+// API Endpoints for workspaces
+export const WORKSPACE_API_ENDPOINTS = {
+  // Workspaces
+  workspaces: "/workspaces",
+  workspace: (id: number) => `/workspaces/${id}`,
+
+  // Memberships
+  memberships: (workspaceId: number) => `/workspaces/${workspaceId}/memberships`,
+  membership: (workspaceId: number, membershipId: number) =>
+    `/workspaces/${workspaceId}/memberships/${membershipId}`,
+
+  // Invites
+  invites: (workspaceId: number) => `/workspaces/${workspaceId}/invites`,
+  regenerateInvite: (workspaceId: number) =>
+    `/workspaces/${workspaceId}/invites/regenerate`,
+
+  // Company Profile
+  companyProfile: (workspaceId: number) =>
+    `/workspaces/${workspaceId}/company_profile`,
+
+  // Public invite endpoints
+  workspaceInvite: (token: string) => `/workspace_invite/${token}`,
+  acceptWorkspaceInvite: (token: string) => `/workspace_invite/${token}/accept`,
+} as const;

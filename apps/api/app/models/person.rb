@@ -1,5 +1,6 @@
 class Person < ApplicationRecord
   belongs_to :user
+  belongs_to :workspace
   has_many :gift_recipients, dependent: :destroy
   has_many :gifts_received, through: :gift_recipients, source: :gift
   has_many :gift_givers, dependent: :destroy
@@ -16,9 +17,9 @@ class Person < ApplicationRecord
     holiday_people.exists?(holiday: holiday)
   end
 
-  # Check if user can access this person (owns them or they're shared to a common holiday)
+  # Check if user can access this person (workspace member or shared to a common holiday)
   def accessible_by?(user)
-    return true if self.user_id == user.id
+    return true if workspace.member?(user)
     shared_holidays.joins(:holiday_users).where(holiday_users: { user_id: user.id }).exists?
   end
 end

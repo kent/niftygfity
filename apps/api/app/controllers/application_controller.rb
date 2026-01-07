@@ -25,6 +25,9 @@ class ApplicationController < ActionController::API
     # Sync user data if missing or stale
     sync_clerk_user_data(@current_user, clerk_user_id, token_email: email_from_token)
 
+    # Create personal workspace for new users
+    create_personal_workspace(@current_user) if is_new_user
+
     # Queue welcome email for new users (delayed to allow invite flow to take precedence)
     SendWelcomeEmailJob.set(wait: 1.minute).perform_later(@current_user.id) if is_new_user
 
@@ -115,5 +118,15 @@ class ApplicationController < ActionController::API
 
   def token_email(payload)
     payload["email_address"] || payload["email"]
+  end
+
+  def create_personal_workspace(user)
+    workspace_name = "#{user.safe_name}'s Workspace"
+    workspace = Workspace.create!(
+      name: workspace_name,
+      workspace_type: "personal",
+      created_by_user: user
+    )
+    workspace.workspace_memberships.create!(user: user, role: "owner")
   end
 end

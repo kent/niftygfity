@@ -1,9 +1,11 @@
 class GiftExchangesController < ApplicationController
+  include WorkspaceScoped
+
   before_action :set_gift_exchange, only: %i[show update destroy start]
   before_action :require_owner, only: %i[update destroy start]
 
   def index
-    exchanges = GiftExchange.for_user(current_user).order(created_at: :desc)
+    exchanges = current_workspace.gift_exchanges.for_user(current_user).order(created_at: :desc)
     render json: GiftExchangeBlueprint.render(exchanges, current_user: current_user, view: :with_my_participation)
   end
 
@@ -13,7 +15,7 @@ class GiftExchangesController < ApplicationController
   end
 
   def create
-    exchange = GiftExchange.new(gift_exchange_params)
+    exchange = current_workspace.gift_exchanges.build(gift_exchange_params)
     exchange.user = current_user
 
     if exchange.save
@@ -55,7 +57,7 @@ class GiftExchangesController < ApplicationController
   private
 
   def set_gift_exchange
-    @gift_exchange = GiftExchange.for_user(current_user).find(params[:id])
+    @gift_exchange = current_workspace.gift_exchanges.for_user(current_user).find(params[:id])
   end
 
   def require_owner

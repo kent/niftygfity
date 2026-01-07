@@ -3,5 +3,8 @@ export { ProfileSection } from "./ProfileSection";
 export { BillingSection } from "./BillingSection";
 export { NotificationsSection } from "./NotificationsSection";
 export { AppearanceSection } from "./AppearanceSection";
+export { WorkspaceSection } from "./WorkspaceSection";
+export { TeamSection } from "./TeamSection";
+export { CompanySection } from "./CompanySection";
 export { SettingsNav } from "./SettingsNav";
 export type { SettingsSection } from "./SettingsNav";

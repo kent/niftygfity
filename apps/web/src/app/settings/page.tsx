@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { giftStatusesService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
@@ -11,6 +11,9 @@ import {
   BillingSection,
   NotificationsSection,
   AppearanceSection,
+  WorkspaceSection,
+  TeamSection,
+  CompanySection,
   SettingsNav,
   type SettingsSection,
 } from "@/components/settings";
@@ -19,14 +22,25 @@ import { toast } from "sonner";
 import { Settings as SettingsIcon } from "lucide-react";
 import type { GiftStatus } from "@niftygifty/types";
 
+const VALID_SECTIONS: SettingsSection[] = ["profile", "workspace", "team", "company", "notifications", "appearance", "statuses", "billing"];
+
 export default function SettingsPage() {
   const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [activeSection, setActiveSection] = useState<SettingsSection>("profile");
   const [statuses, setStatuses] = useState<GiftStatus[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Handle tab URL parameter
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && VALID_SECTIONS.includes(tab as SettingsSection)) {
+      setActiveSection(tab as SettingsSection);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -139,6 +153,15 @@ export default function SettingsPage() {
           <div className="flex-1 max-w-2xl pl-4">
             {activeSection === "profile" && (
               <ProfileSection user={user} />
+            )}
+            {activeSection === "workspace" && (
+              <WorkspaceSection />
+            )}
+            {activeSection === "team" && (
+              <TeamSection />
+            )}
+            {activeSection === "company" && (
+              <CompanySection />
             )}
             {activeSection === "notifications" && (
               <NotificationsSection />

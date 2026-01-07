@@ -75,6 +75,7 @@ function sleep(ms: number): Promise<void> {
 
 export class ApiClient {
   private tokenGetter: (() => Promise<string | null>) | null = null;
+  private workspaceId: number | null = null;
   private baseUrl: string;
   private debug: boolean;
 
@@ -85,6 +86,14 @@ export class ApiClient {
 
   setTokenGetter(getter: () => Promise<string | null>) {
     this.tokenGetter = getter;
+  }
+
+  setWorkspaceId(workspaceId: number | null) {
+    this.workspaceId = workspaceId;
+  }
+
+  getWorkspaceId(): number | null {
+    return this.workspaceId;
   }
 
   private log(level: "info" | "warn" | "error", message: string, meta?: Record<string, unknown>) {
@@ -120,6 +129,10 @@ export class ApiClient {
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
+    }
+
+    if (this.workspaceId) {
+      headers["X-Workspace-ID"] = String(this.workspaceId);
     }
 
     const url = `${this.baseUrl}${endpoint}`;

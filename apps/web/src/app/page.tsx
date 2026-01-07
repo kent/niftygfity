@@ -149,6 +149,13 @@ export default function HomePage() {
             <Button
               variant="ghost"
               asChild
+              className="hidden sm:flex text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              <Link href="/business/signup">For Business</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              asChild
               className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <Link href={AUTH_ROUTES.signIn}>Sign in</Link>
@@ -375,6 +382,79 @@ export default function HomePage() {
                   >
                     <Link href={AUTH_ROUTES.signUp}>
                       Start Sharing for Free
+                      <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Business CTA Section */}
+        <section id="business" className="container mx-auto px-4 py-20">
+          <div className="max-w-5xl mx-auto">
+            <div className="relative p-10 md:p-14 rounded-3xl bg-gradient-to-br from-slate-900 dark:from-slate-800 to-slate-800 dark:to-slate-900 border border-slate-700 overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-violet-500/20 rounded-full blur-3xl" />
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-3xl" />
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aC0ydi00aDJ2NHptMC02di0yaDJ2MmgtMnptLTQgMmgydjJoLTJ2LTJ6bTAtNmgydjJoLTJ2LTJ6bS00IDhoMnYyaC0ydi0yem0wLTZoMnYyaC0ydi0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+              </div>
+
+              <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10">
+                {/* Icon */}
+                <div className="shrink-0">
+                  <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center shadow-2xl shadow-violet-500/30">
+                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 text-center lg:text-left">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 text-sm font-medium">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    For Teams & Organizations
+                  </div>
+                  <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+                    Listy Gifty for{" "}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
+                      Business
+                    </span>
+                  </h2>
+                  <p className="text-slate-300 mb-6 leading-relaxed max-w-xl">
+                    Manage corporate gifting, coordinate team holiday parties, and run Secret Santa exchanges across your entire organization. Perfect for HR teams and office managers.
+                  </p>
+
+                  <ul className="space-y-3 mb-8 text-left max-w-md mx-auto lg:mx-0">
+                    {[
+                      "Create multiple workspaces for different teams",
+                      "Invite colleagues with role-based permissions",
+                      "Track company-wide gifting and budgets",
+                      "Run Secret Santa with automatic matching",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-start gap-3 text-slate-200">
+                        <svg className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    asChild
+                    size="lg"
+                    className="bg-white text-slate-900 hover:bg-slate-100 shadow-xl shadow-white/10 font-semibold"
+                  >
+                    <Link href="/business/signup">
+                      Get Started for Business
                       <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>

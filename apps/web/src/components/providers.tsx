@@ -3,6 +3,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider, useTheme } from "next-themes";
 import { AuthProvider, NoopAuthProvider } from "@/contexts/auth-context";
+import { WorkspaceProvider, NoopWorkspaceProvider } from "@/contexts/workspace-context";
 import { getClerkAppearance } from "@/services";
 import { ReactNode, useSyncExternalStore } from "react";
 
@@ -39,7 +40,9 @@ function ThemedClerkProvider({ children }: { children: ReactNode }) {
 
   return (
     <ClerkProvider appearance={appearance}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <WorkspaceProvider>{children}</WorkspaceProvider>
+      </AuthProvider>
     </ClerkProvider>
   );
 }
@@ -58,7 +61,9 @@ export function Providers({ children }: ProvidersProps) {
         enableSystem
         disableTransitionOnChange
       >
-        <NoopAuthProvider>{children}</NoopAuthProvider>
+        <NoopAuthProvider>
+          <NoopWorkspaceProvider>{children}</NoopWorkspaceProvider>
+        </NoopAuthProvider>
       </ThemeProvider>
     );
   }

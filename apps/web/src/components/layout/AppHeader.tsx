@@ -16,6 +16,7 @@ import {
 import { Gift, Calendar, Users, Settings, Crown, Sparkles, Menu, LogOut, Home, ArrowLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { WorkspaceSwitcher } from "@/components/workspace/WorkspaceSwitcher";
 
 interface AppHeaderProps {
   user: User | null;
@@ -48,7 +49,7 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-72">
-              <SheetHeader className="mb-6">
+              <SheetHeader className="mb-4">
                 <SheetTitle className="flex items-center gap-3 text-slate-900 dark:text-white">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
                     <Gift className="h-5 w-5 text-white" />
@@ -56,6 +57,10 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
                   Listy Gifty
                 </SheetTitle>
               </SheetHeader>
+              {/* Workspace Switcher - Mobile */}
+              <div className="mb-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <WorkspaceSwitcher />
+              </div>
               <nav className="space-y-1">
                 {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
                   const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -118,6 +123,11 @@ export function AppHeader({ user, onSignOut }: AppHeaderProps) {
             </div>
             <span className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">Listy Gifty</span>
           </Link>
+
+          {/* Workspace Switcher - Desktop */}
+          <div className="hidden md:block">
+            <WorkspaceSwitcher />
+          </div>
 
           {/* Desktop navigation */}
           <nav className="hidden md:flex items-center gap-1">

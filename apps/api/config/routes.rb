@@ -1,4 +1,19 @@
 Rails.application.routes.draw do
+  # Workspaces
+  resources :workspaces do
+    resources :memberships, controller: "workspace_memberships", only: %i[index update destroy]
+    resources :invites, controller: "workspace_invites", only: %i[index create] do
+      collection do
+        post :regenerate
+      end
+    end
+    resource :company_profile, only: %i[show update]
+  end
+
+  # Workspace invite acceptance (token-based, public for show)
+  get "workspace_invite/:token" => "workspace_invites#show"
+  post "workspace_invite/:token/accept" => "workspace_invites#accept"
+
   resources :gifts do
     member do
       patch :reorder
