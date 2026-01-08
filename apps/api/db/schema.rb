@@ -457,6 +457,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_08_163248) do
     t.datetime "accepted_at"
     t.bigint "accepted_by_id"
     t.datetime "created_at", null: false
+    t.string "email"
     t.datetime "expires_at", null: false
     t.bigint "invited_by_id", null: false
     t.string "role", default: "member", null: false

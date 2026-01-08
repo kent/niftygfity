@@ -94,6 +94,10 @@ class WorkspacesService {
     );
   }
 
+  async revokeInvite(workspaceId: number, inviteId: number): Promise<void> {
+    return apiClient.delete(`/workspaces/${workspaceId}/invites/${inviteId}`);
+  }
+
   // Public invite endpoints
   async getInviteDetails(token: string): Promise<WorkspaceInviteDetails> {
     return apiClient.get<WorkspaceInviteDetails>(`/workspace_invite/${token}`);

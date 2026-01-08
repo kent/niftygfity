@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   # Workspaces
   resources :workspaces do
     resources :memberships, controller: "workspace_memberships", only: %i[index update destroy]
-    resources :invites, controller: "workspace_invites", only: %i[index create] do
+    resources :invites, controller: "workspace_invites", only: %i[index create destroy] do
       collection do
         post :regenerate
       end

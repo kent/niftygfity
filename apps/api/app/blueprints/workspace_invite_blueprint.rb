@@ -1,5 +1,5 @@
 class WorkspaceInviteBlueprint < ApplicationBlueprint
-  fields :role, :expires_at, :created_at
+  fields :role, :email, :expires_at, :created_at
 
   field :token do |invite|
     invite.token

@@ -831,6 +831,7 @@ export interface WorkspaceInvite {
   id: number;
   token: string;
   role: WorkspaceRole;
+  email: string | null;
   expires_at: string;
   invite_url: string;
   invited_by_name: string;
@@ -867,6 +868,7 @@ export interface UpdateWorkspaceRequest {
 export interface CreateWorkspaceInviteRequest {
   workspace_invite?: {
     role?: WorkspaceRole;
+    email?: string;
   };
 }
 

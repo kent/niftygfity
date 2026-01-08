@@ -2,9 +2,10 @@
 
 class WorkspaceInvitesController < ApplicationController
   skip_before_action :authenticate_clerk_user!, only: [ :show, :accept ]
-  before_action :set_workspace, only: [ :index, :create, :regenerate ]
-  before_action :require_admin, only: [ :create, :regenerate ]
+  before_action :set_workspace, only: [ :index, :create, :regenerate, :destroy ]
+  before_action :require_admin, only: [ :create, :regenerate, :destroy ]
   before_action :set_invite_by_token, only: [ :show, :accept ]
+  before_action :set_invite_by_id, only: [ :destroy ]
   before_action :authenticate_clerk_user!, only: [ :accept ]
 
   # GET /workspaces/:workspace_id/invites
@@ -77,6 +78,12 @@ class WorkspaceInvitesController < ApplicationController
     end
   end
 
+  # DELETE /workspaces/:workspace_id/invites/:id
+  def destroy
+    @invite.destroy!
+    head :no_content
+  end
+
   private
 
   def set_workspace
@@ -91,7 +98,11 @@ class WorkspaceInvitesController < ApplicationController
     @invite = WorkspaceInvite.includes(:workspace).find_by(token: params[:token])
   end
 
+  def set_invite_by_id
+    @invite = @workspace.workspace_invites.find(params[:id])
+  end
+
   def invite_params
-    params.fetch(:workspace_invite, {}).permit(:role)
+    params.fetch(:workspace_invite, {}).permit(:role, :email)
   end
 end

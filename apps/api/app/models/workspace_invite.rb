@@ -9,6 +9,7 @@ class WorkspaceInvite < ApplicationRecord
 
   validates :role, presence: true, inclusion: { in: WorkspaceMembership::ROLES - %w[owner] }
   validates :expires_at, presence: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
 
   before_validation :set_expiry, on: :create
 
