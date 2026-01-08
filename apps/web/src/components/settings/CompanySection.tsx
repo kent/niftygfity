@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Building2, Globe, MapPin, Loader2, Check, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import { AddressesSection } from "./AddressesSection";
 import type { CompanyProfile } from "@niftygifty/types";
 
 export function CompanySection() {
@@ -293,6 +294,9 @@ export function CompanySection() {
           </div>
         </div>
       )}
+
+      {/* Addresses Section */}
+      {!isLoading && <AddressesSection />}
     </section>
   );
 }

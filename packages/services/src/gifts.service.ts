@@ -1,5 +1,5 @@
 import type { ApiClient } from "@niftygifty/api-client";
-import type { Gift, CreateGiftRequest } from "@niftygifty/types";
+import type { Gift, CreateGiftRequest, UpdateGiftRecipientRequest } from "@niftygifty/types";
 
 export interface GiftsService {
   getAll(): Promise<Gift[]>;
@@ -8,6 +8,7 @@ export interface GiftsService {
   update(id: number, data: Partial<CreateGiftRequest["gift"]>): Promise<Gift>;
   delete(id: number): Promise<void>;
   reorder(id: number, newPosition: number): Promise<Gift[]>;
+  updateRecipientAddress(giftId: number, recipientId: number, shippingAddressId: number | null): Promise<Gift>;
 }
 
 export function createGiftsService(client: ApiClient): GiftsService {
@@ -34,6 +35,12 @@ export function createGiftsService(client: ApiClient): GiftsService {
 
     reorder(id: number, newPosition: number) {
       return client.patch<Gift[]>(`/gifts/${id}/reorder`, { position: newPosition });
+    },
+
+    updateRecipientAddress(giftId: number, recipientId: number, shippingAddressId: number | null) {
+      return client.patch<Gift>(`/gifts/${giftId}/gift_recipients/${recipientId}`, {
+        gift_recipient: { shipping_address_id: shippingAddressId },
+      });
     },
   };
 }

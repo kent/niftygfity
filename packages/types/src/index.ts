@@ -57,9 +57,11 @@ export type RelationshipCategory = (typeof RELATIONSHIP_CATEGORIES)[number];
 
 export interface Person extends BaseEntity {
   name: string;
+  email: string | null;
   relationship: string | null;
   age: number | null;
   gender: string | null;
+  notes: string | null;
   gift_count: number;
   user_id: number;
   is_mine: boolean;
@@ -74,9 +76,11 @@ export interface PersonWithGifts extends Person {
 export interface CreatePersonRequest {
   person: {
     name: string;
+    email?: string;
     relationship?: string;
     age?: number;
     gender?: string;
+    notes?: string;
   };
 }
 
@@ -191,6 +195,7 @@ export interface Gift extends BaseEntity {
   holiday: Holiday;
   recipients: Person[];
   givers: Person[];
+  gift_recipients: GiftRecipientWithAddress[];
   created_by: GiftCreator | null;
   is_mine: boolean;
 }
@@ -235,6 +240,20 @@ export interface GiftGiver extends BaseEntity {
 export interface GiftRecipient extends BaseEntity {
   gift_id: number;
   person_id: number;
+  shipping_address_id: number | null;
+}
+
+export interface GiftRecipientWithAddress extends BaseEntity {
+  person_id: number;
+  shipping_address_id: number | null;
+  person: Person;
+  shipping_address: Address | null;
+}
+
+export interface UpdateGiftRecipientRequest {
+  gift_recipient: {
+    shipping_address_id: number | null;
+  };
 }
 
 export interface HolidayUser extends BaseEntity {
@@ -291,6 +310,8 @@ export const API_ENDPOINTS = {
   // Gifts
   gifts: "/gifts",
   gift: (id: number) => `/gifts/${id}`,
+  giftRecipient: (giftId: number, recipientId: number) =>
+    `/gifts/${giftId}/gift_recipients/${recipientId}`,
 
   // Gift Statuses
   giftStatuses: "/gift_statuses",
@@ -730,6 +751,7 @@ export type WorkspaceRole = "owner" | "admin" | "member";
 export interface Workspace extends BaseEntity {
   name: string;
   workspace_type: WorkspaceType;
+  show_gift_addresses: boolean;
   is_owner: boolean;
   is_admin: boolean;
   role: WorkspaceRole | null;
@@ -762,6 +784,47 @@ export interface CompanyProfile extends BaseEntity {
   website: string | null;
   address: string | null;
   tax_metadata: Record<string, unknown>;
+}
+
+// =============================================================================
+// Address
+// =============================================================================
+
+export interface Address extends BaseEntity {
+  label: string;
+  street_line_1: string;
+  street_line_2: string | null;
+  city: string;
+  state: string | null;
+  postal_code: string;
+  country: string;
+  is_default: boolean;
+  formatted_address: string;
+  formatted_address_single_line: string;
+}
+
+export interface CreateAddressRequest {
+  address: {
+    label: string;
+    street_line_1: string;
+    street_line_2?: string;
+    city: string;
+    state?: string;
+    postal_code: string;
+    country?: string;
+    is_default?: boolean;
+  };
+}
+
+export interface UpdateAddressRequest {
+  address: Partial<CreateAddressRequest["address"]>;
+}
+
+export type AddressesResponse = Address[];
+
+export interface RecipientWithShipping {
+  person: Person;
+  shipping_address: Address | null;
 }
 
 export interface WorkspaceInvite {
@@ -797,6 +860,7 @@ export interface CreateWorkspaceRequest {
 export interface UpdateWorkspaceRequest {
   workspace: {
     name?: string;
+    show_gift_addresses?: boolean;
   };
 }
 
@@ -852,7 +916,25 @@ export const WORKSPACE_API_ENDPOINTS = {
   companyProfile: (workspaceId: number) =>
     `/workspaces/${workspaceId}/company_profile`,
 
+  // Addresses
+  addresses: (workspaceId: number) => `/workspaces/${workspaceId}/addresses`,
+  address: (workspaceId: number, addressId: number) =>
+    `/workspaces/${workspaceId}/addresses/${addressId}`,
+  setDefaultAddress: (workspaceId: number, addressId: number) =>
+    `/workspaces/${workspaceId}/addresses/${addressId}/set_default`,
+
   // Public invite endpoints
   workspaceInvite: (token: string) => `/workspace_invite/${token}`,
   acceptWorkspaceInvite: (token: string) => `/workspace_invite/${token}/accept`,
 } as const;
+
+// =============================================================================
+// Import/Export
+// =============================================================================
+
+export interface ImportPeopleResult {
+  created: number;
+  skipped: number;
+  errors: string[];
+  people: Person[];
+}

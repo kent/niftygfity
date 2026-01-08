@@ -18,6 +18,11 @@ class WorkspacesController < ApplicationController
     workspace = Workspace.new(workspace_params)
     workspace.created_by_user = current_user
 
+    # Business workspaces default to showing addresses for gifts
+    if workspace.business? && !params.dig(:workspace, :show_gift_addresses).present?
+      workspace.show_gift_addresses = true
+    end
+
     Workspace.transaction do
       workspace.save!
       workspace.workspace_memberships.create!(user: current_user, role: "owner")
@@ -68,6 +73,6 @@ class WorkspacesController < ApplicationController
   end
 
   def workspace_params
-    params.require(:workspace).permit(:name, :workspace_type)
+    params.require(:workspace).permit(:name, :workspace_type, :show_gift_addresses)
   end
 end

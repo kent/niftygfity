@@ -8,6 +8,11 @@ Rails.application.routes.draw do
       end
     end
     resource :company_profile, only: %i[show update]
+    resources :addresses, only: %i[index show create update destroy] do
+      member do
+        post :set_default
+      end
+    end
   end
 
   # Workspace invite acceptance (token-based, public for show)
@@ -18,6 +23,7 @@ Rails.application.routes.draw do
     member do
       patch :reorder
     end
+    resources :gift_recipients, only: [ :update ]
   end
   resources :gift_statuses
 
@@ -63,6 +69,13 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  # Imports
+  post "imports/people" => "imports#people"
+
+  # Exports
+  get "exports/gifts" => "exports#gifts"
+  get "exports/people" => "exports#people"
 
   resources :gift_suggestions, only: %i[destroy] do
     member do

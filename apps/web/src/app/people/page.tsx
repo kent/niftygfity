@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
-import { peopleService } from "@/services";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { peopleService, workspacesService } from "@/services";
 import { useWorkspaceData } from "@/hooks";
+import { useWorkspace } from "@/contexts/workspace-context";
 import { AppHeader } from "@/components/layout";
 import {
   PeopleNav,
@@ -12,13 +13,16 @@ import {
   FamilySection,
   SharedSection,
   NewPersonModal,
+  ImportPeopleDialog,
   type PeopleSection,
 } from "@/components/people";
 import { Button } from "@/components/ui/button";
+import { Upload } from "lucide-react";
 import { toast } from "sonner";
-import type { Person } from "@niftygifty/types";
+import type { Person, WorkspaceMember } from "@niftygifty/types";
 
 export default function PeoplePage() {
+  const { currentWorkspace } = useWorkspace();
   const {
     data: people,
     setData: setPeople,
@@ -26,6 +30,7 @@ export default function PeoplePage() {
     error,
     user,
     signOut,
+    refetch,
   } = useWorkspaceData<Person[]>({
     fetcher: () => peopleService.getAll(),
     initialData: [],
@@ -33,6 +38,14 @@ export default function PeoplePage() {
 
   const [activeSection, setActiveSection] = useState<PeopleSection>("all");
   const [modalOpen, setModalOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [workspaceMembers, setWorkspaceMembers] = useState<WorkspaceMember[]>([]);
+
+  useEffect(() => {
+    if (currentWorkspace) {
+      workspacesService.getMembers(currentWorkspace.id).then(setWorkspaceMembers).catch(() => {});
+    }
+  }, [currentWorkspace]);
 
   const handleAddPerson = useCallback(async (name: string, relationship?: string) => {
     const person = await peopleService.create({ name, relationship });
@@ -83,10 +96,23 @@ export default function PeoplePage() {
 
       <main className="relative z-10 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">People</h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Manage everyone on your gift list. Add family, friends, and colleagues.
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">People</h1>
+              <p className="text-slate-600 dark:text-slate-400">
+                Manage everyone on your gift list. Add family, friends, and colleagues.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setImportDialogOpen(true)}
+              className="gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              Import CSV
+            </Button>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row md:gap-8">
@@ -110,6 +136,13 @@ export default function PeoplePage() {
         open={modalOpen}
         onOpenChange={setModalOpen}
         onSubmit={handleAddPerson}
+      />
+
+      <ImportPeopleDialog
+        open={importDialogOpen}
+        onOpenChange={setImportDialogOpen}
+        onSuccess={refetch}
+        workspaceMembers={workspaceMembers}
       />
     </div>
   );

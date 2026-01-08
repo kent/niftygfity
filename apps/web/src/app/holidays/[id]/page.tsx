@@ -4,8 +4,9 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
+import { useWorkspace } from "@/contexts/workspace-context";
 import { useGiftFilters } from "@/hooks";
-import { holidaysService, giftsService, peopleService, giftStatusesService, AUTH_ROUTES } from "@/services";
+import { holidaysService, giftsService, peopleService, giftStatusesService, workspacesService, exportsService, AUTH_ROUTES } from "@/services";
 import { AppHeader } from "@/components/layout";
 import { GiftFilters } from "@/components/filters";
 import { GiftGrid, HolidayReports } from "@/components/gifts";
@@ -14,9 +15,9 @@ import { CursorOverlay } from "@/components/cursors";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users, Scale, Archive, RotateCcw, Share2 } from "lucide-react";
+import { ArrowLeft, Calendar, Gift as GiftIcon, BarChart3, Users, Scale, Archive, RotateCcw, Share2, Download } from "lucide-react";
 import { toast } from "sonner";
-import type { Holiday, Gift, Person, GiftStatus, HolidayCollaborator } from "@niftygifty/types";
+import type { Holiday, Gift, Person, GiftStatus, HolidayCollaborator, Address } from "@niftygifty/types";
 
 function getHolidayIcon(icon?: string | null) {
   const icons: Record<string, string> = {
@@ -57,6 +58,7 @@ function getCollaboratorInitials(collab: HolidayCollaborator): string {
 
 export default function HolidayDetailPage() {
   const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
+  const { currentWorkspace } = useWorkspace();
   const router = useRouter();
   const params = useParams();
   const holidayId = Number(params.id);
@@ -66,10 +68,13 @@ export default function HolidayDetailPage() {
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
   const [statuses, setStatuses] = useState<GiftStatus[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [collaborators, setCollaborators] = useState<HolidayCollaborator[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [collaboratorsLoading, setCollaboratorsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const showAddresses = (currentWorkspace?.show_gift_addresses && currentWorkspace?.workspace_type === "business") ?? false;
 
   const {
     filters,
@@ -87,10 +92,27 @@ export default function HolidayDetailPage() {
   }, [authLoading, isAuthenticated, router]);
 
   useEffect(() => {
-    if (!isAuthenticated || !holidayId) return;
+    if (!isAuthenticated || !holidayId || !currentWorkspace) return;
+
+    const workspace = currentWorkspace;
 
     async function loadData() {
       try {
+        const promises: Promise<unknown>[] = [
+          holidaysService.getById(holidayId),
+          holidaysService.getAll(),
+          giftsService.getAll(),
+          peopleService.getAll(),
+          giftStatusesService.getAll(),
+          holidaysService.getCollaborators(holidayId),
+        ];
+
+        // Load addresses if enabled for business workspaces
+        if (workspace.show_gift_addresses && workspace.workspace_type === "business") {
+          promises.push(workspacesService.getAddresses(workspace.id));
+        }
+
+        const results = await Promise.all(promises);
         const [
           holidayData,
           holidaysData,
@@ -98,20 +120,19 @@ export default function HolidayDetailPage() {
           peopleData,
           statusesData,
           collaboratorsData,
-        ] = await Promise.all([
-          holidaysService.getById(holidayId),
-          holidaysService.getAll(),
-          giftsService.getAll(),
-          peopleService.getAll(),
-          giftStatusesService.getAll(),
-          holidaysService.getCollaborators(holidayId),
-        ]);
+        ] = results as [Holiday, Holiday[], Gift[], Person[], GiftStatus[], HolidayCollaborator[]];
+
         setHoliday(holidayData);
         setHolidays(holidaysData);
         setGifts(giftsData.filter((g) => g.holiday_id === holidayId));
         setPeople(peopleData);
         setStatuses(statusesData);
         setCollaborators(collaboratorsData);
+
+        // Set addresses if loaded (only for business workspaces)
+        if (workspace.show_gift_addresses && workspace.workspace_type === "business" && results[6]) {
+          setAddresses(results[6] as Address[]);
+        }
       } catch {
         setError("Failed to load gift list. Please try again.");
       } finally {
@@ -121,7 +142,7 @@ export default function HolidayDetailPage() {
     }
 
     loadData();
-  }, [isAuthenticated, holidayId]);
+  }, [isAuthenticated, holidayId, currentWorkspace]);
 
 
   const handleToggleArchive = useCallback(async () => {
@@ -140,6 +161,15 @@ export default function HolidayDetailPage() {
       toast.error("Failed to update gift list");
     }
   }, [holiday, holidayId]);
+
+  const handleExportGifts = useCallback(async () => {
+    try {
+      await exportsService.downloadGiftsCsv(holidayId);
+      toast.success("Gift list exported successfully");
+    } catch {
+      toast.error("Failed to export gift list");
+    }
+  }, [holidayId]);
 
   if (authLoading || dataLoading) {
     return (
@@ -283,6 +313,15 @@ export default function HolidayDetailPage() {
                   )}
                 </Button>
               )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportGifts}
+                className="gap-1.5 md:gap-2 flex-1 md:flex-none"
+              >
+                <Download className="h-4 w-4" />
+                <span className="hidden sm:inline">Export</span>
+              </Button>
               <ShareHolidayDialog
                 holiday={holiday}
                 trigger={
@@ -346,6 +385,8 @@ export default function HolidayDetailPage() {
                 people={people}
                 statuses={statuses}
                 holidays={holidays}
+                addresses={addresses}
+                showAddresses={showAddresses}
                 defaultHolidayId={holidayId}
                 defaultStatusId={statuses[0]?.id}
                 onGiftsChange={setGifts}

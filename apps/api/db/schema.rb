@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_08_163248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "city", null: false
+    t.bigint "company_profile_id", null: false
+    t.string "country", default: "CA", null: false
+    t.datetime "created_at", null: false
+    t.boolean "is_default", default: false, null: false
+    t.string "label", null: false
+    t.string "postal_code", null: false
+    t.string "state"
+    t.string "street_line_1", null: false
+    t.string "street_line_2"
+    t.datetime "updated_at", null: false
+    t.index ["company_profile_id", "is_default"], name: "index_addresses_on_company_profile_id_and_is_default"
+    t.index ["company_profile_id", "label"], name: "index_addresses_on_company_profile_id_and_label", unique: true
+    t.index ["company_profile_id"], name: "index_addresses_on_company_profile_id"
   end
 
   create_table "company_profiles", force: :cascade do |t|
@@ -150,9 +167,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
     t.datetime "created_at", null: false
     t.integer "gift_id", null: false
     t.integer "person_id", null: false
+    t.bigint "shipping_address_id"
     t.datetime "updated_at", null: false
     t.index ["gift_id"], name: "index_gift_recipients_on_gift_id"
     t.index ["person_id"], name: "index_gift_recipients_on_person_id"
+    t.index ["shipping_address_id"], name: "index_gift_recipients_on_shipping_address_id"
   end
 
   create_table "gift_statuses", force: :cascade do |t|
@@ -264,13 +283,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
   create_table "people", force: :cascade do |t|
     t.integer "age"
     t.datetime "created_at", null: false
+    t.string "email"
     t.string "gender"
     t.string "name"
+    t.text "notes"
     t.string "relationship"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.bigint "workspace_id", null: false
     t.index ["user_id"], name: "index_people_on_user_id"
+    t.index ["workspace_id", "email"], name: "index_people_on_workspace_id_and_email_unique", unique: true, where: "(email IS NOT NULL)"
     t.index ["workspace_id", "user_id"], name: "index_people_on_workspace_id_and_user_id"
     t.index ["workspace_id"], name: "index_people_on_workspace_id"
   end
@@ -464,6 +486,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
     t.datetime "created_at", null: false
     t.bigint "created_by_user_id", null: false
     t.string "name", null: false
+    t.boolean "show_gift_addresses", default: false, null: false
     t.datetime "updated_at", null: false
     t.string "workspace_type", default: "personal", null: false
     t.index ["created_by_user_id"], name: "index_workspaces_on_created_by_user_id"
@@ -472,6 +495,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "addresses", "company_profiles"
   add_foreign_key "company_profiles", "workspaces"
   add_foreign_key "email_deliveries", "holidays"
   add_foreign_key "email_deliveries", "users"
@@ -488,6 +512,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_07_152021) do
   add_foreign_key "gift_exchanges", "workspaces"
   add_foreign_key "gift_givers", "gifts"
   add_foreign_key "gift_givers", "people"
+  add_foreign_key "gift_recipients", "addresses", column: "shipping_address_id"
   add_foreign_key "gift_recipients", "gifts"
   add_foreign_key "gift_recipients", "people"
   add_foreign_key "gift_suggestions", "holidays"

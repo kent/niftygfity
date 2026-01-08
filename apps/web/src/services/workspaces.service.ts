@@ -6,12 +6,15 @@ import type {
   WorkspaceInvite,
   WorkspaceInviteDetails,
   CompanyProfile,
+  Address,
   CreateWorkspaceRequest,
   UpdateWorkspaceRequest,
   CreateWorkspaceInviteRequest,
   CreateWorkspaceInviteResponse,
   UpdateWorkspaceMembershipRequest,
   UpdateCompanyProfileRequest,
+  CreateAddressRequest,
+  UpdateAddressRequest,
   WorkspaceRole,
 } from "@niftygifty/types";
 
@@ -114,6 +117,53 @@ class WorkspacesService {
     return apiClient.patch<CompanyProfile>(
       `/workspaces/${workspaceId}/company_profile`,
       data
+    );
+  }
+
+  // Addresses
+  async getAddresses(workspaceId: number): Promise<Address[]> {
+    return apiClient.get<Address[]>(`/workspaces/${workspaceId}/addresses`);
+  }
+
+  async getAddress(workspaceId: number, addressId: number): Promise<Address> {
+    return apiClient.get<Address>(
+      `/workspaces/${workspaceId}/addresses/${addressId}`
+    );
+  }
+
+  async createAddress(
+    workspaceId: number,
+    data: CreateAddressRequest
+  ): Promise<Address> {
+    return apiClient.post<Address>(
+      `/workspaces/${workspaceId}/addresses`,
+      data
+    );
+  }
+
+  async updateAddress(
+    workspaceId: number,
+    addressId: number,
+    data: UpdateAddressRequest
+  ): Promise<Address> {
+    return apiClient.patch<Address>(
+      `/workspaces/${workspaceId}/addresses/${addressId}`,
+      data
+    );
+  }
+
+  async deleteAddress(workspaceId: number, addressId: number): Promise<void> {
+    return apiClient.delete(
+      `/workspaces/${workspaceId}/addresses/${addressId}`
+    );
+  }
+
+  async setDefaultAddress(
+    workspaceId: number,
+    addressId: number
+  ): Promise<Address> {
+    return apiClient.post<Address>(
+      `/workspaces/${workspaceId}/addresses/${addressId}/set_default`
     );
   }
 }

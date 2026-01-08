@@ -6,5 +6,7 @@ export { AppearanceSection } from "./AppearanceSection";
 export { WorkspaceSection } from "./WorkspaceSection";
 export { TeamSection } from "./TeamSection";
 export { CompanySection } from "./CompanySection";
+export { AddressesSection } from "./AddressesSection";
+export { AddressDialog } from "./AddressDialog";
 export { SettingsNav } from "./SettingsNav";
 export type { SettingsSection } from "./SettingsNav";

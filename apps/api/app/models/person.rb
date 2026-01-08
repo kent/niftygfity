@@ -11,6 +11,7 @@ class Person < ApplicationRecord
   has_many :match_slots, dependent: :destroy
 
   validates :name, presence: true
+  validates :email, uniqueness: { scope: :workspace_id, allow_blank: true }
 
   # Check if person is shared to a specific holiday
   def shared_to?(holiday)

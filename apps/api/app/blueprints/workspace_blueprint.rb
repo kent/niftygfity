@@ -1,5 +1,5 @@
 class WorkspaceBlueprint < ApplicationBlueprint
-  fields :name, :workspace_type, :created_at, :updated_at
+  fields :name, :workspace_type, :show_gift_addresses, :created_at, :updated_at
 
   field :is_owner do |workspace, options|
     current_user = options[:current_user]

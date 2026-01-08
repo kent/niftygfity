@@ -239,4 +239,63 @@ export class ApiClient {
   delete<T = void>(endpoint: string, options?: Omit<RequestOptions, "body">): Promise<T> {
     return this.request<T>("DELETE", endpoint, options);
   }
+
+  async postFormData<T>(endpoint: string, formData: FormData): Promise<T> {
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+    };
+
+    if (this.tokenGetter) {
+      const token = await this.tokenGetter();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
+
+    if (this.workspaceId) {
+      headers["X-Workspace-ID"] = String(this.workspaceId);
+    }
+
+    const url = `${this.baseUrl}${endpoint}`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+
+    this.log("info", `POST (FormData) ${endpoint}`, {
+      status: response.status,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({
+        error: "An error occurred",
+      }));
+      throw new ApiError(response.status, errorData);
+    }
+
+    return response.json();
+  }
+
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
+  async getAuthHeaders(): Promise<Record<string, string>> {
+    const headers: Record<string, string> = {};
+
+    if (this.tokenGetter) {
+      const token = await this.tokenGetter();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
+
+    if (this.workspaceId) {
+      headers["X-Workspace-ID"] = String(this.workspaceId);
+    }
+
+    return headers;
+  }
 }

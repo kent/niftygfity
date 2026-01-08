@@ -1,5 +1,6 @@
 class CompanyProfile < ApplicationRecord
   belongs_to :workspace
+  has_many :addresses, dependent: :destroy
 
   validates :name, presence: true
   validates :workspace_id, uniqueness: true

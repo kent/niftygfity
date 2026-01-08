@@ -27,7 +27,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Building2, User, Pencil, Check, X, Loader2, Trash2, Plus, ChevronRight } from "lucide-react";
+import { Building2, User, Pencil, Check, X, Loader2, Trash2, Plus, ChevronRight, MapPin } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 export function WorkspaceSection() {
@@ -44,6 +45,7 @@ export function WorkspaceSection() {
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
   const [newCompanyName, setNewCompanyName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [isTogglingAddresses, setIsTogglingAddresses] = useState(false);
 
   if (!currentWorkspace) {
     return (
@@ -132,6 +134,21 @@ export function WorkspaceSection() {
     if (workspaceId !== currentWorkspace.id) {
       switchWorkspace(workspaceId);
       toast.success("Switched workspace");
+    }
+  };
+
+  const handleToggleAddresses = async (checked: boolean) => {
+    setIsTogglingAddresses(true);
+    try {
+      await workspacesService.update(currentWorkspace.id, {
+        workspace: { show_gift_addresses: checked },
+      });
+      await refreshWorkspaces();
+      toast.success(checked ? "Addresses enabled for gift lists" : "Addresses disabled for gift lists");
+    } catch {
+      toast.error("Failed to update setting");
+    } finally {
+      setIsTogglingAddresses(false);
     }
   };
 
@@ -252,6 +269,47 @@ export function WorkspaceSection() {
           </div>
         </div>
       </div>
+
+      {/* Gift List Settings Card */}
+      {isOwner && (
+        <div className="group relative rounded-2xl border border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-900/30 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-700/50 hover:shadow-lg hover:shadow-violet-500/5">
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative p-6">
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 dark:from-slate-800 to-slate-50 dark:to-slate-800/50 border border-slate-200 dark:border-slate-700/50 shrink-0">
+                <MapPin className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-medium uppercase tracking-wider text-slate-500 block mb-1">
+                      Gift List Settings
+                    </span>
+                    <p className="text-lg font-medium text-slate-900 dark:text-white">
+                      Show Addresses
+                    </p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                      {isPersonal
+                        ? "Enable shipping addresses for gift recipients (useful for mail-order gifts)"
+                        : "Show shipping address selection when adding gift recipients"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 ml-4">
+                    {isTogglingAddresses && (
+                      <Loader2 className="h-4 w-4 animate-spin text-violet-500" />
+                    )}
+                    <Switch
+                      checked={currentWorkspace.show_gift_addresses}
+                      onCheckedChange={handleToggleAddresses}
+                      disabled={isTogglingAddresses}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* All Workspaces Section */}
       <div className="space-y-4">

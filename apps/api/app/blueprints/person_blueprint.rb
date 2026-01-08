@@ -1,5 +1,5 @@
 class PersonBlueprint < ApplicationBlueprint
-  fields :name, :relationship, :age, :gender, :created_at, :updated_at
+  fields :name, :email, :relationship, :age, :gender, :notes, :created_at, :updated_at
 
   field :gift_count do |person|
     person.gifts_received.count + person.gifts_given.count

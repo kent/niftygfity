@@ -5,6 +5,7 @@ class GiftBlueprint < ApplicationBlueprint
   association :holiday, blueprint: HolidayBlueprint
   association :recipients, blueprint: PersonBlueprint
   association :givers, blueprint: PersonBlueprint
+  association :gift_recipients, blueprint: GiftRecipientBlueprint
 
   field :created_by do |gift|
     if gift.created_by

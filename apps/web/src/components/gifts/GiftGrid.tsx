@@ -32,7 +32,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { giftsService } from "@/services";
 import { ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
-import type { Gift, Person, GiftStatus, Holiday, CreateGiftRequest } from "@niftygifty/types";
+import type { Gift, Person, GiftStatus, Holiday, CreateGiftRequest, Address } from "@niftygifty/types";
 
 type GiftUpdatePayload = Partial<CreateGiftRequest["gift"]>;
 type LocalGift = Gift & { _isNew?: boolean; _isSaving?: boolean };
@@ -43,6 +43,8 @@ interface GiftGridProps {
   people: Person[];
   statuses: GiftStatus[];
   holidays: Holiday[];
+  addresses: Address[];
+  showAddresses: boolean;
   defaultHolidayId?: number;
   defaultStatusId?: number;
   onGiftsChange: (gifts: Gift[]) => void;
@@ -55,6 +57,8 @@ export function GiftGrid({
   people,
   statuses,
   holidays,
+  addresses,
+  showAddresses,
   defaultHolidayId,
   defaultStatusId,
   onGiftsChange,
@@ -189,6 +193,40 @@ export function GiftGrid({
       });
     },
     [people, defaultHolidayId, holidays]
+  );
+
+  const updateRecipientAddress = useCallback(
+    async (giftId: number, recipientId: number, addressId: number | null) => {
+      const currentGift = allGiftsRef.current.find((g) => g.id === giftId);
+      if (!currentGift) return;
+
+      // Optimistic update
+      const optimisticGift: Gift = {
+        ...currentGift,
+        gift_recipients: currentGift.gift_recipients.map((r) =>
+          r.id === recipientId
+            ? {
+                ...r,
+                shipping_address_id: addressId,
+                shipping_address: addressId ? addresses.find((a) => a.id === addressId) || null : null,
+              }
+            : r
+        ),
+      };
+      onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === giftId ? optimisticGift : g)));
+
+      startTransition(async () => {
+        try {
+          const updated = await giftsService.updateRecipientAddress(giftId, recipientId, addressId);
+          onGiftsChangeRef.current(allGiftsRef.current.map((g) => (g.id === giftId ? updated : g)));
+        } catch {
+          const refreshed = await giftsService.getAll();
+          const holidayId = defaultHolidayId || holidays[0]?.id;
+          onGiftsChangeRef.current(refreshed.filter((g) => g.holiday_id === holidayId));
+        }
+      });
+    },
+    [addresses, defaultHolidayId, holidays]
   );
 
   const addGift = useCallback(async (atPosition?: number) => {
@@ -354,6 +392,9 @@ export function GiftGrid({
               <TableRow className="bg-muted/30 hover:bg-muted/30">
                 <TableHead className="w-[40px]"></TableHead>
                 <TableHead className="w-[180px] font-semibold">To</TableHead>
+                {showAddresses && (
+                  <TableHead className="w-[100px] font-semibold">Ship To</TableHead>
+                )}
                 <TableHead className="w-[180px] font-semibold">From</TableHead>
                 <TableHead className="min-w-[250px] font-semibold">Item</TableHead>
                 <TableHead className="w-[140px] font-semibold">Status</TableHead>
@@ -369,10 +410,13 @@ export function GiftGrid({
                     gift={gift}
                     people={people}
                     statuses={statuses}
+                    addresses={addresses}
+                    showAddresses={showAddresses}
                     deletingId={deletingId}
                     onUpdateGift={updateGift}
                     onUpdateRecipients={updateRecipients}
                     onUpdateGivers={updateGivers}
+                    onUpdateRecipientAddress={updateRecipientAddress}
                     onInsertGift={insertGift}
                     onDeleteGift={deleteGift}
                     onPersonCreated={handlePersonCreated}
@@ -381,7 +425,7 @@ export function GiftGrid({
               </SortableContext>
               {gifts.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                  <TableCell colSpan={showAddresses ? 8 : 7} className="h-24 text-center text-muted-foreground">
                     No gifts yet. Click the button above to add one.
                   </TableCell>
                 </TableRow>

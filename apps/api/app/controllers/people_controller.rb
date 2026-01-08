@@ -76,7 +76,7 @@ class PeopleController < ApplicationController
   end
 
   def person_params
-    params.require(:person).permit(:name, :relationship, :age, :gender)
+    params.require(:person).permit(:name, :email, :relationship, :age, :gender, :notes)
   end
 
   def accessible_people_for_holiday(holiday)

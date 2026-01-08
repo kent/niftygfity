@@ -1,0 +1,293 @@
+"use client";
+
+import { useState, useRef } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Loader2,
+  Upload,
+  FileSpreadsheet,
+  CheckCircle2,
+  AlertCircle,
+  Download,
+} from "lucide-react";
+import { importsService } from "@/services";
+import type { ImportPeopleResult, WorkspaceMember } from "@niftygifty/types";
+
+interface ImportPeopleDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
+  workspaceMembers?: WorkspaceMember[];
+}
+
+export function ImportPeopleDialog({
+  open,
+  onOpenChange,
+  onSuccess,
+  workspaceMembers = [],
+}: ImportPeopleDialogProps) {
+  const [file, setFile] = useState<File | null>(null);
+  const [ownerId, setOwnerId] = useState<string>("");
+  const [isImporting, setIsImporting] = useState(false);
+  const [result, setResult] = useState<ImportPeopleResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const resetState = () => {
+    setFile(null);
+    setOwnerId("");
+    setResult(null);
+    setError(null);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      resetState();
+    }
+    onOpenChange(open);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      if (selectedFile.type !== "text/csv" && !selectedFile.name.endsWith(".csv")) {
+        setError("Please select a CSV file");
+        return;
+      }
+      setFile(selectedFile);
+      setError(null);
+      setResult(null);
+    }
+  };
+
+  const handleImport = async () => {
+    if (!file) return;
+
+    setIsImporting(true);
+    setError(null);
+
+    try {
+      const importResult = await importsService.importPeople(
+        file,
+        ownerId ? parseInt(ownerId, 10) : undefined
+      );
+      setResult(importResult);
+
+      if (importResult.created > 0 && onSuccess) {
+        onSuccess();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Import failed");
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const handleDownloadTemplate = () => {
+    const csvContent = "name,email,relationship,age,gender,notes\nJohn Smith,john@example.com,friend,35,male,Birthday in March\nJane Doe,jane@example.com,coworker,,female,";
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "people_import_template.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-[500px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+        <DialogHeader>
+          <DialogTitle className="text-slate-900 dark:text-white">
+            Import People
+          </DialogTitle>
+          <DialogDescription className="text-slate-500 dark:text-slate-400">
+            Upload a CSV file to import multiple people at once.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 mt-4">
+          {!result ? (
+            <>
+              {/* Template Download */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                    <FileSpreadsheet className="h-4 w-4" />
+                    <span>Need a template?</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleDownloadTemplate}
+                    className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-950"
+                  >
+                    <Download className="h-4 w-4 mr-1" />
+                    Download
+                  </Button>
+                </div>
+              </div>
+
+              {/* File Upload */}
+              <div className="space-y-2">
+                <Label className="text-slate-700 dark:text-slate-300">
+                  CSV File <span className="text-red-500">*</span>
+                </Label>
+                <div
+                  className={`
+                    border-2 border-dashed rounded-lg p-6 text-center cursor-pointer
+                    transition-colors
+                    ${file
+                      ? "border-violet-300 bg-violet-50 dark:border-violet-700 dark:bg-violet-950/30"
+                      : "border-slate-200 dark:border-slate-700 hover:border-violet-300 dark:hover:border-violet-700"
+                    }
+                  `}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".csv,text/csv"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  {file ? (
+                    <div className="flex items-center justify-center gap-2 text-violet-600 dark:text-violet-400">
+                      <FileSpreadsheet className="h-5 w-5" />
+                      <span className="font-medium">{file.name}</span>
+                    </div>
+                  ) : (
+                    <div className="text-slate-500 dark:text-slate-400">
+                      <Upload className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>Click to select a CSV file</p>
+                      <p className="text-xs mt-1">or drag and drop</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Owner Selection */}
+              {workspaceMembers.length > 1 && (
+                <div className="space-y-2">
+                  <Label className="text-slate-700 dark:text-slate-300">
+                    Assign Owner (optional)
+                  </Label>
+                  <Select value={ownerId} onValueChange={setOwnerId}>
+                    <SelectTrigger className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+                      <SelectValue placeholder="Current user (default)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Current user (default)</SelectItem>
+                      {workspaceMembers.map((member) => (
+                        <SelectItem key={member.user_id} value={String(member.user_id)}>
+                          {member.first_name} {member.last_name} ({member.email})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Choose who will own the imported people
+                  </p>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg">
+                  <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <AlertCircle className="h-4 w-4" />
+                    <span className="text-sm">{error}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                  disabled={isImporting}
+                  className="flex-1 border-slate-200 dark:border-slate-700"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleImport}
+                  disabled={!file || isImporting}
+                  className="flex-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500"
+                >
+                  {isImporting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Importing...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Import
+                    </>
+                  )}
+                </Button>
+              </div>
+            </>
+          ) : (
+            /* Results View */
+            <div className="space-y-4">
+              <div className="p-4 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-2 text-green-600 dark:text-green-400 mb-2">
+                  <CheckCircle2 className="h-5 w-5" />
+                  <span className="font-medium">Import Complete</span>
+                </div>
+                <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                  <p>Created: {result.created} people</p>
+                  {result.skipped > 0 && (
+                    <p>Skipped: {result.skipped} (duplicate emails)</p>
+                  )}
+                </div>
+              </div>
+
+              {result.errors.length > 0 && (
+                <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                  <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 mb-2">
+                    <AlertCircle className="h-4 w-4" />
+                    <span className="font-medium text-sm">Warnings</span>
+                  </div>
+                  <ul className="text-xs text-amber-700 dark:text-amber-300 space-y-1 max-h-32 overflow-y-auto">
+                    {result.errors.map((err, i) => (
+                      <li key={i}>{err}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <Button
+                onClick={() => handleOpenChange(false)}
+                className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500"
+              >
+                Done
+              </Button>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

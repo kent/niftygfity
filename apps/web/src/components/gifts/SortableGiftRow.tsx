@@ -29,17 +29,21 @@ import { TextCell } from "./TextCell";
 import { CurrencyCell } from "./CurrencyCell";
 import { StatusCell } from "./StatusCell";
 import { PeopleCell } from "./PeopleCell";
-import type { Gift, Person, GiftStatus } from "@niftygifty/types";
+import { AddressCell } from "./AddressCell";
+import type { Gift, Person, GiftStatus, Address } from "@niftygifty/types";
 import { cn } from "@/lib/utils";
 
 interface SortableGiftRowProps {
   gift: Gift & { _isNew?: boolean; _isSaving?: boolean };
   people: Person[];
   statuses: GiftStatus[];
+  addresses: Address[];
+  showAddresses: boolean;
   deletingId: number | null;
   onUpdateGift: (id: number, updates: { name?: string; gift_status_id?: number; cost?: number }) => void;
   onUpdateRecipients: (id: number, recipientIds: number[]) => void;
   onUpdateGivers: (id: number, giverIds: number[]) => void;
+  onUpdateRecipientAddress: (giftId: number, recipientId: number, addressId: number | null) => void;
   onInsertGift: (referenceId: number, position: "above" | "below") => void;
   onDeleteGift: (id: number) => void;
   onPersonCreated: (person: Person) => void;
@@ -49,10 +53,13 @@ export function SortableGiftRow({
   gift,
   people,
   statuses,
+  addresses,
+  showAddresses,
   deletingId,
   onUpdateGift,
   onUpdateRecipients,
   onUpdateGivers,
+  onUpdateRecipientAddress,
   onInsertGift,
   onDeleteGift,
   onPersonCreated,
@@ -125,6 +132,17 @@ export function SortableGiftRow({
           placeholder="Select recipient..."
         />
       </TableCell>
+      {showAddresses && (
+        <TableCell className="p-1">
+          <AddressCell
+            giftRecipients={gift.gift_recipients || []}
+            addresses={addresses}
+            onUpdateAddress={(recipientId, addressId) =>
+              onUpdateRecipientAddress(gift.id, recipientId, addressId)
+            }
+          />
+        </TableCell>
+      )}
       <TableCell className="p-1">
         <PeopleCell
           selectedIds={gift.givers.map((g) => g.id)}
