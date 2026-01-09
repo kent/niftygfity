@@ -3,6 +3,7 @@ import {
   createHolidaysService,
   createGiftsService,
   createGiftStatusesService,
+  createPeopleService,
   createGiftExchangesService,
   createWishlistItemsService,
   createExchangeInvitesService,
@@ -20,6 +21,7 @@ export const apiClient = new ApiClient({
 export const holidaysService = createHolidaysService(apiClient);
 export const giftsService = createGiftsService(apiClient);
 export const giftStatusesService = createGiftStatusesService(apiClient);
+export const peopleService = createPeopleService(apiClient);
 
 // Exchange services
 export const giftExchangesService = createGiftExchangesService(apiClient);

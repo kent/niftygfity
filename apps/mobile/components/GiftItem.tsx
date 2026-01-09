@@ -1,13 +1,28 @@
-import { View, Text, Linking, TouchableOpacity } from "react-native";
+import { useRef } from "react";
+import {
+  View,
+  Text,
+  Linking,
+  TouchableOpacity,
+  Animated,
+  Alert,
+} from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import type { Gift } from "@niftygifty/types";
 import { useTheme } from "@/lib/theme";
 
 interface GiftItemProps {
   item: Gift;
+  onPress?: () => void;
+  onDelete?: () => void;
+  onStatusChange?: (statusId: number) => void;
 }
 
-export function GiftItem({ item }: GiftItemProps) {
+export function GiftItem({ item, onPress, onDelete, onStatusChange }: GiftItemProps) {
   const { colors, isDark } = useTheme();
+  const swipeableRef = useRef<Swipeable>(null);
 
   const handleOpenLink = () => {
     if (item.link) {
@@ -41,7 +56,60 @@ export function GiftItem({ item }: GiftItemProps) {
 
   const statusColors = getStatusColor(item.gift_status?.name || "");
 
-  return (
+  const handleDelete = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Alert.alert(
+      "Delete Gift",
+      `Are you sure you want to delete "${item.name}"?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => swipeableRef.current?.close(),
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            swipeableRef.current?.close();
+            onDelete?.();
+          },
+        },
+      ]
+    );
+  };
+
+  const renderRightActions = (
+    progress: Animated.AnimatedInterpolation<number>,
+    dragX: Animated.AnimatedInterpolation<number>
+  ) => {
+    const scale = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [1, 0.5],
+      extrapolate: "clamp",
+    });
+
+    return (
+      <TouchableOpacity
+        onPress={handleDelete}
+        style={{
+          backgroundColor: colors.error,
+          justifyContent: "center",
+          alignItems: "center",
+          width: 80,
+          borderTopRightRadius: 12,
+          borderBottomRightRadius: 12,
+        }}
+      >
+        <Animated.View style={{ transform: [{ scale }] }}>
+          <Ionicons name="trash-outline" size={24} color="#fff" />
+          <Text style={{ color: "#fff", fontSize: 12, marginTop: 4 }}>Delete</Text>
+        </Animated.View>
+      </TouchableOpacity>
+    );
+  };
+
+  const content = (
     <View
       style={{
         backgroundColor: colors.card,
@@ -87,17 +155,67 @@ export function GiftItem({ item }: GiftItemProps) {
         ) : null}
 
         {item.recipients && item.recipients.length > 0 ? (
-          <Text style={{ color: colors.muted, fontSize: 13 }}>
-            For: {item.recipients.map((r) => r.name).join(", ")}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+            <Ionicons name="person-outline" size={14} color={colors.muted} />
+            <Text style={{ color: colors.muted, fontSize: 13 }}>
+              {item.recipients.map((r) => r.name).join(", ")}
+            </Text>
+          </View>
         ) : null}
 
         {item.link ? (
-          <TouchableOpacity onPress={handleOpenLink}>
-            <Text style={{ color: colors.primary, fontSize: 13 }}>View Link</Text>
+          <TouchableOpacity
+            onPress={(e) => {
+              e.stopPropagation?.();
+              handleOpenLink();
+            }}
+            style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+          >
+            <Ionicons name="link-outline" size={14} color={colors.primary} />
+            <Text style={{ color: colors.primary, fontSize: 13 }}>Link</Text>
           </TouchableOpacity>
+        ) : null}
+
+        {/* Edit indicator when tappable */}
+        {onPress ? (
+          <View style={{ marginLeft: "auto" }}>
+            <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+          </View>
         ) : null}
       </View>
     </View>
   );
+
+  // If we have delete capability, wrap in Swipeable
+  if (onDelete) {
+    return (
+      <Swipeable
+        ref={swipeableRef}
+        renderRightActions={renderRightActions}
+        rightThreshold={40}
+        overshootRight={false}
+        friction={2}
+        onSwipeableWillOpen={() => Haptics.selectionAsync()}
+      >
+        {onPress ? (
+          <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+            {content}
+          </TouchableOpacity>
+        ) : (
+          content
+        )}
+      </Swipeable>
+    );
+  }
+
+  // Just tappable
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        {content}
+      </TouchableOpacity>
+    );
+  }
+
+  return content;
 }

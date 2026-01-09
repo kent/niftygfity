@@ -1,14 +1,21 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { useRef } from "react";
+import { View, Text, TouchableOpacity, Animated } from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import type { Holiday } from "@niftygifty/types";
 import { useTheme } from "@/lib/theme";
 
 interface GiftListCardProps {
   item: Holiday;
   onPress: () => void;
+  onComplete?: () => void;
+  onArchive?: () => void;
 }
 
-export function GiftListCard({ item, onPress }: GiftListCardProps) {
+export function GiftListCard({ item, onPress, onComplete, onArchive }: GiftListCardProps) {
   const { colors, isDark } = useTheme();
+  const swipeableRef = useRef<Swipeable>(null);
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return null;
@@ -24,7 +31,84 @@ export function GiftListCard({ item, onPress }: GiftListCardProps) {
     }
   };
 
-  return (
+  const handleComplete = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    swipeableRef.current?.close();
+    onComplete?.();
+  };
+
+  const handleArchive = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    swipeableRef.current?.close();
+    onArchive?.();
+  };
+
+  const renderRightActions = (
+    progress: Animated.AnimatedInterpolation<number>,
+    dragX: Animated.AnimatedInterpolation<number>
+  ) => {
+    const scale = dragX.interpolate({
+      inputRange: [-160, 0],
+      outputRange: [1, 0.5],
+      extrapolate: "clamp",
+    });
+
+    return (
+      <View style={{ flexDirection: "row" }}>
+        {/* Complete/Uncomplete */}
+        {onComplete ? (
+          <TouchableOpacity
+            onPress={handleComplete}
+            style={{
+              backgroundColor: item.completed ? colors.warning : colors.success,
+              justifyContent: "center",
+              alignItems: "center",
+              width: 80,
+            }}
+          >
+            <Animated.View style={{ transform: [{ scale }], alignItems: "center" }}>
+              <Ionicons
+                name={item.completed ? "refresh" : "checkmark-circle"}
+                size={24}
+                color="#fff"
+              />
+              <Text style={{ color: "#fff", fontSize: 11, marginTop: 4 }}>
+                {item.completed ? "Reopen" : "Complete"}
+              </Text>
+            </Animated.View>
+          </TouchableOpacity>
+        ) : null}
+
+        {/* Archive/Unarchive */}
+        {onArchive ? (
+          <TouchableOpacity
+            onPress={handleArchive}
+            style={{
+              backgroundColor: item.archived ? colors.primary : colors.muted,
+              justifyContent: "center",
+              alignItems: "center",
+              width: 80,
+              borderTopRightRadius: 12,
+              borderBottomRightRadius: 12,
+            }}
+          >
+            <Animated.View style={{ transform: [{ scale }], alignItems: "center" }}>
+              <Ionicons
+                name={item.archived ? "arrow-undo" : "archive"}
+                size={24}
+                color="#fff"
+              />
+              <Text style={{ color: "#fff", fontSize: 11, marginTop: 4 }}>
+                {item.archived ? "Unarchive" : "Archive"}
+              </Text>
+            </Animated.View>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+    );
+  };
+
+  const content = (
     <TouchableOpacity
       onPress={onPress}
       style={{
@@ -38,13 +122,21 @@ export function GiftListCard({ item, onPress }: GiftListCardProps) {
     >
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600", marginBottom: 4 }}>
-            {item.name}
-          </Text>
-          {item.date ? (
-            <Text style={{ color: colors.textTertiary, fontSize: 14 }}>
-              {formatDate(item.date)}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}>
+              {item.name}
             </Text>
+            {item.archived ? (
+              <Ionicons name="archive" size={16} color={colors.muted} />
+            ) : null}
+          </View>
+          {item.date ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <Ionicons name="calendar-outline" size={14} color={colors.textTertiary} />
+              <Text style={{ color: colors.textTertiary, fontSize: 14 }}>
+                {formatDate(item.date)}
+              </Text>
+            </View>
           ) : null}
         </View>
 
@@ -62,11 +154,14 @@ export function GiftListCard({ item, onPress }: GiftListCardProps) {
         ) : null}
       </View>
 
-      <View style={{ flexDirection: "row", marginTop: 12, gap: 16 }}>
+      <View style={{ flexDirection: "row", marginTop: 12, gap: 16, alignItems: "center" }}>
         {item.collaborator_count > 0 ? (
-          <Text style={{ color: colors.muted, fontSize: 13 }}>
-            {item.collaborator_count} collaborator{item.collaborator_count > 1 ? "s" : ""}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+            <Ionicons name="people-outline" size={14} color={colors.muted} />
+            <Text style={{ color: colors.muted, fontSize: 13 }}>
+              {item.collaborator_count} collaborator{item.collaborator_count > 1 ? "s" : ""}
+            </Text>
+          </View>
         ) : null}
 
         {!item.is_owner ? (
@@ -81,7 +176,30 @@ export function GiftListCard({ item, onPress }: GiftListCardProps) {
             <Text style={{ color: isDark ? "#a78bfa" : "#7c3aed", fontSize: 12 }}>Shared</Text>
           </View>
         ) : null}
+
+        {/* Chevron indicator */}
+        <View style={{ marginLeft: "auto" }}>
+          <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+        </View>
       </View>
     </TouchableOpacity>
   );
+
+  // Wrap in Swipeable if we have actions
+  if (onComplete || onArchive) {
+    return (
+      <Swipeable
+        ref={swipeableRef}
+        renderRightActions={renderRightActions}
+        rightThreshold={40}
+        overshootRight={false}
+        friction={2}
+        onSwipeableWillOpen={() => Haptics.selectionAsync()}
+      >
+        {content}
+      </Swipeable>
+    );
+  }
+
+  return content;
 }

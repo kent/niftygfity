@@ -29,6 +29,10 @@ export default function ListsLayout() {
         name="gifts/new"
         options={{ title: "New Gift", presentation: "modal" }}
       />
+      <Stack.Screen
+        name="gifts/[giftId]"
+        options={{ title: "Edit Gift" }}
+      />
     </Stack>
   );
 }

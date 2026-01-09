@@ -7,7 +7,9 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
+import * as Haptics from "expo-haptics";
 import { useServices } from "@/lib/use-api";
 import { useTheme } from "@/lib/theme";
 import type { Holiday } from "@niftygifty/types";
@@ -54,6 +56,38 @@ export default function GiftListsScreen() {
     router.push("/(tabs)/lists/new");
   };
 
+  const handleComplete = async (item: Holiday) => {
+    try {
+      const newCompleted = !item.completed;
+      await holidays.update(item.id, { completed: newCompleted });
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setLists((prev) =>
+        prev.map((list) =>
+          list.id === item.id ? { ...list, completed: newCompleted } : list
+        )
+      );
+    } catch (err) {
+      console.error("Failed to update list", err);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
+
+  const handleArchive = async (item: Holiday) => {
+    try {
+      const newArchived = !item.archived;
+      await holidays.update(item.id, { archived: newArchived });
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setLists((prev) =>
+        prev.map((list) =>
+          list.id === item.id ? { ...list, archived: newArchived } : list
+        )
+      );
+    } catch (err) {
+      console.error("Failed to archive list", err);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
@@ -63,7 +97,7 @@ export default function GiftListsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       {error ? (
         <View style={{ padding: 16, backgroundColor: colors.errorLight, margin: 16, borderRadius: 8 }}>
           <Text style={{ color: colors.error }}>{error}</Text>
@@ -85,7 +119,12 @@ export default function GiftListsScreen() {
           />
         }
         renderItem={({ item }) => (
-          <GiftListCard item={item} onPress={() => handlePressItem(item)} />
+          <GiftListCard
+            item={item}
+            onPress={() => handlePressItem(item)}
+            onComplete={item.is_owner ? () => handleComplete(item) : undefined}
+            onArchive={item.is_owner ? () => handleArchive(item) : undefined}
+          />
         )}
         ListEmptyComponent={
           <View style={{ alignItems: "center", paddingVertical: 48 }}>
@@ -134,6 +173,6 @@ export default function GiftListsScreen() {
           <Text style={{ color: colors.textInverse, fontSize: 28, lineHeight: 32 }}>+</Text>
         </TouchableOpacity>
       ) : null}
-    </View>
+    </GestureHandlerRootView>
   );
 }

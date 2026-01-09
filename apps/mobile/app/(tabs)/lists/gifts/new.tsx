@@ -10,15 +10,17 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import * as Haptics from "expo-haptics";
 import { useServices } from "@/lib/use-api";
 import { useTheme } from "@/lib/theme";
+import { PersonPicker } from "@/components/PersonPicker";
 import type { GiftStatus } from "@niftygifty/types";
 
 export default function NewGiftScreen() {
   const router = useRouter();
   const { holiday_id } = useLocalSearchParams<{ holiday_id: string }>();
   const { gifts, giftStatuses } = useServices();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -26,6 +28,8 @@ export default function NewGiftScreen() {
   const [cost, setCost] = useState("");
   const [statuses, setStatuses] = useState<GiftStatus[]>([]);
   const [selectedStatusId, setSelectedStatusId] = useState<number | null>(null);
+  const [recipientIds, setRecipientIds] = useState<number[]>([]);
+  const [giverIds, setGiverIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingStatuses, setLoadingStatuses] = useState(true);
   const [error, setError] = useState("");
@@ -49,6 +53,28 @@ export default function NewGiftScreen() {
   useEffect(() => {
     fetchStatuses();
   }, [fetchStatuses]);
+
+  const getStatusColor = (statusName: string) => {
+    const name = statusName.toLowerCase();
+    if (name.includes("idea") || name.includes("thinking")) {
+      return { bg: isDark ? "#1e1b4b" : "#f3e8ff", text: isDark ? "#a78bfa" : "#7c3aed" };
+    }
+    if (name.includes("bought") || name.includes("purchased")) {
+      return { bg: isDark ? "#14532d" : "#dcfce7", text: isDark ? "#86efac" : "#15803d" };
+    }
+    if (name.includes("wrapped")) {
+      return { bg: isDark ? "#164e63" : "#cffafe", text: isDark ? "#67e8f9" : "#0e7490" };
+    }
+    if (name.includes("given") || name.includes("delivered")) {
+      return { bg: isDark ? "#065f46" : "#d1fae5", text: isDark ? "#6ee7b7" : "#059669" };
+    }
+    return { bg: colors.surfaceSecondary, text: colors.textTertiary };
+  };
+
+  const handleStatusChange = async (statusId: number) => {
+    setSelectedStatusId(statusId);
+    await Haptics.selectionAsync();
+  };
 
   const handleCreate = async () => {
     if (!name.trim()) {
@@ -77,11 +103,15 @@ export default function NewGiftScreen() {
         cost: cost ? parseFloat(cost) : undefined,
         holiday_id: holidayId,
         gift_status_id: selectedStatusId,
+        recipient_ids: recipientIds.length > 0 ? recipientIds : undefined,
+        giver_ids: giverIds.length > 0 ? giverIds : undefined,
       });
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.back();
     } catch (err) {
       console.error(err);
       setError("Failed to create gift");
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     } finally {
       setLoading(false);
     }
@@ -183,31 +213,51 @@ export default function NewGiftScreen() {
           <ActivityIndicator color={colors.primary} style={{ marginBottom: 16 }} />
         ) : (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
-            {statuses.map((status) => (
-              <TouchableOpacity
-                key={status.id}
-                onPress={() => setSelectedStatusId(status.id)}
-                style={{
-                  backgroundColor: selectedStatusId === status.id ? colors.primary : colors.input,
-                  paddingHorizontal: 16,
-                  paddingVertical: 10,
-                  borderRadius: 8,
-                  borderWidth: 1,
-                  borderColor: selectedStatusId === status.id ? colors.primary : colors.inputBorder,
-                }}
-              >
-                <Text
+            {statuses.map((status) => {
+              const isSelected = selectedStatusId === status.id;
+              const statusColor = getStatusColor(status.name);
+              return (
+                <TouchableOpacity
+                  key={status.id}
+                  onPress={() => handleStatusChange(status.id)}
                   style={{
-                    color: selectedStatusId === status.id ? colors.textInverse : colors.textTertiary,
-                    fontWeight: selectedStatusId === status.id ? "600" : "400",
+                    backgroundColor: isSelected ? statusColor.bg : colors.input,
+                    paddingHorizontal: 16,
+                    paddingVertical: 10,
+                    borderRadius: 8,
+                    borderWidth: 2,
+                    borderColor: isSelected ? statusColor.text : colors.inputBorder,
                   }}
                 >
-                  {status.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={{
+                      color: isSelected ? statusColor.text : colors.textTertiary,
+                      fontWeight: isSelected ? "600" : "400",
+                    }}
+                  >
+                    {status.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         )}
+
+        {/* Recipients */}
+        <PersonPicker
+          label="For (Recipients)"
+          selectedIds={recipientIds}
+          onSelectionChange={setRecipientIds}
+          placeholder="Who is this gift for?"
+        />
+
+        {/* Givers */}
+        <PersonPicker
+          label="From (Givers)"
+          selectedIds={giverIds}
+          onSelectionChange={setGiverIds}
+          placeholder="Who is giving this gift?"
+        />
 
         <TouchableOpacity
           onPress={handleCreate}
@@ -217,6 +267,7 @@ export default function NewGiftScreen() {
             padding: 16,
             borderRadius: 8,
             alignItems: "center",
+            marginTop: 8,
           }}
         >
           {loading ? (
