@@ -11,6 +11,7 @@ class Workspace < ApplicationRecord
   has_many :people, dependent: :destroy
   has_many :holidays, dependent: :destroy
   has_many :gift_exchanges, dependent: :destroy
+  has_many :wishlists, dependent: :destroy
 
   validates :name, presence: true
   validates :workspace_type, presence: true, inclusion: { in: TYPES }

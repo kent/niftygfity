@@ -13,6 +13,8 @@ class User < ApplicationRecord
   has_many :owned_gift_exchanges, class_name: "GiftExchange", dependent: :destroy
   has_many :exchange_participants, dependent: :destroy
   has_many :gift_exchanges, through: :exchange_participants
+  has_many :wishlists, dependent: :destroy
+  has_many :wishlist_item_claims, dependent: :nullify
 
   # Workspace associations
   has_many :workspace_memberships, dependent: :destroy

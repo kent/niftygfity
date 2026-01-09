@@ -4,7 +4,7 @@ class ExchangeParticipant < ApplicationRecord
   belongs_to :gift_exchange
   belongs_to :user, optional: true
   belongs_to :matched_participant, class_name: "ExchangeParticipant", optional: true
-  has_many :wishlist_items, dependent: :destroy
+  has_many :exchange_wishlist_items, dependent: :destroy
   has_many :exclusions_as_a, class_name: "ExchangeExclusion", foreign_key: :participant_a_id, dependent: :destroy
   has_many :exclusions_as_b, class_name: "ExchangeExclusion", foreign_key: :participant_b_id, dependent: :destroy
 

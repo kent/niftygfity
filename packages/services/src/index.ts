@@ -8,3 +8,6 @@ export { createPeopleService, type PeopleService } from "./people.service";
 export { createGiftExchangesService, type GiftExchangesService } from "./gift-exchanges.service";
 export { createWishlistItemsService, type WishlistItemsService } from "./wishlist-items.service";
 export { createExchangeInvitesService, type ExchangeInvitesService } from "./exchange-invites.service";
+
+// Standalone Wishlists
+export { createWishlistsService, type WishlistsService } from "./wishlists.service";

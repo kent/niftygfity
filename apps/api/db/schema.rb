@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_08_163248) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_09_015012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -119,6 +119,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_08_163248) do
     t.index ["matched_participant_id"], name: "index_exchange_participants_on_matched_participant_id"
     t.index ["status"], name: "index_exchange_participants_on_status"
     t.index ["user_id"], name: "index_exchange_participants_on_user_id"
+  end
+
+  create_table "exchange_wishlist_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.bigint "exchange_participant_id", null: false
+    t.string "link"
+    t.string "name", null: false
+    t.decimal "price", precision: 10, scale: 2
+    t.datetime "updated_at", null: false
+    t.index ["exchange_participant_id"], name: "index_exchange_wishlist_items_on_exchange_participant_id"
+    t.index ["name"], name: "index_exchange_wishlist_items_on_name"
   end
 
   create_table "gift_changes", force: :cascade do |t|
@@ -441,16 +453,63 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_08_163248) do
     t.index ["stripe_customer_id"], name: "index_users_on_stripe_customer_id", unique: true
   end
 
+  create_table "wishlist_item_claims", force: :cascade do |t|
+    t.string "claim_token"
+    t.datetime "claimed_at", null: false
+    t.string "claimer_email"
+    t.string "claimer_name"
+    t.datetime "created_at", null: false
+    t.text "message"
+    t.datetime "purchased_at"
+    t.integer "quantity", default: 1, null: false
+    t.datetime "revealed_at"
+    t.string "status", default: "reserved", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.bigint "wishlist_item_id", null: false
+    t.index ["claim_token"], name: "index_wishlist_item_claims_on_claim_token", unique: true
+    t.index ["status"], name: "index_wishlist_item_claims_on_status"
+    t.index ["user_id"], name: "index_wishlist_item_claims_on_user_id"
+    t.index ["wishlist_item_id", "claimer_email"], name: "idx_unique_guest_claim_per_item", unique: true, where: "(claimer_email IS NOT NULL)"
+    t.index ["wishlist_item_id", "user_id"], name: "idx_unique_user_claim_per_item", unique: true, where: "(user_id IS NOT NULL)"
+    t.index ["wishlist_item_id"], name: "index_wishlist_item_claims_on_wishlist_item_id"
+  end
+
   create_table "wishlist_items", force: :cascade do |t|
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.string "image_url"
+    t.string "name", null: false
+    t.text "notes"
+    t.integer "position", default: 0, null: false
+    t.decimal "price_max", precision: 10, scale: 2
+    t.decimal "price_min", precision: 10, scale: 2
+    t.integer "priority", default: 0, null: false
+    t.integer "quantity", default: 1, null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.bigint "wishlist_id", null: false
+    t.index ["wishlist_id", "archived_at"], name: "index_wishlist_items_on_wishlist_id_and_archived_at"
+    t.index ["wishlist_id", "position"], name: "index_wishlist_items_on_wishlist_id_and_position"
+    t.index ["wishlist_id"], name: "index_wishlist_items_on_wishlist_id"
+  end
+
+  create_table "wishlists", force: :cascade do |t|
+    t.boolean "anti_spoiler_enabled", default: true, null: false
     t.datetime "created_at", null: false
     t.text "description"
-    t.bigint "exchange_participant_id", null: false
-    t.string "link"
     t.string "name", null: false
-    t.decimal "price", precision: 10, scale: 2
+    t.string "share_token"
+    t.date "target_date"
     t.datetime "updated_at", null: false
-    t.index ["exchange_participant_id"], name: "index_wishlist_items_on_exchange_participant_id"
-    t.index ["name"], name: "index_wishlist_items_on_name"
+    t.bigint "user_id", null: false
+    t.string "visibility", default: "private", null: false
+    t.bigint "workspace_id", null: false
+    t.index ["share_token"], name: "index_wishlists_on_share_token", unique: true
+    t.index ["user_id"], name: "index_wishlists_on_user_id"
+    t.index ["visibility", "workspace_id"], name: "index_wishlists_on_visibility_and_workspace_id"
+    t.index ["workspace_id", "user_id"], name: "index_wishlists_on_workspace_id_and_user_id"
+    t.index ["workspace_id"], name: "index_wishlists_on_workspace_id"
   end
 
   create_table "workspace_invites", force: :cascade do |t|
@@ -506,6 +565,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_08_163248) do
   add_foreign_key "exchange_participants", "exchange_participants", column: "matched_participant_id"
   add_foreign_key "exchange_participants", "gift_exchanges"
   add_foreign_key "exchange_participants", "users"
+  add_foreign_key "exchange_wishlist_items", "exchange_participants"
   add_foreign_key "gift_changes", "gifts"
   add_foreign_key "gift_changes", "holidays"
   add_foreign_key "gift_changes", "users"
@@ -539,7 +599,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_08_163248) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "wishlist_items", "exchange_participants"
+  add_foreign_key "wishlist_item_claims", "users"
+  add_foreign_key "wishlist_item_claims", "wishlist_items"
+  add_foreign_key "wishlist_items", "wishlists"
+  add_foreign_key "wishlists", "users"
+  add_foreign_key "wishlists", "workspaces"
   add_foreign_key "workspace_invites", "users", column: "accepted_by_id"
   add_foreign_key "workspace_invites", "users", column: "invited_by_id"
   add_foreign_key "workspace_invites", "workspaces"

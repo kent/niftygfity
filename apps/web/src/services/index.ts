@@ -16,4 +16,5 @@ export { exchangeInvitesService } from "./exchange-invites.service";
 export { workspacesService } from "./workspaces.service";
 export { importsService } from "./imports.service";
 export { exportsService } from "./exports.service";
+export { wishlistsService } from "./wishlists.service";
 

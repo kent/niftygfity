@@ -1,0 +1,72 @@
+<% content_for :preview_text do %>You've reserved "<%= @item.name %>" from <%= @owner_name %>'s wishlist<% end %>
+
+<h1 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #18181b;">
+  Item Reserved!
+</h1>
+
+<p style="margin: 0 0 24px 0; font-size: 16px; color: #52525b;">
+  You've reserved an item from <strong><%= @owner_name %></strong>'s wishlist: <strong><%= @wishlist.name %></strong>
+</p>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="background-color: #faf5ff; border-radius: 12px; padding: 20px;">
+      <p style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #7c3aed;">Reserved Item:</p>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td style="padding: 6px 0; font-size: 16px; font-weight: 600; color: #18181b;">
+            <%= @item.name %>
+          </td>
+        </tr>
+        <% if @item.price_display %>
+        <tr>
+          <td style="padding: 6px 0; font-size: 14px; color: #52525b;">
+            <span style="margin-right: 8px;">💰</span>
+            <strong>Price:</strong> <%= @item.price_display %>
+          </td>
+        </tr>
+        <% end %>
+        <% if @item.url.present? %>
+        <tr>
+          <td style="padding: 6px 0; font-size: 14px; color: #52525b;">
+            <span style="margin-right: 8px;">🔗</span>
+            <a href="<%= @item.url %>" style="color: #7c3aed; text-decoration: underline;">View item link</a>
+          </td>
+        </tr>
+        <% end %>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 0 0 16px 0; font-size: 14px; color: #52525b;">
+  With this link you can:
+</p>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+  <tr>
+    <td style="padding: 4px 0; font-size: 14px; color: #52525b;">
+      <span style="margin-right: 8px;">✅</span> Mark the item as purchased when you buy it
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 4px 0; font-size: 14px; color: #52525b;">
+      <span style="margin-right: 8px;">❌</span> Release your reservation if you change your mind
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td align="center">
+      <a href="<%= @manage_url %>" class="button" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #a855f7, #ec4899); color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 10px;">
+        Manage Your Reservation
+      </a>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 32px 0 0 0; font-size: 12px; color: #a1a1aa; text-align: center;">
+  This confirmation was sent to <%= @claim.claimer_email %><br>
+  Keep this email - you'll need the link above to manage your reservation.
+</p>

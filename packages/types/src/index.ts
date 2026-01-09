@@ -940,3 +940,189 @@ export interface ImportPeopleResult {
   errors: string[];
   people: Person[];
 }
+
+// =============================================================================
+// Wishlists (Standalone)
+// =============================================================================
+
+export type WishlistVisibility = "private" | "workspace" | "shared";
+export type WishlistItemPriority = 0 | 1 | 2; // normal, high, most_wanted
+export type ClaimStatus = "reserved" | "purchased";
+
+export interface Wishlist extends BaseEntity {
+  name: string;
+  description: string | null;
+  visibility: WishlistVisibility;
+  anti_spoiler_enabled: boolean;
+  target_date: string | null;
+  user_id: number;
+  workspace_id: number;
+  is_owner: boolean;
+  share_token: string | null;
+  share_url: string | null;
+  item_count: number;
+  claimed_count: number;
+  owner: {
+    id: number;
+    name: string;
+    image_url: string | null;
+  };
+}
+
+export interface WishlistWithItems extends Wishlist {
+  wishlist_items: StandaloneWishlistItem[];
+}
+
+export interface StandaloneWishlistItem extends BaseEntity {
+  wishlist_id: number;
+  name: string;
+  notes: string | null;
+  url: string | null;
+  price_min: string | null;
+  price_max: string | null;
+  price_display: string | null;
+  priority: WishlistItemPriority;
+  quantity: number;
+  available_quantity: number;
+  claimed_quantity: number;
+  position: number;
+  image_url: string | null;
+  archived_at: string | null;
+  is_available: boolean;
+  my_claim: WishlistItemClaim | null;
+  claim_count: number;
+  claims: WishlistItemClaim[] | Array<{ status: ClaimStatus; quantity: number }>;
+}
+
+export interface WishlistItemClaim extends BaseEntity {
+  wishlist_item_id: number;
+  status: ClaimStatus;
+  quantity: number;
+  message: string | null;
+  claimed_at: string;
+  purchased_at: string | null;
+  revealed_at: string | null;
+  is_guest: boolean;
+  claimer: {
+    id?: number;
+    name: string;
+    image_url?: string | null;
+    is_guest: boolean;
+  };
+  claim_token?: string; // Only present in guest management view
+}
+
+// Request types
+export interface CreateWishlistRequest {
+  wishlist: {
+    name: string;
+    description?: string;
+    visibility?: WishlistVisibility;
+    anti_spoiler_enabled?: boolean;
+    target_date?: string;
+  };
+}
+
+export interface UpdateWishlistRequest {
+  wishlist: Partial<CreateWishlistRequest["wishlist"]>;
+}
+
+export interface CreateStandaloneWishlistItemRequest {
+  wishlist_item: {
+    name: string;
+    notes?: string;
+    url?: string;
+    price_min?: number;
+    price_max?: number;
+    priority?: WishlistItemPriority;
+    quantity?: number;
+    image_url?: string;
+  };
+}
+
+export interface UpdateStandaloneWishlistItemRequest {
+  wishlist_item: Partial<CreateStandaloneWishlistItemRequest["wishlist_item"]>;
+}
+
+export interface ClaimItemRequest {
+  quantity?: number;
+  purchased?: boolean;
+}
+
+export interface GuestClaimRequest {
+  claim: {
+    claimer_name: string;
+    claimer_email: string;
+    quantity?: number;
+    purchased?: boolean;
+  };
+}
+
+export interface UpdateGuestClaimRequest {
+  claim: {
+    status?: ClaimStatus;
+    claimer_name?: string;
+    message?: string;
+    purchased?: boolean;
+  };
+}
+
+// Response types
+export type WishlistsResponse = Wishlist[];
+export type StandaloneWishlistItemsResponse = StandaloneWishlistItem[];
+export type WishlistClaimsResponse = WishlistItemClaim[];
+
+export interface ShareWishlistResponse {
+  share_token: string;
+  share_url: string;
+  visibility: WishlistVisibility;
+}
+
+export interface RevealClaimsResponse {
+  message: string;
+  revealed_count: number;
+}
+
+export interface GuestClaimResponse {
+  message: string;
+  claim_id: number;
+}
+
+export interface GuestClaimDetailsResponse {
+  claim: WishlistItemClaim;
+  item: StandaloneWishlistItem;
+  wishlist: {
+    name: string;
+    target_date: string | null;
+    owner: { name: string };
+  };
+}
+
+// API Endpoints for wishlists
+export const WISHLIST_API_ENDPOINTS = {
+  // Wishlists (authenticated)
+  wishlists: "/wishlists",
+  wishlist: (id: number) => `/wishlists/${id}`,
+  shareWishlist: (id: number) => `/wishlists/${id}/share`,
+  revokeShare: (id: number) => `/wishlists/${id}/revoke_share`,
+  revealClaims: (id: number) => `/wishlists/${id}/reveal_claims`,
+
+  // Wishlist Items
+  wishlistItems: (wishlistId: number) => `/wishlists/${wishlistId}/wishlist_items`,
+  wishlistItem: (wishlistId: number, itemId: number) =>
+    `/wishlists/${wishlistId}/wishlist_items/${itemId}`,
+  reorderItems: (wishlistId: number) => `/wishlists/${wishlistId}/wishlist_items/reorder`,
+  claimItem: (wishlistId: number, itemId: number) =>
+    `/wishlists/${wishlistId}/wishlist_items/${itemId}/claim`,
+  unclaimItem: (wishlistId: number, itemId: number) =>
+    `/wishlists/${wishlistId}/wishlist_items/${itemId}/unclaim`,
+  markPurchased: (wishlistId: number, itemId: number) =>
+    `/wishlists/${wishlistId}/wishlist_items/${itemId}/mark_purchased`,
+
+  // Public endpoints (no auth)
+  publicWishlist: (token: string) => `/w/${token}`,
+  publicClaimItem: (token: string, itemId: number) => `/w/${token}/items/${itemId}/claim`,
+
+  // Guest claim management (no auth)
+  guestClaim: (token: string) => `/claim/${token}`,
+} as const;

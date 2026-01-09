@@ -30,7 +30,7 @@ export interface WishlistItemsService {
 
 export function createWishlistItemsService(client: ApiClient): WishlistItemsService {
   function buildUrl(exchangeId: number, participantId: number, itemId?: number): string {
-    const base = `/gift_exchanges/${exchangeId}/exchange_participants/${participantId}/wishlist_items`;
+    const base = `/gift_exchanges/${exchangeId}/exchange_participants/${participantId}/exchange_wishlist_items`;
     return itemId ? `${base}/${itemId}` : base;
   }
 

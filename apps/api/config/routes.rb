@@ -36,7 +36,7 @@ Rails.application.routes.draw do
       member do
         post :resend_invite
       end
-      resources :wishlist_items, only: %i[index show create update destroy]
+      resources :exchange_wishlist_items, only: %i[index show create update destroy]
     end
     resources :exchange_exclusions, only: %i[index create destroy]
   end
@@ -45,6 +45,34 @@ Rails.application.routes.draw do
   get "exchange_invite/:token" => "exchange_invites#show"
   post "exchange_invite/:token/accept" => "exchange_invites#accept"
   post "exchange_invite/:token/decline" => "exchange_invites#decline"
+
+  # Wishlists (authenticated)
+  resources :wishlists do
+    member do
+      post :share
+      delete :revoke_share
+      post :reveal_claims
+    end
+    resources :wishlist_items, only: %i[index show create update destroy] do
+      collection do
+        patch :reorder
+      end
+      member do
+        post :claim
+        delete :unclaim
+        patch :mark_purchased
+      end
+    end
+  end
+
+  # Public wishlist access (token-based, no auth required)
+  get "w/:token" => "public_wishlists#show"
+  post "w/:token/items/:item_id/claim" => "public_wishlists#claim"
+
+  # Guest claim management (token-based, no auth required)
+  get "claim/:token" => "guest_claims#show"
+  patch "claim/:token" => "guest_claims#update"
+  delete "claim/:token" => "guest_claims#destroy"
 
   resources :holidays do
     collection do
