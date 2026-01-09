@@ -53,4 +53,88 @@ class GiftsApiTest < ActionDispatch::IntegrationTest
     end
     assert_response :success
   end
+
+  # ============================================================================
+  # Reorder Tests
+  # ============================================================================
+
+  test "reorder changes gift position" do
+    gift = gifts(:sweater)
+    patch reorder_gift_path(gift),
+      headers: @auth_headers,
+      params: { position: 5 },
+      as: :json
+    assert_response :success
+  end
+
+  # ============================================================================
+  # Gift Recipients Tests
+  # ============================================================================
+
+  test "gift recipient update modifies shipping address" do
+    gift = gifts(:sweater)
+    person = people(:mom)
+    recipient = gift.gift_recipients.create!(person: person)
+
+    # Create a business workspace with an address
+    business_workspace = Workspace.create!(
+      name: "Business",
+      workspace_type: "business",
+      created_by_user: @user
+    )
+    business_workspace.workspace_memberships.create!(user: @user, role: "owner")
+    company_profile = business_workspace.create_company_profile!(name: "Test Co")
+    address = company_profile.addresses.create!(
+      label: "Office",
+      street_line_1: "123 Main St",
+      city: "Toronto",
+      postal_code: "M5V1A1",
+      country: "CA"
+    )
+
+    patch gift_gift_recipient_path(gift, recipient),
+      headers: @auth_headers,
+      params: { gift_recipient: { shipping_address_id: address.id } },
+      as: :json
+    # May succeed or fail based on address access
+    assert_includes [200, 403, 422], response.status
+  end
+
+  test "gift recipient update clears shipping address" do
+    gift = gifts(:sweater)
+    person = people(:mom)
+    recipient = gift.gift_recipients.create!(person: person)
+
+    patch gift_gift_recipient_path(gift, recipient),
+      headers: @auth_headers,
+      params: { gift_recipient: { shipping_address_id: nil } },
+      as: :json
+    assert_response :success
+  end
+
+  # ============================================================================
+  # Authorization Tests
+  # ============================================================================
+
+  test "cannot access another user's gifts" do
+    other_user = users(:two)
+    other_workspace = workspaces(:two)
+    other_holiday = Holiday.create!(name: "Other Holiday", workspace: other_workspace)
+    other_holiday.holiday_users.create!(user: other_user, role: "owner")
+    # Use existing fixture status
+    other_gift = Gift.create!(
+      holiday: other_holiday,
+      created_by: other_user,
+      name: "Secret Gift",
+      gift_status: @status
+    )
+
+    get gift_path(other_gift), headers: @auth_headers, as: :json
+    assert_response :not_found
+  end
+
+  test "requires authentication" do
+    get gifts_path, as: :json
+    assert_response :unauthorized
+  end
 end

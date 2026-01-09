@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class WorkspaceInvitesController < ApplicationController
-  skip_before_action :authenticate_clerk_user!, only: [ :show, :accept ]
+  skip_before_action :authenticate_clerk_user!
+  before_action :authenticate_clerk_user!, only: [ :index, :create, :regenerate, :destroy, :accept ]
   before_action :set_workspace, only: [ :index, :create, :regenerate, :destroy ]
   before_action :require_admin, only: [ :create, :regenerate, :destroy ]
   before_action :set_invite_by_token, only: [ :show, :accept ]
   before_action :set_invite_by_id, only: [ :destroy ]
-  before_action :authenticate_clerk_user!, only: [ :accept ]
 
   # GET /workspaces/:workspace_id/invites
   def index
@@ -88,6 +88,8 @@ class WorkspaceInvitesController < ApplicationController
 
   def set_workspace
     @workspace = current_user.workspaces.find(params[:workspace_id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Workspace not found" }, status: :not_found
   end
 
   def require_admin
@@ -100,6 +102,8 @@ class WorkspaceInvitesController < ApplicationController
 
   def set_invite_by_id
     @invite = @workspace.workspace_invites.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Invite not found" }, status: :not_found
   end
 
   def invite_params
