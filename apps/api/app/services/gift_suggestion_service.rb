@@ -114,7 +114,7 @@ class GiftSuggestionService
 
     response = client.chat(
       parameters: {
-        model: "gpt-5.1",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a helpful gift recommendation assistant. Always respond with valid JSON." },
           { role: "user", content: prompt }

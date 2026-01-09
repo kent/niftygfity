@@ -56,7 +56,7 @@ export default function NewWishlistPage() {
 
       toast.success("Wishlist created!");
       router.push(`/wishlists/${wishlist.id}`);
-    } catch (err) {
+    } catch {
       toast.error("Failed to create wishlist");
     } finally {
       setIsSubmitting(false);

@@ -4,7 +4,7 @@ class ExchangeParticipantsController < ApplicationController
   before_action :set_participant, only: %i[show update destroy resend_invite]
 
   def index
-    participants = @gift_exchange.exchange_participants.includes(:user, :wishlist_items)
+    participants = @gift_exchange.exchange_participants.includes(:user, :exchange_wishlist_items)
     view = @gift_exchange.owner?(current_user) ? :admin : :default
     render json: ExchangeParticipantBlueprint.render(participants, view: view)
   end
@@ -54,10 +54,14 @@ class ExchangeParticipantsController < ApplicationController
 
   def set_gift_exchange
     @gift_exchange = GiftExchange.for_user(current_user).find(params[:gift_exchange_id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Gift exchange not found" }, status: :not_found
   end
 
   def set_participant
     @participant = @gift_exchange.exchange_participants.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Participant not found" }, status: :not_found
   end
 
   def require_owner

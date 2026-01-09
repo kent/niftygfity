@@ -27,10 +27,14 @@ class ExchangeExclusionsController < ApplicationController
 
   def set_gift_exchange
     @gift_exchange = GiftExchange.owned_by(current_user).find(params[:gift_exchange_id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Gift exchange not found" }, status: :not_found
   end
 
   def set_exclusion
     @exclusion = @gift_exchange.exchange_exclusions.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Exclusion not found" }, status: :not_found
   end
 
   def require_owner

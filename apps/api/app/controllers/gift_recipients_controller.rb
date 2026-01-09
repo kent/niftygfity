@@ -16,10 +16,14 @@ class GiftRecipientsController < ApplicationController
 
   def set_gift
     @gift = Gift.joins(:holiday).where(holidays: { id: current_user.holiday_ids }).find(params[:gift_id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Gift not found" }, status: :not_found
   end
 
   def set_gift_recipient
     @gift_recipient = @gift.gift_recipients.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Recipient not found" }, status: :not_found
   end
 
   def gift_recipient_params

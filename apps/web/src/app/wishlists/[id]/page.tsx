@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, use } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { wishlistsService } from "@/services";
 import { useWorkspaceData } from "@/hooks";
@@ -47,7 +46,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
-import type { WishlistWithItems, StandaloneWishlistItem, WishlistItemClaim, WishlistItemPriority } from "@niftygifty/types";
+import type { WishlistWithItems, StandaloneWishlistItem, WishlistItemPriority } from "@niftygifty/types";
 
 function PriorityBadge({ priority }: { priority: number }) {
   if (priority === 2) {
@@ -71,7 +70,6 @@ function PriorityBadge({ priority }: { priority: number }) {
 
 function ItemCard({
   item,
-  wishlistId,
   isOwner,
   onClaim,
   onUnclaim,
@@ -80,7 +78,6 @@ function ItemCard({
   onDelete,
 }: {
   item: StandaloneWishlistItem;
-  wishlistId: number;
   isOwner: boolean;
   onClaim: (itemId: number, purchased: boolean) => Promise<void>;
   onUnclaim: (itemId: number) => Promise<void>;
@@ -268,7 +265,6 @@ function ItemCard({
 
 export default function WishlistDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const router = useRouter();
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showAddItemDialog, setShowAddItemDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<StandaloneWishlistItem | null>(null);
@@ -311,7 +307,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
         visibility: result.visibility,
       });
       setShowShareDialog(true);
-    } catch (error) {
+    } catch {
       toast.error("Failed to create share link");
     }
   };
@@ -324,7 +320,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
       setCopied(true);
       toast.success("Link copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
+    } catch {
       toast.error("Failed to copy link");
     }
   };
@@ -337,7 +333,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
       toast.success(`${result.revealed_count} claims revealed`);
       setShowRevealConfirm(false);
       refetch();
-    } catch (err) {
+    } catch {
       toast.error("Failed to reveal claims");
     }
   };
@@ -376,7 +372,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
       toast.success("Item added");
       setShowAddItemDialog(false);
       resetItemForm();
-    } catch (error) {
+    } catch {
       toast.error("Failed to add item");
     } finally {
       setIsSubmitting(false);
@@ -408,7 +404,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
       toast.success("Item updated");
       setEditingItem(null);
       resetItemForm();
-    } catch (error) {
+    } catch {
       toast.error("Failed to update item");
     } finally {
       setIsSubmitting(false);
@@ -426,7 +422,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
       });
       toast.success("Item deleted");
       setDeleteConfirmItem(null);
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete item");
     }
   };
@@ -477,7 +473,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
         ),
       });
       toast.success("Claim removed");
-    } catch (err) {
+    } catch {
       toast.error("Failed to remove claim");
     }
   };
@@ -496,7 +492,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
         ),
       });
       toast.success("Marked as purchased");
-    } catch (err) {
+    } catch {
       toast.error("Failed to mark as purchased");
     }
   };
@@ -630,7 +626,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
                     Anti-Spoiler Mode Active
                   </p>
                   <p className="text-sm text-violet-600 dark:text-violet-400">
-                    Claim details are hidden. Click "Reveal Claims" to see who claimed what.
+                    Claim details are hidden. Click &quot;Reveal Claims&quot; to see who claimed what.
                   </p>
                 </div>
               </div>
@@ -664,7 +660,6 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
               <ItemCard
                 key={item.id}
                 item={item}
-                wishlistId={wishlist.id}
                 isOwner={wishlist.is_owner}
                 onClaim={handleClaim}
                 onUnclaim={handleUnclaim}
@@ -823,7 +818,7 @@ export default function WishlistDetailPage({ params }: { params: Promise<{ id: s
           <DialogHeader>
             <DialogTitle>Delete Item</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{deleteConfirmItem?.name}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{deleteConfirmItem?.name}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

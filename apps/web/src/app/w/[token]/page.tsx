@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useEffect } from "react";
+import { useState, use, useEffect, useCallback } from "react";
 import { wishlistsService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,6 @@ import {
   ShoppingCart,
   Star,
   Sparkles,
-  ListTodo,
   Calendar,
   Mail,
   User,
@@ -135,22 +134,22 @@ export default function PublicWishlistPage({ params }: { params: Promise<{ token
   const [isPurchased, setIsPurchased] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchWishlist = async () => {
+  const fetchWishlist = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const data = await wishlistsService.getPublicWishlist(token);
       setWishlist(data);
-    } catch (err) {
+    } catch {
       setError("This wishlist could not be found or is no longer shared.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchWishlist();
-  }, [token]);
+  }, [fetchWishlist]);
 
   const handleClaim = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,7 +164,7 @@ export default function PublicWishlistPage({ params }: { params: Promise<{ token
         purchased: isPurchased,
       };
 
-      const result = await wishlistsService.publicClaimItem(token, claimingItem.id, claimData);
+      await wishlistsService.publicClaimItem(token, claimingItem.id, claimData);
 
       // Update local state
       setWishlist((prev) => {
@@ -288,9 +287,9 @@ export default function PublicWishlistPage({ params }: { params: Promise<{ token
         <Card className="mb-6 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800">
           <CardContent className="py-4">
             <p className="text-sm text-violet-700 dark:text-violet-300 text-center">
-              Claim items to let others know what you're planning to get.
+              Claim items to let others know what you&apos;re planning to get.
               {wishlist.anti_spoiler_enabled && (
-                <> The owner won't see who claimed what until they choose to reveal it.</>
+                <> The owner won&apos;t see who claimed what until they choose to reveal it.</>
               )}
             </p>
           </CardContent>
@@ -326,7 +325,7 @@ export default function PublicWishlistPage({ params }: { params: Promise<{ token
           <DialogHeader>
             <DialogTitle>Claim Item</DialogTitle>
             <DialogDescription>
-              Let others know you're getting "{claimingItem?.name}" to avoid duplicate gifts.
+              Let others know you&apos;re getting &quot;{claimingItem?.name}&quot; to avoid duplicate gifts.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleClaim} className="space-y-4">
@@ -356,7 +355,7 @@ export default function PublicWishlistPage({ params }: { params: Promise<{ token
                 required
               />
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                We'll send you a link to manage your claim. Your email won't be shared.
+                We&apos;ll send you a link to manage your claim. Your email won&apos;t be shared.
               </p>
             </div>
 

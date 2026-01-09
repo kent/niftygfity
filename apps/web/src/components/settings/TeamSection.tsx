@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Users, Copy, RefreshCw, Loader2, UserMinus, Crown, Shield, User, Mail, X, Clock } from "lucide-react";
+import { Users, Copy, Loader2, UserMinus, Crown, Shield, User, Mail, X, Clock } from "lucide-react";
 import { toast } from "sonner";
 import type { WorkspaceMember, WorkspaceInvite, WorkspaceRole } from "@niftygifty/types";
 

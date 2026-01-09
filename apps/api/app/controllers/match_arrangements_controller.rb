@@ -70,6 +70,8 @@ class MatchArrangementsController < ApplicationController
                                          .where(holidays: { id: current_user.holiday_ids })
                                          .includes(:match_slots)
                                          .find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Match arrangement not found" }, status: :not_found
   end
 
   def arrangement_params

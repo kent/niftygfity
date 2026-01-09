@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useEffect } from "react";
+import { useState, use, useEffect, useCallback } from "react";
 import { wishlistsService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -38,22 +38,22 @@ export default function GuestClaimPage({ params }: { params: Promise<{ token: st
   const [isUpdating, setIsUpdating] = useState(false);
   const [wasDeleted, setWasDeleted] = useState(false);
 
-  const fetchClaim = async () => {
+  const fetchClaim = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const data = await wishlistsService.getGuestClaim(token);
       setClaimData(data);
-    } catch (err) {
+    } catch {
       setError("This claim link is invalid or has expired.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchClaim();
-  }, [token]);
+  }, [fetchClaim]);
 
   const handleMarkPurchased = async () => {
     setIsUpdating(true);
@@ -61,7 +61,7 @@ export default function GuestClaimPage({ params }: { params: Promise<{ token: st
       const updatedClaim = await wishlistsService.updateGuestClaim(token, { purchased: true });
       setClaimData((prev) => prev ? { ...prev, claim: updatedClaim } : prev);
       toast.success("Marked as purchased!");
-    } catch (err) {
+    } catch {
       toast.error("Failed to update claim");
     } finally {
       setIsUpdating(false);
@@ -76,7 +76,7 @@ export default function GuestClaimPage({ params }: { params: Promise<{ token: st
       setClaimData(null);
       setWasDeleted(true);
       setShowDeleteDialog(false);
-    } catch (err) {
+    } catch {
       toast.error("Failed to remove claim");
     } finally {
       setIsUpdating(false);
@@ -267,7 +267,7 @@ export default function GuestClaimPage({ params }: { params: Promise<{ token: st
               <div className="text-sm text-amber-700 dark:text-amber-300">
                 <p className="font-medium mb-1">Keep this link safe</p>
                 <p>
-                  This is your private link to manage your claim. Don't share it with others.
+                  This is your private link to manage your claim. Do not share it with others.
                 </p>
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function GuestClaimPage({ params }: { params: Promise<{ token: st
           <DialogHeader>
             <DialogTitle>Remove Claim?</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove your claim on "{item.name}"? This will allow others
+              Are you sure you want to remove your claim on &quot;{item.name}&quot;? This will allow others
               to claim this item.
             </DialogDescription>
           </DialogHeader>

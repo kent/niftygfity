@@ -183,7 +183,7 @@ export default function WishlistsPage() {
             <ListTodo className="h-12 w-12 mx-auto text-slate-400 dark:text-slate-600 mb-4" />
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">No Wishlists Yet</h2>
             <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto mb-6">
-              Create a wishlist to let others know what gifts you'd love to receive. Share it via link and let people claim items to avoid duplicate gifts.
+              Create a wishlist to let others know what gifts you&apos;d love to receive. Share it via link and let people claim items to avoid duplicate gifts.
             </p>
             <Link href="/wishlists/new">
               <Button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600">

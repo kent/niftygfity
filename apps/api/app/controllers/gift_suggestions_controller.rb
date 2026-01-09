@@ -71,7 +71,7 @@ class GiftSuggestionsController < ApplicationController
     # Then check if it's a shared person (accessible via shared holidays)
     @person = Person.find_by(id: params[:person_id])
     return render json: { error: "Person not found" }, status: :not_found unless @person
-    render json: { error: "Person not found" }, status: :not_found unless @person.accessible_by?(current_user)
+    return render json: { error: "Person not found" }, status: :not_found unless @person.accessible_by?(current_user)
   end
 
   def set_suggestion

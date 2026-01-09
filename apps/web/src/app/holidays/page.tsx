@@ -400,8 +400,8 @@ function EmptyHolidaysState({
     }
   };
 
-  const handlePersonalOccasion = (name: string, icon: string) => {
-    // For personal occasions, show the custom form with pre-filled name
+  const handlePersonalOccasion = () => {
+    // For personal occasions, show the custom form
     onShowCustomForm();
   };
 
@@ -464,7 +464,7 @@ function EmptyHolidaysState({
               key={occasion.name}
               name={occasion.name}
               icon={occasion.icon}
-              onClick={() => handlePersonalOccasion(occasion.name, occasion.icon)}
+              onClick={handlePersonalOccasion}
             />
           ))}
         </div>

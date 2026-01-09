@@ -58,6 +58,8 @@ class WorkspacesController < ApplicationController
 
   def set_workspace
     @workspace = current_user.workspaces.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Workspace not found" }, status: :not_found
   end
 
   def require_admin

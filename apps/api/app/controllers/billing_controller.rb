@@ -34,7 +34,7 @@ class BillingController < ApplicationController
       goal_amount: goal_amount,
       premium_count: premium_count,
       currency: "CAD",
-      year: 2025
+      year: Time.current.year
     }
   end
 

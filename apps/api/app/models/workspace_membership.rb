@@ -24,6 +24,8 @@ class WorkspaceMembership < ApplicationRecord
 
   def cannot_destroy_sole_owner
     return unless owner?
+    # Skip this check if the workspace itself is being deleted
+    return if destroyed_by_association
     return if workspace.workspace_memberships.where(role: "owner").count > 1
 
     errors.add(:base, "Cannot remove the only owner")

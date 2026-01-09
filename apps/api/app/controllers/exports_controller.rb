@@ -10,6 +10,8 @@ class ExportsController < ApplicationController
     csv_data = ExportService.gifts_to_csv(holiday)
 
     send_data csv_data, filename: filename, type: "text/csv", disposition: "attachment"
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Holiday not found" }, status: :not_found
   end
 
   def people

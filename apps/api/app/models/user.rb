@@ -65,11 +65,6 @@ class User < ApplicationRecord
     update!(subscription_plan: "premium", subscription_expires_at: expires_at)
   end
 
-  def cancel_premium!
-    # Don't remove immediately - let it expire
-    # Just mark that it won't renew (could add a field for this)
-  end
-
   def reset_billing!
     update!(subscription_plan: "free", subscription_expires_at: nil, stripe_customer_id: nil)
   end

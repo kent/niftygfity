@@ -13,11 +13,6 @@ class Person < ApplicationRecord
   validates :name, presence: true
   validates :email, uniqueness: { scope: :workspace_id, allow_blank: true }
 
-  # Check if person is shared to a specific holiday
-  def shared_to?(holiday)
-    holiday_people.exists?(holiday: holiday)
-  end
-
   # Check if user can access this person (workspace member or shared to a common holiday)
   def accessible_by?(user)
     return true if workspace.member?(user)

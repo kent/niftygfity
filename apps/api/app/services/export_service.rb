@@ -7,7 +7,7 @@ class ExportService
   PEOPLE_HEADERS = [ "Name", "Email", "Relationship", "Age", "Gender", "Notes" ].freeze
 
   def self.gifts_to_csv(holiday)
-    gifts = holiday.gifts.includes(:gift_status, :recipients, :givers)
+    gifts = holiday.gifts.by_position.includes(:gift_status, :recipients, :givers)
 
     CSV.generate do |csv|
       csv << GIFT_HEADERS

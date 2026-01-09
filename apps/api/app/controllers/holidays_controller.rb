@@ -111,6 +111,8 @@ class HolidaysController < ApplicationController
 
   def set_holiday
     @holiday = current_workspace.holidays.where(id: current_user.holiday_ids).find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Holiday not found" }, status: :not_found
   end
 
   def require_owner

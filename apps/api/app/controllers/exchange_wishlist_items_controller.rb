@@ -44,10 +44,14 @@ class ExchangeWishlistItemsController < ApplicationController
     unless exchange.owner?(current_user) || @participant.user_id == current_user.id
       render json: { error: "Access denied" }, status: :forbidden
     end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Participant not found" }, status: :not_found
   end
 
   def set_wishlist_item
     @wishlist_item = @participant.exchange_wishlist_items.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Wishlist item not found" }, status: :not_found
   end
 
   def require_participant_owner

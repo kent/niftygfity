@@ -70,7 +70,7 @@ export function useWorkspaceData<T>({
   useEffect(() => {
     if (!isAuthenticated || !currentWorkspace) return;
     loadData();
-  }, [isAuthenticated, currentWorkspace?.id, loadData]);
+  }, [isAuthenticated, currentWorkspace, loadData]);
 
   const isLoading = authLoading || workspaceLoading || dataLoading;
 

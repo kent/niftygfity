@@ -58,6 +58,8 @@ class GiftExchangesController < ApplicationController
 
   def set_gift_exchange
     @gift_exchange = current_workspace.gift_exchanges.for_user(current_user).find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Gift exchange not found" }, status: :not_found
   end
 
   def require_owner

@@ -18,7 +18,7 @@ class ExchangeParticipantBlueprint < ApplicationBlueprint
   end
 
   field :wishlist_count do |participant|
-    participant.wishlist_items.count
+    participant.exchange_wishlist_items.count
   end
 
   view :with_match do
@@ -33,7 +33,7 @@ class ExchangeParticipantBlueprint < ApplicationBlueprint
   end
 
   view :with_wishlist do
-    association :wishlist_items, blueprint: WishlistItemBlueprint
+    association :exchange_wishlist_items, blueprint: ExchangeWishlistItemBlueprint, name: :wishlist_items
   end
 
   view :admin do

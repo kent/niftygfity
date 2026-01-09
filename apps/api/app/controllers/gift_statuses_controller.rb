@@ -2,7 +2,7 @@ class GiftStatusesController < ApplicationController
   before_action :set_gift_status, only: %i[show update destroy]
 
   def index
-    statuses = GiftStatus.all.order(:position)
+    statuses = GiftStatus.by_position
     render json: GiftStatusBlueprint.render(statuses)
   end
 
@@ -37,6 +37,8 @@ class GiftStatusesController < ApplicationController
 
   def set_gift_status
     @gift_status = GiftStatus.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Gift status not found" }, status: :not_found
   end
 
   def gift_status_params

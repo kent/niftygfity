@@ -67,7 +67,7 @@ class PeopleController < ApplicationController
     # Then check if it's a shared person (accessible via shared holidays in this workspace)
     @person = Person.find_by(id: params[:id])
     return render json: { error: "Not found" }, status: :not_found unless @person
-    render json: { error: "Not found" }, status: :not_found unless @person.accessible_by?(current_user)
+    return render json: { error: "Not found" }, status: :not_found unless @person.accessible_by?(current_user)
   end
 
   def require_owner_for_destroy

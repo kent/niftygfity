@@ -3,7 +3,7 @@ class GiftsController < ApplicationController
   before_action :check_gift_limit, only: [ :create ]
 
   def index
-    gifts = Gift.joins(:holiday).where(holidays: { id: current_user.holiday_ids })
+    gifts = Gift.joins(:holiday).where(holidays: { id: current_user.holiday_ids }).by_position
     render json: GiftBlueprint.render(gifts, current_user: current_user)
   end
 
@@ -41,7 +41,7 @@ class GiftsController < ApplicationController
     Gift.reorder_within_holiday(@gift.holiday_id, @gift.id, new_position)
 
     # Return all gifts for this holiday with updated positions
-    gifts = Gift.where(holiday_id: @gift.holiday_id)
+    gifts = Gift.where(holiday_id: @gift.holiday_id).by_position
     render json: GiftBlueprint.render(gifts, current_user: current_user)
   end
 
@@ -49,6 +49,8 @@ class GiftsController < ApplicationController
 
   def set_gift
     @gift = Gift.joins(:holiday).where(holidays: { id: current_user.holiday_ids }).find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Gift not found" }, status: :not_found
   end
 
   def gift_params

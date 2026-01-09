@@ -47,13 +47,17 @@ class AddressesController < ApplicationController
 
   def set_workspace
     @workspace = current_user.workspaces.find(params[:workspace_id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Workspace not found" }, status: :not_found
   end
 
   def require_admin
+    return if @workspace.nil? # Already handled by set_workspace
     render json: { error: "Access denied" }, status: :forbidden unless @workspace.admin?(current_user)
   end
 
   def require_business_workspace
+    return if @workspace.nil? # Already handled by set_workspace
     unless @workspace.business?
       render json: { error: "Only business workspaces have addresses" }, status: :unprocessable_entity
     end
@@ -65,6 +69,8 @@ class AddressesController < ApplicationController
 
   def set_address
     @address = company_profile.addresses.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Address not found" }, status: :not_found
   end
 
   def address_params

@@ -11,7 +11,9 @@ class Gift < ApplicationRecord
 
   validates :name, presence: true
 
-  default_scope { order(:position) }
+  # NOTE: Explicitly use `by_position` scope where ordering is needed
+  # Avoid default_scope as it causes unexpected behavior in joins/associations
+  scope :by_position, -> { order(:position) }
 
   before_create :set_position
   before_create :set_created_by
@@ -21,21 +23,21 @@ class Gift < ApplicationRecord
   # Reorder gifts within a holiday - updates positions for all affected gifts
   def self.reorder_within_holiday(holiday_id, gift_id, new_position)
     transaction do
-      gift = unscoped.find(gift_id)
+      gift = find(gift_id)
       old_position = gift.position
 
       return if old_position == new_position
 
       if new_position > old_position
         # Moving down: shift items between old and new position up
-        unscoped.where(holiday_id: holiday_id)
-                .where("position > ? AND position <= ?", old_position, new_position)
-                .update_all("position = position - 1")
+        where(holiday_id: holiday_id)
+          .where("position > ? AND position <= ?", old_position, new_position)
+          .update_all("position = position - 1")
       else
         # Moving up: shift items between new and old position down
-        unscoped.where(holiday_id: holiday_id)
-                .where("position >= ? AND position < ?", new_position, old_position)
-                .update_all("position = position + 1")
+        where(holiday_id: holiday_id)
+          .where("position >= ? AND position < ?", new_position, old_position)
+          .update_all("position = position + 1")
       end
 
       gift.update_column(:position, new_position)
@@ -82,8 +84,7 @@ class Gift < ApplicationRecord
     self.position = desired_position
 
     # Shift existing items down to make room (including current top at 0).
-    Gift.unscoped
-        .where(holiday_id: holiday_id)
+    Gift.where(holiday_id: holiday_id)
         .where("position >= ?", desired_position)
         .update_all("position = position + 1")
   end
