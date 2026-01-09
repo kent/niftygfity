@@ -15,7 +15,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.niftygifty.app"
+      "bundleIdentifier": "com.niftygifty.app",
+      "associatedDomains": ["applinks:app.listygifty.com"]
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +24,21 @@
         "backgroundColor": "#0f172a"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.niftygifty.app"
+      "package": "com.niftygifty.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "app.listygifty.com",
+              "pathPrefix": "/join/exchange"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -32,7 +47,14 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#8b5cf6"
+        }
+      ]
     ]
   }
 }

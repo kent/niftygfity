@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useServices } from "@/lib/use-api";
+import { useTheme } from "@/lib/theme";
 import type { Gift, Holiday } from "@niftygifty/types";
 import { GiftItem } from "@/components/GiftItem";
 
@@ -17,6 +18,7 @@ export default function GiftsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { holidays, gifts } = useServices();
+  const { colors } = useTheme();
 
   const [holiday, setHoliday] = useState<Holiday | null>(null);
   const [allGifts, setAllGifts] = useState<Gift[]>([]);
@@ -76,45 +78,47 @@ export default function GiftsScreen() {
 
   const handleAddGift = () => {
     router.push({
-      pathname: "/(app)/gifts/new",
+      pathname: "/(tabs)/lists/gifts/new",
       params: { holiday_id: holidayId.toString() },
     });
   };
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#0f172a" }}>
-        <ActivityIndicator size="large" color="#8b5cf6" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0f172a" }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Stack.Screen options={{ title: holiday?.name || "Gifts" }} />
 
       {/* Search/Filter Bar */}
       <View style={{ padding: 16, paddingBottom: 8 }}>
         <TextInput
           placeholder="Search gifts..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.placeholder}
           value={filter}
           onChangeText={setFilter}
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.input,
+            color: colors.text,
             padding: 12,
             borderRadius: 8,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
           }}
         />
       </View>
 
       {error ? (
-        <View style={{ padding: 16, backgroundColor: "#7f1d1d", marginHorizontal: 16, borderRadius: 8 }}>
-          <Text style={{ color: "#fca5a5" }}>{error}</Text>
+        <View style={{ padding: 16, backgroundColor: colors.errorLight, marginHorizontal: 16, borderRadius: 8 }}>
+          <Text style={{ color: colors.error }}>{error}</Text>
           <TouchableOpacity onPress={fetchData} style={{ marginTop: 8 }}>
-            <Text style={{ color: "#8b5cf6" }}>Retry</Text>
+            <Text style={{ color: colors.primary }}>Retry</Text>
           </TouchableOpacity>
         </View>
       ) : null}
@@ -127,26 +131,30 @@ export default function GiftsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#8b5cf6"
+            tintColor={colors.primary}
           />
         }
         renderItem={({ item }) => <GiftItem item={item} />}
         ListEmptyComponent={
           <View style={{ alignItems: "center", paddingVertical: 48 }}>
-            <Text style={{ color: "#94a3b8", fontSize: 16, marginBottom: 16 }}>
-              {filter ? "No gifts match your search" : "No gifts in this list yet"}
+            <Text style={{ fontSize: 48, marginBottom: 16 }}>🎁</Text>
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600", marginBottom: 8 }}>
+              {filter ? "No Matches" : "No Gifts Yet"}
+            </Text>
+            <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 24, textAlign: "center" }}>
+              {filter ? "No gifts match your search" : "Add your first gift to this list"}
             </Text>
             {!filter ? (
               <TouchableOpacity
                 onPress={handleAddGift}
                 style={{
-                  backgroundColor: "#8b5cf6",
+                  backgroundColor: colors.primary,
                   paddingVertical: 12,
                   paddingHorizontal: 24,
                   borderRadius: 8,
                 }}
               >
-                <Text style={{ color: "#fff", fontWeight: "600" }}>Add Your First Gift</Text>
+                <Text style={{ color: colors.textInverse, fontWeight: "600" }}>Add Your First Gift</Text>
               </TouchableOpacity>
             ) : null}
           </View>
@@ -160,20 +168,20 @@ export default function GiftsScreen() {
             position: "absolute",
             right: 16,
             bottom: 24,
-            backgroundColor: "#8b5cf6",
+            backgroundColor: colors.primary,
             width: 56,
             height: 56,
             borderRadius: 28,
             justifyContent: "center",
             alignItems: "center",
-            shadowColor: "#8b5cf6",
+            shadowColor: colors.primary,
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.3,
             shadowRadius: 8,
             elevation: 8,
           }}
         >
-          <Text style={{ color: "#fff", fontSize: 28, lineHeight: 32 }}>+</Text>
+          <Text style={{ color: colors.textInverse, fontSize: 28, lineHeight: 32 }}>+</Text>
         </TouchableOpacity>
       ) : null}
     </View>

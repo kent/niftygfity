@@ -1,0 +1,81 @@
+import { View, Text, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import type { GiftExchange } from "@niftygifty/types";
+import { StatusBadge } from "./StatusBadge";
+import { useTheme } from "@/lib/theme";
+
+interface ExchangeCardProps {
+  exchange: GiftExchange;
+  onPress: () => void;
+}
+
+export function ExchangeCard({ exchange, onPress }: ExchangeCardProps) {
+  const { colors } = useTheme();
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const formattedDate = formatDate(exchange.exchange_date);
+
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+      style={{
+        backgroundColor: colors.card,
+        borderRadius: 12,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: colors.border,
+      }}
+    >
+      <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" }}>
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600" }} numberOfLines={1}>
+              {exchange.name}
+            </Text>
+            {exchange.is_owner ? (
+              <Ionicons name="ribbon" size={16} color={colors.warning} />
+            ) : null}
+          </View>
+
+          {formattedDate ? (
+            <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>
+              {formattedDate}
+            </Text>
+          ) : null}
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <StatusBadge status={exchange.status as "draft" | "inviting" | "active" | "completed"} />
+
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <Ionicons name="people-outline" size={14} color={colors.muted} />
+              <Text style={{ color: colors.muted, fontSize: 12 }}>
+                {exchange.accepted_count}/{exchange.participant_count} accepted
+              </Text>
+            </View>
+          </View>
+
+          {/* Budget info if available */}
+          {(exchange.budget_min || exchange.budget_max) ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 8 }}>
+              <Ionicons name="cash-outline" size={14} color={colors.muted} />
+              <Text style={{ color: colors.muted, fontSize: 12 }}>
+                ${exchange.budget_min || "0"} - ${exchange.budget_max || "No limit"}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+
+        <Ionicons name="chevron-forward" size={20} color={colors.muted} />
+      </View>
+    </TouchableOpacity>
+  );
+}

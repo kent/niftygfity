@@ -1,5 +1,12 @@
 import { ApiClient } from "@niftygifty/api-client";
-import { createHolidaysService, createGiftsService, createGiftStatusesService } from "@niftygifty/services";
+import {
+  createHolidaysService,
+  createGiftsService,
+  createGiftStatusesService,
+  createGiftExchangesService,
+  createWishlistItemsService,
+  createExchangeInvitesService,
+} from "@niftygifty/services";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -13,3 +20,8 @@ export const apiClient = new ApiClient({
 export const holidaysService = createHolidaysService(apiClient);
 export const giftsService = createGiftsService(apiClient);
 export const giftStatusesService = createGiftStatusesService(apiClient);
+
+// Exchange services
+export const giftExchangesService = createGiftExchangesService(apiClient);
+export const wishlistItemsService = createWishlistItemsService(apiClient);
+export const exchangeInvitesService = createExchangeInvitesService(apiClient);

@@ -11,12 +11,14 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useServices } from "@/lib/use-api";
+import { useTheme } from "@/lib/theme";
 import type { GiftStatus } from "@niftygifty/types";
 
 export default function NewGiftScreen() {
   const router = useRouter();
   const { holiday_id } = useLocalSearchParams<{ holiday_id: string }>();
   const { gifts, giftStatuses } = useServices();
+  const { colors } = useTheme();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -88,89 +90,97 @@ export default function NewGiftScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#0f172a" }}
+      style={{ flex: 1, backgroundColor: colors.background }}
     >
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         {error ? (
-          <View style={{ backgroundColor: "#7f1d1d", padding: 12, borderRadius: 8, marginBottom: 16 }}>
-            <Text style={{ color: "#fca5a5" }}>{error}</Text>
+          <View style={{ backgroundColor: colors.errorLight, padding: 12, borderRadius: 8, marginBottom: 16 }}>
+            <Text style={{ color: colors.error }}>{error}</Text>
           </View>
         ) : null}
 
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>Name *</Text>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>Name *</Text>
         <TextInput
           placeholder="e.g., Nintendo Switch"
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.placeholder}
           value={name}
           onChangeText={setName}
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.input,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 16,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
           }}
         />
 
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>Description</Text>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>Description</Text>
         <TextInput
           placeholder="Optional notes about the gift"
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.placeholder}
           value={description}
           onChangeText={setDescription}
           multiline
           numberOfLines={3}
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.input,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 16,
             fontSize: 16,
             textAlignVertical: "top",
             minHeight: 80,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
           }}
         />
 
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>Link</Text>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>Link</Text>
         <TextInput
           placeholder="https://..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.placeholder}
           value={link}
           onChangeText={setLink}
           keyboardType="url"
           autoCapitalize="none"
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.input,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 16,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
           }}
         />
 
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>Cost</Text>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>Cost</Text>
         <TextInput
           placeholder="0.00"
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.placeholder}
           value={cost}
           onChangeText={setCost}
           keyboardType="decimal-pad"
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.input,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 16,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
           }}
         />
 
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>Status *</Text>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>Status *</Text>
         {loadingStatuses ? (
-          <ActivityIndicator color="#8b5cf6" style={{ marginBottom: 16 }} />
+          <ActivityIndicator color={colors.primary} style={{ marginBottom: 16 }} />
         ) : (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
             {statuses.map((status) => (
@@ -178,17 +188,17 @@ export default function NewGiftScreen() {
                 key={status.id}
                 onPress={() => setSelectedStatusId(status.id)}
                 style={{
-                  backgroundColor: selectedStatusId === status.id ? "#8b5cf6" : "#1e293b",
+                  backgroundColor: selectedStatusId === status.id ? colors.primary : colors.input,
                   paddingHorizontal: 16,
                   paddingVertical: 10,
                   borderRadius: 8,
                   borderWidth: 1,
-                  borderColor: selectedStatusId === status.id ? "#8b5cf6" : "#334155",
+                  borderColor: selectedStatusId === status.id ? colors.primary : colors.inputBorder,
                 }}
               >
                 <Text
                   style={{
-                    color: selectedStatusId === status.id ? "#fff" : "#94a3b8",
+                    color: selectedStatusId === status.id ? colors.textInverse : colors.textTertiary,
                     fontWeight: selectedStatusId === status.id ? "600" : "400",
                   }}
                 >
@@ -203,16 +213,16 @@ export default function NewGiftScreen() {
           onPress={handleCreate}
           disabled={loading}
           style={{
-            backgroundColor: "#8b5cf6",
+            backgroundColor: colors.primary,
             padding: 16,
             borderRadius: 8,
             alignItems: "center",
           }}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={colors.textInverse} />
           ) : (
-            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Add Gift</Text>
+            <Text style={{ color: colors.textInverse, fontSize: 16, fontWeight: "600" }}>Add Gift</Text>
           )}
         </TouchableOpacity>
 
@@ -224,7 +234,7 @@ export default function NewGiftScreen() {
             marginTop: 8,
           }}
         >
-          <Text style={{ color: "#94a3b8", fontSize: 16 }}>Cancel</Text>
+          <Text style={{ color: colors.textTertiary, fontSize: 16 }}>Cancel</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

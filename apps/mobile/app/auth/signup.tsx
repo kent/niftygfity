@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
+import { useTheme } from "@/lib/theme";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -18,6 +19,7 @@ export default function SignUpScreen() {
   const { signUp, setActive, isLoaded } = useSignUp();
   const { startSSOFlow } = useSSO();
   const router = useRouter();
+  const { colors, isDark } = useTheme();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -101,37 +103,39 @@ export default function SignUpScreen() {
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, backgroundColor: "#0f172a" }}
+        style={{ flex: 1, backgroundColor: colors.background }}
       >
         <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-          <Text style={{ fontSize: 24, fontWeight: "bold", color: "#fff", textAlign: "center", marginBottom: 8 }}>
+          <Text style={{ fontSize: 24, fontWeight: "bold", color: colors.text, textAlign: "center", marginBottom: 8 }}>
             Verify Email
           </Text>
-          <Text style={{ fontSize: 16, color: "#94a3b8", textAlign: "center", marginBottom: 32 }}>
+          <Text style={{ fontSize: 16, color: colors.textTertiary, textAlign: "center", marginBottom: 32 }}>
             We sent a code to {email}
           </Text>
 
           {error ? (
-            <View style={{ backgroundColor: "#7f1d1d", padding: 12, borderRadius: 8, marginBottom: 16 }}>
-              <Text style={{ color: "#fca5a5" }}>{error}</Text>
+            <View style={{ backgroundColor: isDark ? "#7f1d1d" : "#fee2e2", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+              <Text style={{ color: isDark ? "#fca5a5" : "#dc2626" }}>{error}</Text>
             </View>
           ) : null}
 
           <TextInput
             placeholder="Verification code"
-            placeholderTextColor="#64748b"
+            placeholderTextColor={colors.muted}
             value={code}
             onChangeText={setCode}
             keyboardType="number-pad"
             style={{
-              backgroundColor: "#1e293b",
-              color: "#fff",
+              backgroundColor: colors.card,
+              color: colors.text,
               padding: 16,
               borderRadius: 8,
               marginBottom: 24,
               fontSize: 16,
               textAlign: "center",
               letterSpacing: 4,
+              borderWidth: 1,
+              borderColor: colors.border,
             }}
           />
 
@@ -139,7 +143,7 @@ export default function SignUpScreen() {
             onPress={handleVerify}
             disabled={loading}
             style={{
-              backgroundColor: "#8b5cf6",
+              backgroundColor: colors.primary,
               padding: 16,
               borderRadius: 8,
               alignItems: "center",
@@ -159,19 +163,19 @@ export default function SignUpScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#0f172a" }}
+      style={{ flex: 1, backgroundColor: colors.background }}
     >
       <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-        <Text style={{ fontSize: 32, fontWeight: "bold", color: "#fff", textAlign: "center", marginBottom: 8 }}>
+        <Text style={{ fontSize: 32, fontWeight: "bold", color: colors.text, textAlign: "center", marginBottom: 8 }}>
           Listy Gifty
         </Text>
-        <Text style={{ fontSize: 16, color: "#94a3b8", textAlign: "center", marginBottom: 32 }}>
+        <Text style={{ fontSize: 16, color: colors.textTertiary, textAlign: "center", marginBottom: 32 }}>
           Create your account
         </Text>
 
         {error ? (
-          <View style={{ backgroundColor: "#7f1d1d", padding: 12, borderRadius: 8, marginBottom: 16 }}>
-            <Text style={{ color: "#fca5a5" }}>{error}</Text>
+          <View style={{ backgroundColor: isDark ? "#7f1d1d" : "#fee2e2", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+            <Text style={{ color: isDark ? "#fca5a5" : "#dc2626" }}>{error}</Text>
           </View>
         ) : null}
 
@@ -179,13 +183,15 @@ export default function SignUpScreen() {
           onPress={handleGoogleSignUp}
           disabled={googleLoading}
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: isDark ? "#fff" : "#f8fafc",
             padding: 16,
             borderRadius: 8,
             alignItems: "center",
             flexDirection: "row",
             justifyContent: "center",
             marginBottom: 24,
+            borderWidth: isDark ? 0 : 1,
+            borderColor: colors.border,
           }}
         >
           {googleLoading ? (
@@ -201,41 +207,45 @@ export default function SignUpScreen() {
         </TouchableOpacity>
 
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
-          <View style={{ flex: 1, height: 1, backgroundColor: "#334155" }} />
-          <Text style={{ color: "#64748b", paddingHorizontal: 16 }}>or</Text>
-          <View style={{ flex: 1, height: 1, backgroundColor: "#334155" }} />
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
+          <Text style={{ color: colors.muted, paddingHorizontal: 16 }}>or</Text>
+          <View style={{ flex: 1, height: 1, backgroundColor: colors.border }} />
         </View>
 
         <TextInput
           placeholder="Email"
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.muted}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.card,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 12,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.border,
           }}
         />
 
         <TextInput
           placeholder="Password"
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.muted}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.card,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 24,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.border,
           }}
         />
 
@@ -243,7 +253,7 @@ export default function SignUpScreen() {
           onPress={handleSignUp}
           disabled={loading}
           style={{
-            backgroundColor: "#8b5cf6",
+            backgroundColor: colors.primary,
             padding: 16,
             borderRadius: 8,
             alignItems: "center",
@@ -257,10 +267,10 @@ export default function SignUpScreen() {
         </TouchableOpacity>
 
         <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 24 }}>
-          <Text style={{ color: "#94a3b8" }}>Already have an account? </Text>
+          <Text style={{ color: colors.textTertiary }}>Already have an account? </Text>
           <Link href="/auth/login" asChild>
             <TouchableOpacity>
-              <Text style={{ color: "#8b5cf6", fontWeight: "600" }}>Sign In</Text>
+              <Text style={{ color: colors.primary, fontWeight: "600" }}>Sign In</Text>
             </TouchableOpacity>
           </Link>
         </View>

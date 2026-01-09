@@ -9,12 +9,14 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useServices } from "@/lib/use-api";
+import { useTheme } from "@/lib/theme";
 import type { Holiday } from "@niftygifty/types";
 import { GiftListCard } from "@/components/GiftListCard";
 
 export default function GiftListsScreen() {
   const router = useRouter();
   const { holidays } = useServices();
+  const { colors } = useTheme();
 
   const [lists, setLists] = useState<Holiday[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,28 +47,28 @@ export default function GiftListsScreen() {
   }, [fetchLists]);
 
   const handlePressItem = (item: Holiday) => {
-    router.push(`/(app)/lists/${item.id}`);
+    router.push(`/(tabs)/lists/${item.id}`);
   };
 
   const handleAddList = () => {
-    router.push("/(app)/lists/new");
+    router.push("/(tabs)/lists/new");
   };
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#0f172a" }}>
-        <ActivityIndicator size="large" color="#8b5cf6" />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0f172a" }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       {error ? (
-        <View style={{ padding: 16, backgroundColor: "#7f1d1d", margin: 16, borderRadius: 8 }}>
-          <Text style={{ color: "#fca5a5" }}>{error}</Text>
+        <View style={{ padding: 16, backgroundColor: colors.errorLight, margin: 16, borderRadius: 8 }}>
+          <Text style={{ color: colors.error }}>{error}</Text>
           <TouchableOpacity onPress={fetchLists} style={{ marginTop: 8 }}>
-            <Text style={{ color: "#8b5cf6" }}>Retry</Text>
+            <Text style={{ color: colors.primary }}>Retry</Text>
           </TouchableOpacity>
         </View>
       ) : null}
@@ -79,7 +81,7 @@ export default function GiftListsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#8b5cf6"
+            tintColor={colors.primary}
           />
         }
         renderItem={({ item }) => (
@@ -87,19 +89,23 @@ export default function GiftListsScreen() {
         )}
         ListEmptyComponent={
           <View style={{ alignItems: "center", paddingVertical: 48 }}>
-            <Text style={{ color: "#94a3b8", fontSize: 16, marginBottom: 16 }}>
-              No gift lists yet
+            <Text style={{ fontSize: 48, marginBottom: 16 }}>🎁</Text>
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: "600", marginBottom: 8 }}>
+              No Gift Lists Yet
+            </Text>
+            <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 24, textAlign: "center", paddingHorizontal: 32 }}>
+              Create your first list to start organizing gifts for any occasion.
             </Text>
             <TouchableOpacity
               onPress={handleAddList}
               style={{
-                backgroundColor: "#8b5cf6",
+                backgroundColor: colors.primary,
                 paddingVertical: 12,
                 paddingHorizontal: 24,
                 borderRadius: 8,
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "600" }}>Create Your First List</Text>
+              <Text style={{ color: colors.textInverse, fontWeight: "600" }}>Create Your First List</Text>
             </TouchableOpacity>
           </View>
         }
@@ -112,20 +118,20 @@ export default function GiftListsScreen() {
             position: "absolute",
             right: 16,
             bottom: 24,
-            backgroundColor: "#8b5cf6",
+            backgroundColor: colors.primary,
             width: 56,
             height: 56,
             borderRadius: 28,
             justifyContent: "center",
             alignItems: "center",
-            shadowColor: "#8b5cf6",
+            shadowColor: colors.primary,
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.3,
             shadowRadius: 8,
             elevation: 8,
           }}
         >
-          <Text style={{ color: "#fff", fontSize: 28, lineHeight: 32 }}>+</Text>
+          <Text style={{ color: colors.textInverse, fontSize: 28, lineHeight: 32 }}>+</Text>
         </TouchableOpacity>
       ) : null}
     </View>

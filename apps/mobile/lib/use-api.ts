@@ -1,6 +1,14 @@
 import { useEffect } from "react";
 import { useAuth } from "@clerk/clerk-expo";
-import { apiClient, holidaysService, giftsService, giftStatusesService } from "./api";
+import {
+  apiClient,
+  holidaysService,
+  giftsService,
+  giftStatusesService,
+  giftExchangesService,
+  wishlistItemsService,
+  exchangeInvitesService,
+} from "./api";
 
 /**
  * Hook that configures the API client with the current Clerk session token.
@@ -20,10 +28,13 @@ export function useApiSetup() {
  */
 export function useServices() {
   useApiSetup();
-  
+
   return {
     holidays: holidaysService,
     gifts: giftsService,
     giftStatuses: giftStatusesService,
+    giftExchanges: giftExchangesService,
+    wishlistItems: wishlistItemsService,
+    exchangeInvites: exchangeInvitesService,
   };
 }

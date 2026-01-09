@@ -1,11 +1,14 @@
 import { View, Text, Linking, TouchableOpacity } from "react-native";
 import type { Gift } from "@niftygifty/types";
+import { useTheme } from "@/lib/theme";
 
 interface GiftItemProps {
   item: Gift;
 }
 
 export function GiftItem({ item }: GiftItemProps) {
+  const { colors, isDark } = useTheme();
+
   const handleOpenLink = () => {
     if (item.link) {
       Linking.openURL(item.link);
@@ -21,11 +24,19 @@ export function GiftItem({ item }: GiftItemProps) {
 
   const getStatusColor = (statusName: string) => {
     const name = statusName.toLowerCase();
-    if (name.includes("idea") || name.includes("thinking")) return { bg: "#1e1b4b", text: "#a78bfa" };
-    if (name.includes("bought") || name.includes("purchased")) return { bg: "#14532d", text: "#86efac" };
-    if (name.includes("wrapped")) return { bg: "#164e63", text: "#67e8f9" };
-    if (name.includes("given") || name.includes("delivered")) return { bg: "#065f46", text: "#6ee7b7" };
-    return { bg: "#374151", text: "#9ca3af" };
+    if (name.includes("idea") || name.includes("thinking")) {
+      return { bg: isDark ? "#1e1b4b" : "#f3e8ff", text: isDark ? "#a78bfa" : "#7c3aed" };
+    }
+    if (name.includes("bought") || name.includes("purchased")) {
+      return { bg: isDark ? "#14532d" : "#dcfce7", text: isDark ? "#86efac" : "#15803d" };
+    }
+    if (name.includes("wrapped")) {
+      return { bg: isDark ? "#164e63" : "#cffafe", text: isDark ? "#67e8f9" : "#0e7490" };
+    }
+    if (name.includes("given") || name.includes("delivered")) {
+      return { bg: isDark ? "#065f46" : "#d1fae5", text: isDark ? "#6ee7b7" : "#059669" };
+    }
+    return { bg: colors.surfaceSecondary, text: colors.textTertiary };
   };
 
   const statusColors = getStatusColor(item.gift_status?.name || "");
@@ -33,27 +44,27 @@ export function GiftItem({ item }: GiftItemProps) {
   return (
     <View
       style={{
-        backgroundColor: "#1e293b",
+        backgroundColor: colors.card,
         borderRadius: 12,
         padding: 16,
         borderWidth: 1,
-        borderColor: "#334155",
+        borderColor: colors.border,
       }}
     >
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600", marginBottom: 4 }}>
+          <Text style={{ color: colors.text, fontSize: 16, fontWeight: "600", marginBottom: 4 }}>
             {item.name}
           </Text>
           {item.description ? (
-            <Text style={{ color: "#94a3b8", fontSize: 14 }} numberOfLines={2}>
+            <Text style={{ color: colors.textTertiary, fontSize: 14 }} numberOfLines={2}>
               {item.description}
             </Text>
           ) : null}
         </View>
 
         {item.cost ? (
-          <Text style={{ color: "#8b5cf6", fontSize: 16, fontWeight: "600", marginLeft: 12 }}>
+          <Text style={{ color: colors.primary, fontSize: 16, fontWeight: "600", marginLeft: 12 }}>
             {formatCost(item.cost)}
           </Text>
         ) : null}
@@ -76,14 +87,14 @@ export function GiftItem({ item }: GiftItemProps) {
         ) : null}
 
         {item.recipients && item.recipients.length > 0 ? (
-          <Text style={{ color: "#64748b", fontSize: 13 }}>
+          <Text style={{ color: colors.muted, fontSize: 13 }}>
             For: {item.recipients.map((r) => r.name).join(", ")}
           </Text>
         ) : null}
 
         {item.link ? (
           <TouchableOpacity onPress={handleOpenLink}>
-            <Text style={{ color: "#8b5cf6", fontSize: 13 }}>View Link</Text>
+            <Text style={{ color: colors.primary, fontSize: 13 }}>View Link</Text>
           </TouchableOpacity>
         ) : null}
       </View>

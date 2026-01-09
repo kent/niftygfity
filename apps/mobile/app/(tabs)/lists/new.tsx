@@ -11,10 +11,12 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useServices } from "@/lib/use-api";
+import { useTheme } from "@/lib/theme";
 
 export default function NewListScreen() {
   const router = useRouter();
   const { holidays } = useServices();
+  const { colors } = useTheme();
 
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
@@ -47,48 +49,52 @@ export default function NewListScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#0f172a" }}
+      style={{ flex: 1, backgroundColor: colors.background }}
     >
       <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 24 }}>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 24 }}>
           Create a new gift list to organize gifts for an occasion.
         </Text>
 
         {error ? (
-          <View style={{ backgroundColor: "#7f1d1d", padding: 12, borderRadius: 8, marginBottom: 16 }}>
-            <Text style={{ color: "#fca5a5" }}>{error}</Text>
+          <View style={{ backgroundColor: colors.errorLight, padding: 12, borderRadius: 8, marginBottom: 16 }}>
+            <Text style={{ color: colors.error }}>{error}</Text>
           </View>
         ) : null}
 
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>Name *</Text>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>Name *</Text>
         <TextInput
           placeholder="e.g., Christmas 2025"
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.placeholder}
           value={name}
           onChangeText={setName}
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.input,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 16,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
           }}
         />
 
-        <Text style={{ color: "#94a3b8", fontSize: 14, marginBottom: 8 }}>Date (YYYY-MM-DD)</Text>
+        <Text style={{ color: colors.textTertiary, fontSize: 14, marginBottom: 8 }}>Date (YYYY-MM-DD)</Text>
         <TextInput
           placeholder="e.g., 2025-12-25"
-          placeholderTextColor="#64748b"
+          placeholderTextColor={colors.placeholder}
           value={date}
           onChangeText={setDate}
           style={{
-            backgroundColor: "#1e293b",
-            color: "#fff",
+            backgroundColor: colors.input,
+            color: colors.text,
             padding: 16,
             borderRadius: 8,
             marginBottom: 24,
             fontSize: 16,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
           }}
         />
 
@@ -96,16 +102,16 @@ export default function NewListScreen() {
           onPress={handleCreate}
           disabled={loading}
           style={{
-            backgroundColor: "#8b5cf6",
+            backgroundColor: colors.primary,
             padding: 16,
             borderRadius: 8,
             alignItems: "center",
           }}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={colors.textInverse} />
           ) : (
-            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>Create List</Text>
+            <Text style={{ color: colors.textInverse, fontSize: 16, fontWeight: "600" }}>Create List</Text>
           )}
         </TouchableOpacity>
 
@@ -117,7 +123,7 @@ export default function NewListScreen() {
             marginTop: 8,
           }}
         >
-          <Text style={{ color: "#94a3b8", fontSize: 16 }}>Cancel</Text>
+          <Text style={{ color: colors.textTertiary, fontSize: 16 }}>Cancel</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
