@@ -24,18 +24,18 @@ class GiftSuggestionsApiTest < ActionDispatch::IntegrationTest
     # Mock OpenAI response for suggestion generation
     post person_gift_suggestions_path(@person), headers: @auth_headers, as: :json
     # This may return various responses depending on subscription/config
-    assert_includes [200, 201, 403, 422, 503], response.status
+    assert_includes [ 200, 201, 403, 422, 503 ], response.status
   end
 
   test "refine suggestions for holiday context" do
-    suggestion_ids = [@suggestion.id]
+    suggestion_ids = [ @suggestion.id ]
 
     post refine_person_gift_suggestions_path(@person),
       headers: @auth_headers,
       params: { suggestion_ids: suggestion_ids, holiday_id: @holiday.id },
       as: :json
     # May return various responses depending on subscription/OpenAI
-    assert_includes [200, 201, 403, 422, 503], response.status
+    assert_includes [ 200, 201, 403, 422, 503 ], response.status
   end
 
   # ============================================================================

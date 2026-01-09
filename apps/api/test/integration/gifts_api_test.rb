@@ -97,7 +97,7 @@ class GiftsApiTest < ActionDispatch::IntegrationTest
       params: { gift_recipient: { shipping_address_id: address.id } },
       as: :json
     # May succeed or fail based on address access
-    assert_includes [200, 403, 422], response.status
+    assert_includes [ 200, 403, 422 ], response.status
   end
 
   test "gift recipient update clears shipping address" do

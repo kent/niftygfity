@@ -1,0 +1,26 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "fingerprint": "d05b95c5fa75a663dbfcf6e9dca978e1d8cd53cdf112b1f4df46a98f01c529be",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/workspace_invites_controller.rb",
+      "line": 110,
+      "code": "params.fetch(:workspace_invite, {}).permit(:role, :email)",
+      "note": "Intentional: admins need to set role when creating invites. Access is controlled by require_admin before_action."
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "fingerprint": "3ede79dbb97ba57bd5b5eccb42706bb8a2fe9656f0b31e27e21a76d136713ea7",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/workspace_memberships_controller.rb",
+      "line": 49,
+      "code": "params.require(:workspace_membership).permit(:role)",
+      "note": "Intentional: admins need to update member roles. Access is controlled by require_admin before_action."
+    }
+  ],
+  "updated": "2026-01-09",
+  "brakeman_version": "7.1.2"
+}

@@ -211,7 +211,7 @@ class GiftExchangesApiTest < ActionDispatch::IntegrationTest
 
     post start_gift_exchange_path(@exchange), headers: @auth_headers, as: :json
     # May succeed or return validation error depending on state
-    assert_includes [200, 201, 422], response.status
+    assert_includes [ 200, 201, 422 ], response.status
   end
 
   # ============================================================================
@@ -237,7 +237,7 @@ class GiftExchangesApiTest < ActionDispatch::IntegrationTest
       headers: @auth_headers,
       as: :json
     # Should return error for already accepted
-    assert_includes [400, 422], response.status
+    assert_includes [ 400, 422 ], response.status
   end
 
   # ============================================================================

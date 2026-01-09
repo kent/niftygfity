@@ -39,7 +39,7 @@ class ImportsExportsApiTest < ActionDispatch::IntegrationTest
       headers: @auth_headers.except("Content-Type"),
       params: { file: file }
     # May succeed with 0 imports or fail with validation error
-    assert_includes [200, 422], response.status
+    assert_includes [ 200, 422 ], response.status
   end
 
   test "imports people requires authentication" do
@@ -69,7 +69,7 @@ class ImportsExportsApiTest < ActionDispatch::IntegrationTest
   test "exports gifts returns 404 without holiday_id" do
     get "/exports/gifts", headers: @auth_headers
     # May return 404 (not found) or 422 (unprocessable) depending on implementation
-    assert_includes [404, 422], response.status
+    assert_includes [ 404, 422 ], response.status
   end
 
   test "exports people returns CSV" do

@@ -158,7 +158,7 @@ class WishlistsApiTest < ActionDispatch::IntegrationTest
       headers: @auth_headers,
       as: :json
     # May return 404 (not found/no access), 403 (forbidden), or 422 (validation error)
-    assert_includes [200, 201, 403, 404, 422], response.status
+    assert_includes [ 200, 201, 403, 404, 422 ], response.status
   end
 
   test "unclaim item removes a claim" do
@@ -174,7 +174,7 @@ class WishlistsApiTest < ActionDispatch::IntegrationTest
       headers: @auth_headers,
       as: :json
     # May succeed or fail depending on ownership rules
-    assert_includes [200, 204, 403, 422], response.status
+    assert_includes [ 200, 204, 403, 422 ], response.status
   end
 
   test "mark_purchased updates claim status" do
@@ -190,7 +190,7 @@ class WishlistsApiTest < ActionDispatch::IntegrationTest
       headers: @auth_headers,
       as: :json
     # May succeed or fail depending on ownership rules
-    assert_includes [200, 403, 422], response.status
+    assert_includes [ 200, 403, 422 ], response.status
   end
 
   # ============================================================================
@@ -240,7 +240,7 @@ class WishlistsApiTest < ActionDispatch::IntegrationTest
       },
       as: :json
     # Should succeed or fail based on rules
-    assert_includes [200, 201, 403, 422], response.status
+    assert_includes [ 200, 201, 403, 422 ], response.status
   end
 
   # ============================================================================

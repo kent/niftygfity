@@ -47,7 +47,7 @@ class BillingApiTest < ActionDispatch::IntegrationTest
 
     # In test environment without Stripe, this may return error
     # but should still respond (not crash)
-    assert_includes [200, 201, 422, 500, 503], response.status
+    assert_includes [ 200, 201, 422, 500, 503 ], response.status
   end
 
   test "create_checkout_session requires price_id" do
@@ -55,7 +55,7 @@ class BillingApiTest < ActionDispatch::IntegrationTest
       headers: @auth_headers,
       params: { success_url: "http://localhost/success", cancel_url: "http://localhost/cancel" },
       as: :json
-    assert_includes [400, 422], response.status
+    assert_includes [ 400, 422 ], response.status
   end
 
   # ============================================================================
@@ -68,7 +68,7 @@ class BillingApiTest < ActionDispatch::IntegrationTest
       params: { coupon_code: "TESTCOUPON" },
       as: :json
     # May succeed or fail depending on coupon validity and subscription status
-    assert_includes [200, 403, 404, 422], response.status
+    assert_includes [ 200, 403, 404, 422 ], response.status
   end
 
   test "redeem_coupon requires coupon_code" do
@@ -77,7 +77,7 @@ class BillingApiTest < ActionDispatch::IntegrationTest
       params: {},
       as: :json
     # Should return error status
-    assert_includes [400, 403, 422], response.status
+    assert_includes [ 400, 403, 422 ], response.status
   end
 
   # ============================================================================
