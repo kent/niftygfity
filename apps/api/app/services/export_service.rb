@@ -3,8 +3,8 @@
 require "csv"
 
 class ExportService
-  GIFT_HEADERS = ["Name", "Description", "Cost", "Status", "Recipients", "Givers", "Link"].freeze
-  PEOPLE_HEADERS = ["Name", "Email", "Relationship", "Age", "Gender", "Notes"].freeze
+  GIFT_HEADERS = [ "Name", "Description", "Cost", "Status", "Recipients", "Givers", "Link" ].freeze
+  PEOPLE_HEADERS = [ "Name", "Email", "Relationship", "Age", "Gender", "Notes" ].freeze
 
   def self.gifts_to_csv(holiday)
     gifts = holiday.gifts.includes(:gift_status, :recipients, :givers)

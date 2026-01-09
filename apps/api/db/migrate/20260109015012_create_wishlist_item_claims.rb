@@ -16,8 +16,8 @@ class CreateWishlistItemClaims < ActiveRecord::Migration[8.1]
       t.timestamps
 
       t.index :claim_token, unique: true
-      t.index [:wishlist_item_id, :user_id], unique: true, where: "user_id IS NOT NULL", name: "idx_unique_user_claim_per_item"
-      t.index [:wishlist_item_id, :claimer_email], unique: true, where: "claimer_email IS NOT NULL", name: "idx_unique_guest_claim_per_item"
+      t.index [ :wishlist_item_id, :user_id ], unique: true, where: "user_id IS NOT NULL", name: "idx_unique_user_claim_per_item"
+      t.index [ :wishlist_item_id, :claimer_email ], unique: true, where: "claimer_email IS NOT NULL", name: "idx_unique_guest_claim_per_item"
       t.index :status
     end
   end

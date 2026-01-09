@@ -13,8 +13,8 @@ class CreateWishlists < ActiveRecord::Migration[8.1]
       t.timestamps
 
       t.index :share_token, unique: true
-      t.index [:workspace_id, :user_id]
-      t.index [:visibility, :workspace_id]
+      t.index [ :workspace_id, :user_id ]
+      t.index [ :visibility, :workspace_id ]
     end
   end
 end

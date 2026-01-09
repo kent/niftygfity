@@ -20,7 +20,7 @@ class Address < ApplicationRecord
     lines = [
       street_line_1,
       street_line_2.presence,
-      [city, state].compact.join(", "),
+      [ city, state ].compact.join(", "),
       postal_code,
       country
     ].compact.reject(&:blank?)

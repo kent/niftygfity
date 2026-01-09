@@ -27,7 +27,7 @@ class WishlistItem < ApplicationRecord
   end
 
   def available_quantity
-    [quantity - claimed_quantity, 0].max
+    [ quantity - claimed_quantity, 0 ].max
   end
 
   def claimed_quantity

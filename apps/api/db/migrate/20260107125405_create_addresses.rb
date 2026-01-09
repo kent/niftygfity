@@ -14,7 +14,7 @@ class CreateAddresses < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :addresses, [:company_profile_id, :label], unique: true
-    add_index :addresses, [:company_profile_id, :is_default]
+    add_index :addresses, [ :company_profile_id, :label ], unique: true
+    add_index :addresses, [ :company_profile_id, :is_default ]
   end
 end

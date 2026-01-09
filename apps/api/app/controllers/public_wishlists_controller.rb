@@ -4,7 +4,7 @@ class PublicWishlistsController < ApplicationController
   class ClaimError < StandardError; end
 
   before_action :set_wishlist
-  before_action :set_item, only: [:claim]
+  before_action :set_item, only: [ :claim ]
 
   # GET /w/:token
   def show

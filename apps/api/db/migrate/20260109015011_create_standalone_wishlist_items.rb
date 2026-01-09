@@ -15,8 +15,8 @@ class CreateStandaloneWishlistItems < ActiveRecord::Migration[8.1]
 
       t.timestamps
 
-      t.index [:wishlist_id, :position]
-      t.index [:wishlist_id, :archived_at]
+      t.index [ :wishlist_id, :position ]
+      t.index [ :wishlist_id, :archived_at ]
     end
   end
 end
