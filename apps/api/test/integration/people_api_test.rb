@@ -42,7 +42,8 @@ class PeopleApiTest < ActionDispatch::IntegrationTest
 
   test "destroy removes a person" do
     # Create a person without gifts attached
-    person = @user.people.create!(name: "Test Person")
+    workspace = workspaces(:one)
+    person = @user.people.create!(name: "Test Person", workspace: workspace)
     assert_difference("Person.count", -1) do
       delete person_path(person), headers: @auth_headers, as: :json
     end
@@ -95,14 +96,18 @@ class PeopleApiTest < ActionDispatch::IntegrationTest
 
   test "index returns shared people for collaborator" do
     user_two = users(:two)
-    user_two_headers = auth_headers_for(user_two)
+    # User two is a collaborator on christmas holiday in workspace_one
+    # They need to access workspace_one to see shared people from that holiday
+    workspace_one = workspaces(:one)
+    # Add user_two as a member of workspace_one for this test
+    workspace_one.workspace_memberships.create!(user: user_two, role: "member")
+    user_two_headers = auth_headers_for(user_two, workspace: workspace_one)
 
     get people_path, headers: user_two_headers, as: :json
     assert_response :success
 
     names = json_response.map { |p| p["name"] }
-    # User two owns "sister" and should see shared "mom" and "dad" from christmas
-    assert_includes names, "Sister"
+    # User two should see shared "mom" and "dad" from christmas (via holiday collaboration)
     assert_includes names, "Mom"
     assert_includes names, "Dad"
   end
@@ -110,9 +115,10 @@ class PeopleApiTest < ActionDispatch::IntegrationTest
   test "user cannot access person from non-shared holiday" do
     # Create a private holiday for user two with a person
     user_two = users(:two)
-    private_holiday = Holiday.create!(name: "Private Party")
+    workspace_two = workspaces(:two)
+    private_holiday = Holiday.create!(name: "Private Party", workspace: workspace_two)
     private_holiday.holiday_users.create!(user: user_two, role: "owner")
-    private_person = user_two.people.create!(name: "Secret Friend")
+    private_person = user_two.people.create!(name: "Secret Friend", workspace: workspace_two)
     HolidayPerson.create!(holiday: private_holiday, person: private_person)
 
     # User one should NOT be able to access this person
@@ -125,10 +131,11 @@ class PeopleApiTest < ActionDispatch::IntegrationTest
     # Then invites user two - user two should see the people
     user_one = users(:one)
     user_two = users(:two)
+    workspace_one = workspaces(:one)
 
-    new_holiday = Holiday.create!(name: "New Year 2026")
+    new_holiday = Holiday.create!(name: "New Year 2026", workspace: workspace_one)
     new_holiday.holiday_users.create!(user: user_one, role: "owner")
-    new_person = user_one.people.create!(name: "Colleague")
+    new_person = user_one.people.create!(name: "Colleague", workspace: workspace_one)
     HolidayPerson.create!(holiday: new_holiday, person: new_person)
 
     # Before invitation, user two cannot see the person

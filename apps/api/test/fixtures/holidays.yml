@@ -3,7 +3,9 @@
 christmas:
   name: Christmas 2025
   date: 2025-12-25
+  workspace: one
 
 birthday:
   name: Mom's Birthday
   date: 2025-06-15
+  workspace: one

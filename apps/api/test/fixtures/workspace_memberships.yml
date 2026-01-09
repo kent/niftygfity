@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+alice_owner:
+  workspace: one
+  user: one
+  role: owner
+
+bob_owner:
+  workspace: two
+  user: two
+  role: owner

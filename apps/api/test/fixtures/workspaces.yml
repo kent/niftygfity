@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: Alice's Personal Workspace
+  workspace_type: personal
+  created_by_user: one
+
+two:
+  name: Bob's Personal Workspace
+  workspace_type: personal
+  created_by_user: two

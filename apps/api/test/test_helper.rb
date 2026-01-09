@@ -20,11 +20,15 @@ module ActionDispatch
       JSON.parse(response.body)
     end
 
-    def auth_headers_for(user)
+    def auth_headers_for(user, workspace: nil)
       # Store the expected payload for this user
       token = "valid_token_#{user.id}"
       mock_clerk_token(token, { "sub" => user.clerk_user_id, "email" => user.email })
-      { "Authorization" => "Bearer #{token}", "Content-Type" => "application/json" }
+      headers = { "Authorization" => "Bearer #{token}", "Content-Type" => "application/json" }
+      # Include workspace header if provided or if user has a personal workspace
+      ws = workspace || user.personal_workspace
+      headers["X-Workspace-ID"] = ws.id.to_s if ws
+      headers
     end
 
     def mock_clerk_token(token, payload)
@@ -86,11 +90,19 @@ module ActionDispatch
     end
 
     def create_test_user(email: "test@example.com", clerk_id: "user_test_123")
-      User.create!(
+      user = User.create!(
         email: email,
         clerk_user_id: clerk_id,
         subscription_plan: "free"
       )
+      # Create personal workspace for test user
+      workspace = Workspace.create!(
+        name: "#{user.email}'s Workspace",
+        workspace_type: "personal",
+        created_by_user: user
+      )
+      workspace.workspace_memberships.create!(user: user, role: "owner")
+      user
     end
   end
 end

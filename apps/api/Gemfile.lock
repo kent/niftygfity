@@ -83,7 +83,7 @@ GEM
     blueprinter (1.2.1)
     bootsnap (1.19.0)
       msgpack (~> 1.2)
-    brakeman (7.1.1)
+    brakeman (7.1.2)
       racc
     builder (3.3.0)
     bundler-audit (0.9.3)
@@ -374,7 +374,7 @@ PLATFORMS
 DEPENDENCIES
   blueprinter
   bootsnap
-  brakeman
+  brakeman (>= 7.1.2)
   bundler-audit
   capybara
   clerk-sdk-ruby
