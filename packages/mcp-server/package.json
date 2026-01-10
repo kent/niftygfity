@@ -1,0 +1,61 @@
+{
+  "name": "@niftygifty/mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for NiftyGifty - manage gifts, holidays, wishlists, and more via AI assistants like Claude, ChatGPT, and other MCP-compatible tools",
+  "type": "module",
+  "bin": {
+    "niftygifty-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "niftygifty",
+    "gifts",
+    "ai",
+    "claude",
+    "chatgpt",
+    "gift-management",
+    "holidays",
+    "wishlists",
+    "secret-santa"
+  ],
+  "author": "NiftyGifty <hello@niftygifty.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/niftygifty/mcp-server.git"
+  },
+  "homepage": "https://niftygifty.com",
+  "bugs": {
+    "url": "https://github.com/niftygifty/mcp-server/issues"
+  }
+}

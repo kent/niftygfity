@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class WorkspaceInvitesController < ApplicationController
-  skip_before_action :authenticate_clerk_user!
-  before_action :authenticate_clerk_user!, only: [ :index, :create, :regenerate, :destroy, :accept ]
+  skip_before_action :authenticate!
+  before_action :authenticate!, only: [ :index, :create, :regenerate, :destroy, :accept ]
   before_action :set_workspace, only: [ :index, :create, :regenerate, :destroy ]
   before_action :require_admin, only: [ :create, :regenerate, :destroy ]
   before_action :set_invite_by_token, only: [ :show, :accept ]

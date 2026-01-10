@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_09_015012) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_09_165313) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -57,6 +57,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_09_015012) do
     t.index ["company_profile_id", "is_default"], name: "index_addresses_on_company_profile_id_and_is_default"
     t.index ["company_profile_id", "label"], name: "index_addresses_on_company_profile_id_and_label", unique: true
     t.index ["company_profile_id"], name: "index_addresses_on_company_profile_id"
+  end
+
+  create_table "api_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.string "key_hash", null: false
+    t.string "key_prefix", null: false
+    t.datetime "last_used_at"
+    t.string "name", null: false
+    t.datetime "revoked_at"
+    t.string "scopes", default: [], array: true
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["key_prefix"], name: "index_api_keys_on_key_prefix", unique: true
+    t.index ["user_id", "revoked_at"], name: "index_api_keys_on_user_id_and_revoked_at"
+    t.index ["user_id"], name: "index_api_keys_on_user_id"
   end
 
   create_table "company_profiles", force: :cascade do |t|
@@ -556,6 +572,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_09_015012) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "company_profiles"
+  add_foreign_key "api_keys", "users"
   add_foreign_key "company_profiles", "workspaces"
   add_foreign_key "email_deliveries", "holidays"
   add_foreign_key "email_deliveries", "users"

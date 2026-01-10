@@ -1,5 +1,5 @@
 class GuestClaimsController < ApplicationController
-  skip_before_action :authenticate_clerk_user!
+  skip_before_action :authenticate!
 
   before_action :set_claim
 

@@ -14,6 +14,7 @@ import {
   WorkspaceSection,
   TeamSection,
   CompanySection,
+  ApiKeysSection,
   SettingsNav,
   type SettingsSection,
 } from "@/components/settings";
@@ -22,7 +23,7 @@ import { toast } from "sonner";
 import { Settings as SettingsIcon } from "lucide-react";
 import type { GiftStatus } from "@niftygifty/types";
 
-const VALID_SECTIONS: SettingsSection[] = ["profile", "workspace", "team", "company", "notifications", "appearance", "statuses", "billing"];
+const VALID_SECTIONS: SettingsSection[] = ["profile", "workspace", "team", "company", "notifications", "appearance", "statuses", "api-keys", "billing"];
 
 export default function SettingsPage() {
   const { isAuthenticated, isLoading: authLoading, user, signOut } = useAuth();
@@ -176,6 +177,9 @@ export default function SettingsPage() {
                 onDelete={handleDeleteStatus}
                 onReorder={handleReorderStatus}
               />
+            )}
+            {activeSection === "api-keys" && (
+              <ApiKeysSection />
             )}
             {activeSection === "billing" && (
               <BillingSection />

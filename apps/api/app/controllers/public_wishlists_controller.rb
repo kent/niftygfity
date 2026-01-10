@@ -1,5 +1,5 @@
 class PublicWishlistsController < ApplicationController
-  skip_before_action :authenticate_clerk_user!
+  skip_before_action :authenticate!
 
   class ClaimError < StandardError; end
 

@@ -1126,3 +1126,38 @@ export const WISHLIST_API_ENDPOINTS = {
   // Guest claim management (no auth)
   guestClaim: (token: string) => `/claim/${token}`,
 } as const;
+
+// =============================================================================
+// API Keys (for MCP server and other integrations)
+// =============================================================================
+
+export type ApiKeyScope = "read" | "write" | "admin";
+
+export interface ApiKey {
+  id: number;
+  name: string;
+  key_prefix: string; // "ng_xxxxxxxx..." (masked)
+  scopes: ApiKeyScope[];
+  last_used_at: string | null;
+  expires_at: string | null;
+  created_at: string;
+}
+
+export interface CreateApiKeyRequest {
+  name: string;
+  scopes?: ApiKeyScope[];
+  expires_at?: string;
+}
+
+export interface CreateApiKeyResponse {
+  api_key: ApiKey;
+  raw_key: string;
+  message: string;
+}
+
+export type ApiKeysResponse = ApiKey[];
+
+export const API_KEY_ENDPOINTS = {
+  apiKeys: "/api_keys",
+  apiKey: (id: number) => `/api_keys/${id}`,
+} as const;

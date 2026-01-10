@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # API Keys (for MCP server and other integrations)
+  resources :api_keys, only: %i[index create destroy]
+
   # Workspaces
   resources :workspaces do
     resources :memberships, controller: "workspace_memberships", only: %i[index update destroy]

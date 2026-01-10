@@ -1,5 +1,5 @@
 class HealthController < ApplicationController
-  skip_before_action :authenticate_clerk_user!
+  skip_before_action :authenticate!
 
   def show
     if database_connected?

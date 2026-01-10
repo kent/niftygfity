@@ -1,7 +1,7 @@
 class HolidaysController < ApplicationController
   include WorkspaceScoped
 
-  skip_before_action :authenticate_clerk_user!, only: [ :templates ]
+  skip_before_action :authenticate!, only: [ :templates ]
   skip_before_action :set_current_workspace, only: [ :templates ]
   skip_before_action :require_workspace_member, only: [ :templates ]
   before_action :set_holiday, only: %i[show update destroy share collaborators remove_collaborator leave]

@@ -8,5 +8,6 @@ export { TeamSection } from "./TeamSection";
 export { CompanySection } from "./CompanySection";
 export { AddressesSection } from "./AddressesSection";
 export { AddressDialog } from "./AddressDialog";
+export { ApiKeysSection } from "./ApiKeysSection";
 export { SettingsNav } from "./SettingsNav";
 export type { SettingsSection } from "./SettingsNav";

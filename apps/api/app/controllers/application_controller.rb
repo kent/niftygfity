@@ -1,7 +1,18 @@
 class ApplicationController < ActionController::API
-  before_action :authenticate_clerk_user!
+  include ApiKeyAuthenticatable
+
+  before_action :authenticate!
 
   private
+
+  # Main authentication method - tries API key first, then falls back to Clerk JWT
+  def authenticate!
+    if api_key_request?
+      authenticate_api_key!
+    else
+      authenticate_clerk_user!
+    end
+  end
 
   def authenticate_clerk_user!
     token = extract_bearer_token
@@ -108,8 +119,8 @@ class ApplicationController < ActionController::API
     @current_user
   end
 
-  def render_unauthorized
-    render json: { error: "Unauthorized" }, status: :unauthorized
+  def render_unauthorized(message = "Unauthorized")
+    render json: { error: message }, status: :unauthorized
   end
 
   def render_error(message, status: :unprocessable_entity)

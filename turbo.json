@@ -10,6 +10,8 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "env": [
         "CLERK_SECRET_KEY",
+        "NIFTYGIFTY_API_KEY",
+        "NIFTYGIFTY_API_URL",
         "NEXT_PUBLIC_API_URL",
         "NEXT_PUBLIC_APP_URL",
         "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",

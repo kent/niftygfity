@@ -1,5 +1,5 @@
 class BillingController < ApplicationController
-  skip_before_action :authenticate_clerk_user!, only: [ :webhook, :charity_stats ]
+  skip_before_action :authenticate!, only: [ :webhook, :charity_stats ]
   skip_before_action :verify_authenticity_token, only: [ :webhook ], raise: false
 
   PRICES = {

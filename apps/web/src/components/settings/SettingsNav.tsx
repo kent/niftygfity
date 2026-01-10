@@ -1,10 +1,10 @@
 "use client";
 
-import { Tags, User, CreditCard, ChevronRight, Bell, Palette, Building2, Users } from "lucide-react";
+import { Tags, User, CreditCard, ChevronRight, Bell, Palette, Building2, Users, Code2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/contexts/workspace-context";
 
-export type SettingsSection = "profile" | "notifications" | "appearance" | "statuses" | "billing" | "workspace" | "team" | "company";
+export type SettingsSection = "profile" | "notifications" | "appearance" | "statuses" | "billing" | "workspace" | "team" | "company" | "api-keys";
 
 interface SettingsNavProps {
   activeSection: SettingsSection;
@@ -28,6 +28,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "notifications", label: "Notifications", icon: Bell, color: "violet" },
   { id: "appearance", label: "Appearance", icon: Palette, color: "violet" },
   { id: "statuses", label: "Gift Statuses", icon: Tags, color: "violet" },
+  { id: "api-keys", label: "API Keys", icon: Code2, color: "violet" },
   { id: "billing", label: "Billing", icon: CreditCard, disabled: true, color: "amber" },
 ];
 
