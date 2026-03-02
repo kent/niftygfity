@@ -36,13 +36,13 @@ else
 fi
 
 PROJECT_ID="${PROJECT_ID:-listygifty}"
-REGION="${REGION:-us-east1}"
+REGION="${REGION:-us-central1}"
 ARTIFACT_REGION="${ARTIFACT_REGION:-${REGION}}"
 ARTIFACT_REPOSITORY="${ARTIFACT_REPOSITORY:-niftygifty}"
 API_SERVICE="${API_SERVICE:-${default_api_service}}"
 WEB_SERVICE="${WEB_SERVICE:-${default_web_service}}"
 MIGRATION_JOB="${MIGRATION_JOB:-${default_migration_job}}"
-SQL_INSTANCE="${SQL_INSTANCE:-niftygifty-postgres}"
+SQL_INSTANCE="${SQL_INSTANCE:-niftygifty-postgres-central}"
 RUNTIME_SERVICE_ACCOUNT_NAME="${RUNTIME_SERVICE_ACCOUNT_NAME:-${default_runtime_sa_name}}"
 RUNTIME_SERVICE_ACCOUNT_EMAIL="${RUNTIME_SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
